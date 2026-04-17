@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Brain (left half) -->
+  <path d="M38 62 C28 62 20 55 20 46 C20 42 21 39 23 36 C20 34 18 30 19 26 C20 21 24 18 29 18 C30 15 33 13 37 13 C38 13 39 13 40 14 L40 62 Z"/>
+  <path d="M23 36 C26 37 29 36 31 34"/>
+  <path d="M19 26 C22 27 25 27 27 25"/>
+  <path d="M29 18 C30 21 30 25 28 28"/>
+  <path d="M37 13 C36 17 35 21 36 25"/>
+  <path d="M40 45 C36 45 32 43 31 40"/>
+  <path d="M40 54 C35 54 30 52 29 48"/>
+
+  <!-- Triangle -->
+  <path d="M52 18 L88 72 L16 72" stroke="currentColor" stroke-width="3.5" fill="none" transform="translate(15, -8)"/>
+
+  <!-- Eye inside triangle -->
+  <!-- Eye outline -->
+  <path d="M67 46 C62 40 58 38 55 40 C52 42 50 46 55 52 C58 55 62 55 67 52 C70 49 70 46 67 46 Z" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <!-- Pupil -->
+  <circle cx="61" cy="46" r="4" stroke="currentColor" stroke-width="2.5" fill="none"/>
+  <!-- Inner pupil dot -->
+  <circle cx="61" cy="46" r="1.5" fill="currentColor" stroke="none"/>
+</svg>
