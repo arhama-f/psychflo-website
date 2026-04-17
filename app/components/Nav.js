@@ -10,10 +10,9 @@ export default function Nav() {
 
   const links = [
     { label: "Products", href: "/products" },
-    { label: "Research", href: "/research" },
-    { label: "Blog", href: "/blog" },
-    { label: "Learn", href: "/learn" },
     { label: "Pricing", href: "/pricing" },
+    { label: "ROI Calculator", href: "/roi" },
+    { label: "Blog", href: "/blog" },
     { label: "About", href: "/about" },
   ];
 
@@ -34,9 +33,13 @@ export default function Nav() {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <button onClick={() => router.push("/tools/policy")}
+        <button onClick={() => router.push("/demo")}
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "9px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+          Book demo
+        </button>
+        <button onClick={() => router.push("/tools/burnout")}
           style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
-          Try free
+          Try free — no signup
         </button>
       </div>
     </nav>

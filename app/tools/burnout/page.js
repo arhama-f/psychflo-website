@@ -170,7 +170,10 @@ function BurnoutTool() {
           <p style={{fontSize:"16px", color:"rgba(255,255,255,0.45)", margin:"0 0 16px", lineHeight:"1.7", maxWidth:"560px", marginLeft:"auto", marginRight:"auto"}}>
             The only burnout platform grounded in Maslach's clinically validated 3-dimension model. Predicts burnout 6–8 weeks before it peaks. Gives managers specific conversation scripts, not just scores.
           </p>
-          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)", margin:"0 0 40px"}}>Fully anonymous · Employees control their data · GDPR compliant</p>
+          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)", margin:"0 0 12px"}}>Fully anonymous · Employees control their data · GDPR compliant</p>
+          <div style={{display:"inline-flex", gap:"6px", alignItems:"center", background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.2)", borderRadius:"999px", padding:"5px 14px", marginBottom:"32px"}}>
+            <span style={{color:"#10b981", fontSize:"13px", fontWeight:"700"}}>No account needed · Free · 3 minutes</span>
+          </div>
 
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", maxWidth:"580px", margin:"0 auto 40px"}}>
             <div onClick={()=>{setRole("employee"); setView("consent");}}
@@ -391,8 +394,9 @@ function BurnoutTool() {
                       </div>
                       <div>
                         <div style={{fontSize:"22px", fontWeight:"700", color:emp.color, marginBottom:"6px"}}>{emp.label}</div>
-                        <div style={{fontSize:"13px", color:"rgba(255,255,255,0.45)", marginBottom:"4px"}}>Trend: <span style={{color:"#ef4444", fontWeight:"600"}}>↑ Worsening</span></div>
-                        <div style={{fontSize:"13px", color:"rgba(255,255,255,0.45)"}}>Peak predicted: <span style={{color:"#f59e0b", fontWeight:"600"}}>Week 8 ({emp.peakPrediction.confidence}% confidence)</span></div>
+                        <div style={{fontSize:"13px", color:"rgba(255,255,255,0.45)", marginBottom:"4px"}}>Trend: <span style={{color: emp.trend==="worsening"?"#ef4444":"#10b981", fontWeight:"600"}}>{emp.trend==="worsening"?"↑ Worsening":"↓ Improving"}</span></div>
+                        <div style={{fontSize:"13px", color:"rgba(255,255,255,0.45)", marginBottom:"4px"}}>Peak predicted: <span style={{color:"#f59e0b", fontWeight:"600"}}>Week {emp.peakPrediction?.week||8} ({emp.peakPrediction?.confidence||72}% confidence)</span></div>
+                        {emp.highRiskAlertTriggered && <div style={{fontSize:"12px", color:"#fca5a5", fontWeight:"600"}}>⚠️ Manager has been notified</div>}
                       </div>
                     </div>
                     <span style={lbl}>6-WEEK TREND</span>
@@ -699,7 +703,25 @@ function BurnoutTool() {
             </BurnoutGate>
           )}
 
-          <div style={{display:"flex", gap:"10px", marginTop:"16px"}}>
+          {/* Post-result conversion nudge */}
+          <div style={{background:"rgba(201,168,76,0.06)", border:"1px solid rgba(201,168,76,0.2)", borderRadius:"14px", padding:"20px", marginTop:"16px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap"}}>
+            <div>
+              <div style={{fontSize:"14px", fontWeight:"700", color:"#f8fafc", marginBottom:"4px"}}>Track your burnout week over week</div>
+              <div style={{fontSize:"12px", color:"rgba(255,255,255,0.4)"}}>Create a free account to see your trends, get weekly reminders, and share with your manager.</div>
+            </div>
+            <div style={{display:"flex", gap:"8px", flexShrink:0}}>
+              <button onClick={()=>router.push("/auth/signup")}
+                style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"10px 20px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
+                Create free account →
+              </button>
+              <button onClick={()=>router.push("/demo")}
+                style={{background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.4)", padding:"10px 16px", borderRadius:"9px", fontSize:"12px", cursor:"pointer"}}>
+                Book a demo
+              </button>
+            </div>
+          </div>
+
+          <div style={{display:"flex", gap:"10px", marginTop:"12px"}}>
             {!isPaid && (
               <button onClick={()=>router.push("/pricing")}
                 style={{flex:1, background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"800", border:"none", cursor:"pointer"}}>

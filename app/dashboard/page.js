@@ -50,10 +50,16 @@ function Dashboard() {
             <h1 style={{fontSize:"24px", fontWeight:"800", color:"#f8fafc", margin:"0 0 4px"}}>Manager Dashboard</h1>
             <p style={{fontSize:"13px", color:"rgba(255,255,255,0.35)", margin:0}}>Team wellbeing overview · Updated weekly</p>
           </div>
-          <button onClick={()=>router.push("/tools/burnout")}
-            style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"10px 20px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
-            Take check-in →
-          </button>
+          <div style={{display:"flex", gap:"8px"}}>
+            <button onClick={()=>router.push("/report")}
+              style={{background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.5)", padding:"10px 16px", borderRadius:"9px", fontSize:"13px", fontWeight:"600", cursor:"pointer"}}>
+              📄 Export report
+            </button>
+            <button onClick={()=>router.push("/tools/burnout")}
+              style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"10px 20px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
+              Take check-in →
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -125,6 +131,10 @@ function Dashboard() {
               <button onClick={()=>router.push("/tools/burnout?view=manager")}
                 style={{flex:1, background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
                 Full team dashboard →
+              </button>
+              <button onClick={()=>router.push("/scripts")}
+                style={{flex:1, background:"rgba(201,168,76,0.08)", border:"1px solid rgba(201,168,76,0.25)", color:gold, padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"700", cursor:"pointer"}}>
+                💬 Conversation scripts
               </button>
               <button onClick={()=>router.push("/onboarding")}
                 style={{flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.5)", padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"600", cursor:"pointer"}}>

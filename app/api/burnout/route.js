@@ -76,7 +76,25 @@ Return ONLY valid JSON matching the exact schema requested. No prose, no markdow
     // 4. Build historical trend (real if DB available, seeded otherwise)
     const weeklyScores = await getWeeklyTrend(db, employeeId, scored.burnoutScore, weekNumber);
 
-    // 5. Assemble response
+    // 5. Auto-trigger alert if high risk (fire-and-forget, non-blocking)
+    if (scored.burnoutScore >= 70 && employeeId) {
+      fetch(`${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/alerts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          employeeId,
+          burnoutScore: scored.burnoutScore,
+          stressors: scored.stressors,
+          dimensions: {
+            exhaustion: scored.dimensions.exhaustion,
+            cynicism: scored.dimensions.cynicism,
+            efficacy: scored.dimensions.efficacy,
+          },
+        }),
+      }).catch(() => null); // never block the response
+    }
+
+    // 6. Assemble response
     const result = {
       employee: {
         burnoutScore: scored.burnoutScore,
@@ -89,6 +107,7 @@ Return ONLY valid JSON matching the exact schema requested. No prose, no markdow
         topStressors: aiAnalysis.topStressors,
         recoveryRecommendations: aiAnalysis.recoveryRecommendations,
         moodTrajectory: aiAnalysis.moodTrajectory,
+        highRiskAlertTriggered: scored.burnoutScore >= 70,
       },
       // Team and org views populated from real aggregation via /api/team
       team: null,
