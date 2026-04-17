@@ -175,7 +175,7 @@ function BurnoutTool() {
             <span style={{color:"#10b981", fontSize:"13px", fontWeight:"700"}}>No account needed · Free · 3 minutes</span>
           </div>
 
-          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", maxWidth:"580px", margin:"0 auto 40px"}}>
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", maxWidth:"580px", margin:"0 auto 24px"}}>
             <div onClick={()=>{setRole("employee"); setView("consent");}}
               style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"16px", padding:"28px", cursor:"pointer", transition:"all 0.15s", textAlign:"left"}}>
               <div style={{fontSize:"32px", marginBottom:"12px"}}>👤</div>
@@ -189,6 +189,24 @@ function BurnoutTool() {
               <h3 style={{fontSize:"16px", fontWeight:"700", color:"#f8fafc", margin:"0 0 6px"}}>I am a manager or HR</h3>
               <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:"0 0 16px", lineHeight:"1.5"}}>View team burnout dashboard, intervention scripts, and organisation-wide risk analysis.</p>
               <span style={{fontSize:"12px", color:gold, fontWeight:"600"}}>View team dashboard →</span>
+            </div>
+          </div>
+
+          {/* Manager tools quick-access bar */}
+          <div style={{maxWidth:"580px", margin:"0 auto 40px"}}>
+            <div style={{fontSize:"11px", fontWeight:"700", color:"rgba(255,255,255,0.25)", letterSpacing:"0.08em", marginBottom:"10px", textAlign:"left"}}>MANAGER TOOLS</div>
+            <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"8px"}}>
+              {[
+                {icon:"📊", label:"Team Dashboard", href:"/dashboard"},
+                {icon:"💬", label:"Conversation Scripts", href:"/scripts"},
+                {icon:"📄", label:"Executive Report", href:"/report"},
+              ].map((tool,i)=>(
+                <button key={i} onClick={()=>router.push(tool.href)}
+                  style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"12px", padding:"14px 12px", cursor:"pointer", textAlign:"center", transition:"all 0.15s"}}>
+                  <div style={{fontSize:"20px", marginBottom:"6px"}}>{tool.icon}</div>
+                  <div style={{fontSize:"12px", fontWeight:"600", color:"rgba(255,255,255,0.5)"}}>{tool.label}</div>
+                </button>
+              ))}
             </div>
           </div>
         </div>
