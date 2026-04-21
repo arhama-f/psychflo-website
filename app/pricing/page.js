@@ -7,46 +7,34 @@ const gold = "#c9a84c";
 
 const PLANS = [
   {
-    id: "free",
-    name: "Free",
-    price: "£0",
-    period: "forever",
-    desc: "For individuals tracking their own burnout.",
-    features: ["Personal burnout score", "3-dimension MBI analysis", "Weekly check-in", "Recovery recommendations", "Mood tracker"],
-    cta: "Get started",
-    href: "/auth/signup",
-    highlight: false,
-  },
-  {
     id: "team",
     name: "Team",
-    price: "£5",
-    period: "per user / month",
-    desc: "For managers who want to protect their team.",
-    features: ["Everything in Free", "Team burnout dashboard", "Anonymised risk map", "Manager conversation scripts", "Weekly action plans", "Email reminders", "Slack integration", "14-day free trial"],
-    cta: "Start free trial",
+    price: "£100",
+    period: "per month",
+    desc: "For teams of over 20 people that need weekly wellbeing visibility.",
+    features: ["Best for teams with 20+ people", "Team burnout dashboard", "Anonymised risk map", "Manager conversation scripts", "Weekly action plans", "Email reminders", "Slack integration"],
+    cta: "Get started",
     highlight: true,
     badge: "Most popular",
   },
   {
     id: "growth",
     name: "Growth",
-    price: "£8",
-    period: "per user / month",
+    price: "£300",
+    period: "per month",
     desc: "For HR teams managing multiple departments.",
     features: ["Everything in Team", "Org-wide risk dashboard", "Department breakdown", "Cost-of-burnout calculator", "HR admin panel", "Custom benchmarks", "Priority support"],
-    cta: "Start free trial",
+    cta: "Get started",
     highlight: false,
   },
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "Custom",
-    period: "annual contract",
-    desc: "For organisations 500+ people.",
-    features: ["Everything in Growth", "HRIS integration (BambooHR, Workday)", "SSO / SAML", "SOC 2 compliance", "Dedicated CSM", "Custom reporting", "SLA guarantee"],
-    cta: "Talk to sales",
-    href: "mailto:sales@psychflo.com",
+    price: "£600",
+    period: "per month",
+    desc: "For larger organisations that need deeper support and rollout control.",
+    features: ["Everything in Growth", "HRIS integration", "SSO / SAML", "Dedicated customer support", "Custom reporting", "SLA guarantee", "Priority implementation"],
+    cta: "Get started",
     highlight: false,
   },
 ];
@@ -83,12 +71,12 @@ export default function Pricing() {
             Simple, transparent pricing
           </h1>
           <p style={{fontSize:"16px", color:"rgba(255,255,255,0.4)", margin:"0 0 8px"}}>
-            Start free. Upgrade when your team is ready.
+            Three paid plans for growing teams and organisations.
           </p>
-          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)"}}>14-day free trial · No credit card required · Cancel any time</p>
+          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)"}}>No free trial · Straightforward monthly pricing</p>
         </div>
 
-        <div style={{display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"14px", marginBottom:"48px"}}>
+        <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"14px", marginBottom:"48px"}}>
           {PLANS.map(plan=>(
             <div key={plan.id} style={{background:plan.highlight?"rgba(201,168,76,0.07)":"rgba(255,255,255,0.04)", border:plan.highlight?`1px solid rgba(201,168,76,0.3)`:"1px solid rgba(255,255,255,0.08)", borderRadius:"16px", padding:"24px", position:"relative", display:"flex", flexDirection:"column"}}>
               {plan.badge && (
@@ -129,7 +117,7 @@ export default function Pricing() {
 
         <div style={{background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:"16px", padding:"32px", textAlign:"center"}}>
           <h3 style={{fontSize:"18px", fontWeight:"700", color:"#f8fafc", margin:"0 0 8px"}}>The ROI is immediate</h3>
-          <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:"0 0 24px"}}>For a 50-person team at £5/user/month</p>
+          <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:"0 0 24px"}}>For a team of 20+ people on the Team plan at £100/month</p>
           <div style={{display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px"}}>
             {[
               {value:"£3,000", label:"Annual platform cost"},

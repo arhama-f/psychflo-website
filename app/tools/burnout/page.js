@@ -172,7 +172,7 @@ function BurnoutTool() {
           </p>
           <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)", margin:"0 0 12px"}}>Fully anonymous · Employees control their data · GDPR compliant</p>
           <div style={{display:"inline-flex", gap:"6px", alignItems:"center", background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.2)", borderRadius:"999px", padding:"5px 14px", marginBottom:"32px"}}>
-            <span style={{color:"#10b981", fontSize:"13px", fontWeight:"700"}}>No account needed · Free · 3 minutes</span>
+            <span style={{color:"#10b981", fontSize:"13px", fontWeight:"700"}}>£60/month · Free users get a brief one-page summary</span>
           </div>
 
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", maxWidth:"580px", margin:"0 auto 24px"}}>
@@ -180,7 +180,7 @@ function BurnoutTool() {
               style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"16px", padding:"28px", cursor:"pointer", transition:"all 0.15s", textAlign:"left"}}>
               <div style={{fontSize:"32px", marginBottom:"12px"}}>👤</div>
               <h3 style={{fontSize:"16px", fontWeight:"700", color:"#f8fafc", margin:"0 0 6px"}}>I am an employee</h3>
-              <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:"0 0 16px", lineHeight:"1.5"}}>Take the weekly check-in. See your personal burnout score and recovery recommendations.</p>
+              <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:"0 0 16px", lineHeight:"1.5"}}>Take the weekly check-in. Free users get a brief one-page summary of their results.</p>
               <span style={{fontSize:"12px", color:"#10b981", fontWeight:"600"}}>10 questions · 3 minutes →</span>
             </div>
             <div onClick={()=>{setRole("manager"); setView("consent");}}
@@ -725,12 +725,12 @@ function BurnoutTool() {
           <div style={{background:"rgba(201,168,76,0.06)", border:"1px solid rgba(201,168,76,0.2)", borderRadius:"14px", padding:"20px", marginTop:"16px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap"}}>
             <div>
               <div style={{fontSize:"14px", fontWeight:"700", color:"#f8fafc", marginBottom:"4px"}}>Track your burnout week over week</div>
-              <div style={{fontSize:"12px", color:"rgba(255,255,255,0.4)"}}>Create a free account to see your trends, get weekly reminders, and share with your manager.</div>
+              <div style={{fontSize:"12px", color:"rgba(255,255,255,0.4)"}}>Create an account to unlock paid tracking, reminders, and team sharing. Burnout Early Warning is £60/month, and free users only get a brief one-page summary.</div>
             </div>
             <div style={{display:"flex", gap:"8px", flexShrink:0}}>
               <button onClick={()=>router.push("/auth/signup")}
                 style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"10px 20px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
-                Create free account →
+                Create account →
               </button>
               <button onClick={()=>router.push("/demo")}
                 style={{background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.4)", padding:"10px 16px", borderRadius:"9px", fontSize:"12px", cursor:"pointer"}}>

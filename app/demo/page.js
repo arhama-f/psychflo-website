@@ -97,7 +97,7 @@ export default function DemoPage() {
               <div style={{ marginTop: "20px" }}>
                 <button onClick={() => router.push("/tools/burnout")}
                   style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: "13px", cursor: "pointer", padding: 0 }}>
-                  Just want to try it yourself first? → Take the free check-in
+                  Just want to explore first? → See pricing and book a demo
                 </button>
               </div>
             </div>
@@ -176,12 +176,12 @@ export default function DemoPage() {
             <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#f8fafc", margin: "0 0 12px" }}>You're on the list</h2>
             <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.5)", margin: "0 0 32px", lineHeight: 1.7 }}>
               We'll send a calendar link to <strong style={{ color: "#f8fafc" }}>{form.email}</strong> within 2 hours.<br />
-              While you wait, try the tool yourself — no account needed.
+              While you wait, you can review the plans or try 1 HR policy page for free.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
-              <button onClick={() => router.push("/tools/burnout")}
+              <button onClick={() => router.push("/tools/policy")}
                 style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
-                Take the free burnout check-in →
+                Try 1 HR policy page free →
               </button>
               <button onClick={() => router.push("/roi")}
                 style={{ background: "none", border: "none", color: "rgba(255,255,255,0.35)", fontSize: "13px", cursor: "pointer", padding: "8px" }}>

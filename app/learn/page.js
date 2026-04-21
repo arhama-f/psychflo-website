@@ -115,8 +115,11 @@ export default function Learn() {
         <div style={{ marginTop: "48px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "20px", padding: "40px", textAlign: "center" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "700", color: "#f8fafc", margin: "0 0 10px" }}>Need custom training for your organisation?</h2>
           <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)", margin: "0 0 24px", lineHeight: "1.7" }}>We build bespoke micro-learning programmes grounded in your organisation's psychology challenges — branded, integrated, and measured.</p>
-          <button style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
-            Talk to us about custom training
+          <button
+            onClick={() => router.push("/auth/signup")}
+            style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}
+          >
+            Enquire about this programme
           </button>
         </div>
       </div>

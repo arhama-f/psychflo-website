@@ -43,12 +43,12 @@ export default function BurnoutGate({ children, tab }) {
         Manager dashboard, conversation scripts, org-wide risk map, and weekly actions are included on the Team plan.
       </p>
       <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)", margin:"0 0 28px"}}>
-        From £5/user/month · 14-day free trial · Cancel any time
+        Burnout Early Warning is £60/month. Free users only get a brief one-page summary.
       </p>
       <div style={{display:"flex", gap:"10px", justifyContent:"center"}}>
         <button onClick={()=>router.push("/pricing")}
           style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"13px 28px", borderRadius:"10px", fontSize:"14px", fontWeight:"800", cursor:"pointer"}}>
-          Start free trial →
+          See pricing →
         </button>
         <button onClick={()=>router.push("/auth/login")}
           style={{background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.5)", padding:"13px 20px", borderRadius:"10px", fontSize:"14px", fontWeight:"600", cursor:"pointer"}}>

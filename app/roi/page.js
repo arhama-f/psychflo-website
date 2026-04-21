@@ -35,8 +35,8 @@ export default function ROIPage() {
   const productivityLoss   = Math.round(headcount * avgSalary * 0.23 * rate); // 23% productivity drop
   const totalCostOfBurnout = totalTurnoverCost + sickDayCost + productivityLoss;
 
-  // PsychFlo cost (Team plan, £5/user/month billed annually)
-  const psychfloCostPerYear = headcount * 5 * 12;
+  // PsychFlo cost (Burnout Early Warning at £60/month)
+  const psychfloCostPerYear = 60 * 12;
   const netSaving           = totalCostOfBurnout - psychfloCostPerYear;
   const roi                 = Math.round((netSaving / psychfloCostPerYear) * 100);
 
@@ -187,12 +187,12 @@ export default function ROIPage() {
           </h3>
           <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.45)", margin: "0 0 28px", lineHeight: 1.7 }}>
             PsychFlo detects burnout 3–4 weeks before it becomes a crisis.<br />
-            14-day free trial · No credit card required · Cancel any time.
+            No free trial. Free access is limited to 1 HR policy page in the Policy Translator.
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
             <button onClick={() => router.push("/auth/signup")}
               style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>
-              Start free trial — protect your team →
+              Create account — protect your team →
             </button>
             <button onClick={() => router.push("/pricing")}
               style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", padding: "14px 24px", borderRadius: "10px", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>

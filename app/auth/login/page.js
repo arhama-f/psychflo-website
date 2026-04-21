@@ -98,7 +98,7 @@ export default function Login() {
 
         <p style={{textAlign:"center", marginTop:"20px", fontSize:"13px", color:"rgba(255,255,255,0.3)"}}>
           No account?{" "}
-          <span onClick={()=>router.push("/auth/signup")} style={{color:gold, cursor:"pointer", fontWeight:"600"}}>Start free trial</span>
+          <span onClick={()=>router.push("/auth/signup")} style={{color:gold, cursor:"pointer", fontWeight:"600"}}>Create account</span>
         </p>
       </div>
     </div>
