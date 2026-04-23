@@ -31,9 +31,9 @@ export default function Home() {
     { quote: "The policy translator turned a document our employees ignored into something they actually read and understood.", name: "Aisha K.", role: "People & Culture Manager" },
   ];
   const blogPosts = [
-    { category: "HR Strategy", title: "How to Turn Your HR Policy Into a Retention Tool", desc: "Most HR policies drive employees away. Here's how to rewrite them so they build trust and reduce turnover.", readTime: "5 min", date: "Apr 2026" },
-    { category: "Compliance", title: "4 UK Employment Laws That Changed in 2024 — Is Your Policy Compliant?", desc: "The Workers Act, Flexible Working Act, Carer's Leave Act, and Neonatal Leave Act all changed employer obligations. Check your exposure.", readTime: "7 min", date: "Apr 2026" },
-    { category: "Psychology", title: "Psychological Safety Is Not a Buzzword — Here's the Business Case", desc: "The ROI data behind Amy Edmondson's research, translated into language your CFO will understand.", readTime: "7 min", date: "Jan 2026" },
+    { slug: "hr-policy-retention-tool", category: "HR Strategy", title: "How to Turn Your HR Policy Into a Retention Tool", desc: "Most HR policies drive employees away. Here's how to rewrite them so they build trust and reduce turnover.", readTime: "5 min", date: "Apr 2026" },
+    { slug: "uk-employment-laws-2024", category: "Compliance", title: "4 UK Employment Laws That Changed in 2024 — Is Your Policy Compliant?", desc: "The Workers Act, Flexible Working Act, Carer's Leave Act, and Neonatal Leave Act all changed employer obligations. Check your exposure.", readTime: "7 min", date: "Apr 2026" },
+    { slug: "psychological-safety-business-case", category: "Psychology", title: "Psychological Safety Is Not a Buzzword — Here's the Business Case", desc: "The ROI data behind Amy Edmondson's research, translated into language your CFO will understand.", readTime: "7 min", date: "Jan 2026" },
   ];
   const liveProducts = products.filter((product) => product.live);
 
@@ -129,7 +129,7 @@ export default function Home() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "12px" }}>
             {blogPosts.map((post, i) => (
-              <div key={i} onClick={() => router.push("/blog")}
+              <div key={i} onClick={() => router.push(`/blog/${post.slug}`)}
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "14px", padding: "22px", cursor: "pointer" }}>
                 <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.05)", color: gold, padding: "3px 10px", borderRadius: "999px", marginBottom: "12px", display: "inline-block" }}>{post.category}</span>
                 <h3 style={{ fontSize: "14px", fontWeight: "700", color: "#f8fafc", margin: "0 0 8px", lineHeight: "1.5" }}>{post.title}</h3>
