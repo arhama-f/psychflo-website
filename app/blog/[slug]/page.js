@@ -127,33 +127,17 @@ export default function BlogPost() {
             color: rgba(255,255,255,0.55);
             font-style: italic;
           }
-          .blog-content a {
-            color: ${gold};
-            text-decoration: underline;
-          }
-          .blog-content hr {
-            border: none;
-            border-top: 1px solid rgba(255,255,255,0.07);
-            margin: 32px 0;
-          }
-          .blog-content code {
-            background: rgba(255,255,255,0.08);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 14px;
-            color: ${gold};
-          }
+          .blog-content a { color: ${gold}; text-decoration: underline; }
+          .blog-content hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 32px 0; }
+          .blog-content code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: ${gold}; }
         `}</style>
 
-        <div
-          className="blog-content"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-
-        {!html && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {[200, 160, 180, 140, 200].map((w, i) => (
-              <div key={i} style={{ height: "16px", background: "rgba(255,255,255,0.06)", borderRadius: "4px", width: `${w + i * 10}px`, maxWidth: "100%" }} />
+        {html ? (
+          <div className="blog-content" dangerouslySetInnerHTML={{ __html: html }} />
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            {[100, 80, 95, 70, 100, 60, 85].map((w, i) => (
+              <div key={i} style={{ height: "14px", background: "rgba(255,255,255,0.06)", borderRadius: "4px", width: `${w}%` }} />
             ))}
           </div>
         )}
