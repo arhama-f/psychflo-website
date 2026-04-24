@@ -1,23 +1,37 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { marked } from "marked";
 import Nav from "../../components/Nav";
 import { getPost, posts } from "../posts";
 
+marked.use({ breaks: true, gfm: true });
+
 const gold = "#c9a84c";
+
+const blogCSS = `
+  .blog-body h2 { font-size: 22px; font-weight: 700; color: #f8fafc; margin: 44px 0 16px; letter-spacing: -0.01em; line-height: 1.3; }
+  .blog-body h3 { font-size: 18px; font-weight: 700; color: #f8fafc; margin: 32px 0 12px; }
+  .blog-body p { font-size: 16px; color: rgba(255,255,255,0.72); margin: 0 0 20px; line-height: 1.85; }
+  .blog-body strong { color: #f8fafc; font-weight: 700; }
+  .blog-body em { font-style: italic; color: rgba(255,255,255,0.65); }
+  .blog-body ul, .blog-body ol { margin: 0 0 20px; padding: 0; list-style: none; }
+  .blog-body li { font-size: 16px; color: rgba(255,255,255,0.72); line-height: 1.75; margin-bottom: 8px; padding-left: 22px; position: relative; }
+  .blog-body ul li::before { content: '–'; color: #c9a84c; position: absolute; left: 0; }
+  .blog-body ol { counter-reset: li; }
+  .blog-body ol li { counter-increment: li; }
+  .blog-body ol li::before { content: counter(li) '.'; color: #c9a84c; position: absolute; left: 0; font-weight: 700; }
+  .blog-body blockquote { border-left: 3px solid #c9a84c; padding: 4px 0 4px 18px; margin: 24px 0; color: rgba(255,255,255,0.55); font-style: italic; }
+  .blog-body a { color: #c9a84c; text-decoration: underline; }
+  .blog-body hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 32px 0; }
+  .blog-body code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: #c9a84c; }
+  .blog-body pre { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; margin: 0 0 20px; overflow-x: auto; }
+  .blog-body pre code { background: none; padding: 0; font-size: 13px; }
+`;
 
 export default function BlogPost() {
   const router = useRouter();
   const { slug } = useParams();
   const post = getPost(slug);
-  const [html, setHtml] = useState("");
-
-  useEffect(() => {
-    if (!post) return;
-    import("marked").then(({ marked }) => {
-      setHtml(marked.parse(post.content, { breaks: true, gfm: true }));
-    });
-  }, [post]);
 
   if (!post) {
     return (
@@ -33,11 +47,14 @@ export default function BlogPost() {
     );
   }
 
+  const html = marked.parse(post.content);
   const related = posts.filter((p) => p.slug !== slug && p.category === post.category).slice(0, 2);
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
       <Nav />
+      <style dangerouslySetInnerHTML={{ __html: blogCSS }} />
+
       <div style={{ maxWidth: "720px", margin: "0 auto", padding: "48px 24px 80px" }}>
 
         <button onClick={() => router.push("/blog")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.35)", fontSize: "13px", cursor: "pointer", padding: "0", marginBottom: "32px", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -47,9 +64,7 @@ export default function BlogPost() {
         <div style={{ marginBottom: "36px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.05)", color: gold, padding: "3px 10px", borderRadius: "999px" }}>{post.category}</span>
-            {post.hot && (
-              <span style={{ background: "rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px" }}>TRENDING</span>
-            )}
+            {post.hot && <span style={{ background: "rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px" }}>TRENDING</span>}
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>{post.readTime} read</span>
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.15)" }}>·</span>
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)" }}>{post.date}</span>
@@ -60,86 +75,7 @@ export default function BlogPost() {
 
         <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", marginBottom: "40px" }} />
 
-        <style>{`
-          .blog-content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #f8fafc;
-            margin: 44px 0 16px;
-            letter-spacing: -0.01em;
-            line-height: 1.3;
-          }
-          .blog-content h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f8fafc;
-            margin: 32px 0 12px;
-          }
-          .blog-content p {
-            font-size: 16px;
-            color: rgba(255,255,255,0.72);
-            margin: 0 0 20px;
-            line-height: 1.85;
-          }
-          .blog-content strong {
-            color: #f8fafc;
-            font-weight: 700;
-          }
-          .blog-content em {
-            font-style: italic;
-            color: rgba(255,255,255,0.65);
-          }
-          .blog-content ul, .blog-content ol {
-            margin: 0 0 20px;
-            padding: 0;
-            list-style: none;
-          }
-          .blog-content li {
-            font-size: 16px;
-            color: rgba(255,255,255,0.72);
-            line-height: 1.75;
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-          }
-          .blog-content ul li::before {
-            content: '–';
-            color: ${gold};
-            position: absolute;
-            left: 0;
-          }
-          .blog-content ol {
-            counter-reset: item;
-          }
-          .blog-content ol li::before {
-            counter-increment: item;
-            content: counter(item) '.';
-            color: ${gold};
-            position: absolute;
-            left: 0;
-            font-weight: 700;
-          }
-          .blog-content blockquote {
-            border-left: 3px solid ${gold};
-            padding: 4px 0 4px 18px;
-            margin: 24px 0;
-            color: rgba(255,255,255,0.55);
-            font-style: italic;
-          }
-          .blog-content a { color: ${gold}; text-decoration: underline; }
-          .blog-content hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 32px 0; }
-          .blog-content code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: ${gold}; }
-        `}</style>
-
-        {html ? (
-          <div className="blog-content" dangerouslySetInnerHTML={{ __html: html }} />
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            {[100, 80, 95, 70, 100, 60, 85].map((w, i) => (
-              <div key={i} style={{ height: "14px", background: "rgba(255,255,255,0.06)", borderRadius: "4px", width: `${w}%` }} />
-            ))}
-          </div>
-        )}
+        <div className="blog-body" dangerouslySetInnerHTML={{ __html: html }} />
 
         <div style={{ marginTop: "56px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "16px", padding: "32px", textAlign: "center" }}>
           <p style={{ fontSize: "13px", color: gold, fontWeight: "700", margin: "0 0 8px", letterSpacing: "0.05em" }}>PSYCHFLO</p>
