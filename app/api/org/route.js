@@ -1,16 +1,38 @@
 import { getSupabaseServer } from "../../../lib/supabase.js";
 import { Resend } from "resend";
+import { cookies } from "next/headers";
 
-// POST /api/org — update org settings
+async function getOrgFromSession(db) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sb-access-token")?.value;
+    if (!token) return null;
+    const { data: { user } } = await db.auth.getUser(token);
+    if (!user) return null;
+    const { data: emp } = await db
+      .from("employees")
+      .select("org_id")
+      .eq("auth_user_id", user.id)
+      .single();
+    return emp?.org_id || null;
+  } catch {
+    return null;
+  }
+}
+
+// POST /api/org — update org settings (sector, name)
 export async function POST(req) {
   try {
-    const { orgId, sector, name } = await req.json();
+    const { orgId: bodyOrgId, sector, name } = await req.json();
     const db = getSupabaseServer();
     if (!db) return Response.json({ error: "Database not configured" }, { status: 503 });
 
+    const orgId = bodyOrgId || await getOrgFromSession(db);
+    if (!orgId) return Response.json({ error: "Organisation not found" }, { status: 400 });
+
     const { error } = await db
       .from("organisations")
-      .update({ sector, name })
+      .update({ ...(sector && { sector }), ...(name && { name }) })
       .eq("id", orgId);
 
     if (error) throw error;
@@ -20,23 +42,40 @@ export async function POST(req) {
   }
 }
 
-// POST /api/org/invite — send invite emails to team
+// PUT /api/org — send invite emails to team members
 export async function PUT(req) {
   try {
-    const { emails, orgId, orgName } = await req.json();
+    const { emails, orgId: bodyOrgId, orgName: bodyOrgName } = await req.json();
 
-    if (!emails?.length || !orgId) {
-      return Response.json({ error: "emails and orgId required" }, { status: 400 });
+    if (!emails?.length) {
+      return Response.json({ error: "emails required" }, { status: 400 });
     }
 
     const db = getSupabaseServer();
+    if (!db) return Response.json({ error: "Database not configured" }, { status: 503 });
+
+    // Infer orgId and orgName from session if not provided
+    let orgId = bodyOrgId;
+    let orgName = bodyOrgName;
+    if (!orgId) {
+      orgId = await getOrgFromSession(db);
+    }
+    if (!orgId) return Response.json({ error: "Organisation not found" }, { status: 400 });
+
+    if (!orgName || orgName === "Your Organisation") {
+      const { data: org } = await db
+        .from("organisations")
+        .select("name")
+        .eq("id", orgId)
+        .single();
+      orgName = org?.name || "Your Organisation";
+    }
+
     const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://psychflo.com";
-
     const results = [];
 
     for (const email of emails) {
-      // Generate invite token
       const { data: token, error: tokenErr } = await db
         .from("invite_tokens")
         .insert({ email, org_id: orgId, expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() })

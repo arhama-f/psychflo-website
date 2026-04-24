@@ -11,7 +11,7 @@ export async function POST(req) {
     const { error } = await db.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/callback`,
       },
     });
 
