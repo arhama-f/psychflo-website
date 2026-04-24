@@ -3,10 +3,72 @@ import { useRouter, useParams } from "next/navigation";
 import Nav from "../../components/Nav";
 import { getPost, posts } from "../posts";
 
+const gold = "#c9a84c";
+
+function renderInline(text) {
+  const parts = [];
+  const regex = /\*\*(.*?)\*\*|\*(.*?)\*/g;
+  let last = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    if (match[1] !== undefined) parts.push(<strong key={match.index} style={{ color: "#f8fafc", fontWeight: "700" }}>{match[1]}</strong>);
+    else parts.push(<em key={match.index}>{match[2]}</em>);
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
+function renderContent(content) {
+  const lines = content.split("\n");
+  const elements = [];
+  let listBuffer = [];
+
+  function flushList() {
+    if (listBuffer.length === 0) return;
+    elements.push(
+      <ul key={`ul-${elements.length}`} style={{ margin: "0 0 20px", padding: 0, listStyle: "none" }}>
+        {listBuffer.map((item, i) => (
+          <li key={i} style={{ display: "flex", gap: "10px", marginBottom: "8px", fontSize: "16px", color: "rgba(255,255,255,0.7)", lineHeight: "1.7" }}>
+            <span style={{ color: gold, flexShrink: 0, marginTop: "2px" }}>–</span>
+            <span>{renderInline(item)}</span>
+          </li>
+        ))}
+      </ul>
+    );
+    listBuffer = [];
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) { flushList(); continue; }
+
+    if (line.startsWith("## ")) {
+      flushList();
+      elements.push(
+        <h2 key={i} style={{ fontSize: "22px", fontWeight: "700", color: "#f8fafc", margin: "44px 0 16px", letterSpacing: "-0.01em", lineHeight: "1.3" }}>
+          {line.slice(3)}
+        </h2>
+      );
+    } else if (line.startsWith("- ")) {
+      listBuffer.push(line.slice(2));
+    } else {
+      flushList();
+      elements.push(
+        <p key={i} style={{ fontSize: "16px", color: "rgba(255,255,255,0.72)", margin: "0 0 20px", lineHeight: "1.85" }}>
+          {renderInline(line)}
+        </p>
+      );
+    }
+  }
+  flushList();
+  return elements;
+}
+
 export default function BlogPost() {
   const router = useRouter();
   const { slug } = useParams();
-  const gold = "#c9a84c";
   const post = getPost(slug);
 
   if (!post) {
@@ -25,8 +87,6 @@ export default function BlogPost() {
 
   const related = posts.filter((p) => p.slug !== slug && p.category === post.category).slice(0, 2);
 
-  const paragraphs = post.content.split("\n").filter((line) => line.trim() !== "");
-
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
       <Nav />
@@ -36,8 +96,8 @@ export default function BlogPost() {
           ← Back to Blog
         </button>
 
-        <div style={{ marginBottom: "32px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px", flexWrap: "wrap" }}>
+        <div style={{ marginBottom: "36px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.05)", color: gold, padding: "3px 10px", borderRadius: "999px" }}>{post.category}</span>
             {post.hot && (
               <span style={{ background: "rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px" }}>TRENDING</span>
@@ -52,37 +112,7 @@ export default function BlogPost() {
 
         <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", marginBottom: "40px" }} />
 
-        <div style={{ color: "rgba(255,255,255,0.75)", lineHeight: "1.85", fontSize: "16px" }}>
-          {paragraphs.map((line, i) => {
-            if (line.startsWith("## ")) {
-              return (
-                <h2 key={i} style={{ fontSize: "22px", fontWeight: "700", color: "#f8fafc", margin: "40px 0 16px", letterSpacing: "-0.01em" }}>
-                  {line.replace("## ", "")}
-                </h2>
-              );
-            }
-            if (line.startsWith("**") && line.endsWith("**")) {
-              return (
-                <p key={i} style={{ fontWeight: "700", color: "#f8fafc", margin: "20px 0 8px" }}>
-                  {line.replace(/\*\*/g, "")}
-                </p>
-              );
-            }
-            if (line.startsWith("- ")) {
-              return (
-                <div key={i} style={{ display: "flex", gap: "10px", marginBottom: "8px" }}>
-                  <span style={{ color: gold, flexShrink: 0, marginTop: "2px" }}>–</span>
-                  <span>{line.replace("- ", "")}</span>
-                </div>
-              );
-            }
-            return (
-              <p key={i} style={{ margin: "0 0 18px" }}
-                dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#f8fafc">$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>') }}
-              />
-            );
-          })}
-        </div>
+        <div>{renderContent(post.content)}</div>
 
         <div style={{ marginTop: "56px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "16px", padding: "32px", textAlign: "center" }}>
           <p style={{ fontSize: "13px", color: gold, fontWeight: "700", margin: "0 0 8px", letterSpacing: "0.05em" }}>PSYCHFLO</p>
@@ -95,13 +125,16 @@ export default function BlogPost() {
 
         {related.length > 0 && (
           <div style={{ marginTop: "56px" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "700", color: "rgba(255,255,255,0.5)", marginBottom: "16px", letterSpacing: "0.05em" }}>MORE IN {post.category.toUpperCase()}</h3>
+            <h3 style={{ fontSize: "13px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "16px", letterSpacing: "0.08em" }}>MORE IN {post.category.toUpperCase()}</h3>
             <div style={{ display: "grid", gridTemplateColumns: related.length === 1 ? "1fr" : "1fr 1fr", gap: "12px" }}>
               {related.map((r) => (
                 <div key={r.slug} onClick={() => router.push(`/blog/${r.slug}`)}
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "18px", cursor: "pointer" }}>
-                  <h4 style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", margin: "0 0 6px", lineHeight: "1.4" }}>{r.title}</h4>
-                  <span style={{ fontSize: "11px", color: gold }}>Read → {r.readTime}</span>
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "18px", cursor: "pointer" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; }}>
+                  <h4 style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", margin: "0 0 8px", lineHeight: "1.4" }}>{r.title}</h4>
+                  <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: "0 0 10px", lineHeight: "1.5" }}>{r.desc}</p>
+                  <span style={{ fontSize: "11px", color: gold, fontWeight: "600" }}>Read → {r.readTime}</span>
                 </div>
               ))}
             </div>

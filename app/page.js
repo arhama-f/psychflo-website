@@ -9,13 +9,13 @@ export default function Home() {
   const products = [
     { icon: "📄", name: "Policy Translator", desc: "Plain-language summaries + tribunal risk scoring", href: "/tools/policy", live: true },
     { icon: "🔥", name: "Burnout Early Warning", desc: "Opt-in pulse checks that surface team energy trends", href: "/tools/burnout", live: true },
-    { icon: "📓", name: "AI Journaling", desc: "CBT-grounded journaling with pattern detection", href: "/products", live: true },
-    { icon: "🎯", name: "Manager Coaching", desc: "AI roleplay for difficult conversations", href: "/products", live: true },
-    { icon: "🧠", name: "UX Research Copilot", desc: "Auto-synthesise user interviews into insights", href: "/products", live: true },
-    { icon: "📊", name: "Onboarding Analytics", desc: "90-day new hire psychological safety tracker", href: "/products", live: true },
-    { icon: "💬", name: "Async Standup + Psych Safety", desc: "Standup scorer with NLP safety analysis", href: "/products", live: true },
-    { icon: "💔", name: "Grief & Loss Companion", desc: "Evidence-based bereavement support app", href: "/products", live: true },
-    { icon: "🏃", name: "Dev Cognitive Load Monitor", desc: "Flow state protection for engineering teams", href: "/products", live: true },
+    { icon: "📓", name: "AI Journaling", desc: "CBT-grounded journaling with pattern detection", href: "/tools/journaling", live: true },
+    { icon: "🎯", name: "Manager Coaching", desc: "AI roleplay for difficult conversations", href: "/tools/coaching", live: true },
+    { icon: "🧠", name: "UX Research Copilot", desc: "Auto-synthesise user interviews into insights", href: "/tools/ux-research", live: true },
+    { icon: "📊", name: "Onboarding Analytics", desc: "90-day new hire psychological safety tracker", href: "/tools/onboarding", live: true },
+    { icon: "💬", name: "Async Standup + Psych Safety", desc: "Standup scorer with NLP safety analysis", href: "/tools/standup", live: true },
+    { icon: "💔", name: "Grief & Loss Companion", desc: "Evidence-based bereavement support app", href: "/tools/grief", live: true },
+    { icon: "🏃", name: "Dev Cognitive Load Monitor", desc: "Flow state protection for engineering teams", href: "/tools/cogload", live: true },
   ];
 
   const stats = [
