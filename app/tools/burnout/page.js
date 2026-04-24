@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Nav from "../../components/Nav";
 import BurnoutGate from "../../components/BurnoutGate";
@@ -29,8 +29,24 @@ function BurnoutTool() {
   const [activeTab, setActiveTab] = useState("personal");
   const [managerTab, setManagerTab] = useState("overview");
   const [consentGiven, setConsentGiven] = useState(false);
-  const [isPaid] = useState(false); // TODO: replace with real Stripe subscription check
-  const employeeId = searchParams.get("employeeId") || null;
+  const [isPaid, setIsPaid] = useState(false);
+  const [employeeId, setEmployeeId] = useState(searchParams.get("employeeId") || null);
+
+  useEffect(() => {
+    // Check real subscription status
+    fetch("/api/subscription")
+      .then(r => r.json())
+      .then(d => { if (d.plan && d.plan !== "free") setIsPaid(true); })
+      .catch(() => null);
+
+    // Resolve employeeId from session if not in URL
+    if (!searchParams.get("employeeId")) {
+      fetch("/api/user/me")
+        .then(r => r.json())
+        .then(d => { if (d.employeeId) setEmployeeId(d.employeeId); })
+        .catch(() => null);
+    }
+  }, [searchParams]);
 
   const card = { background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"16px", padding:"24px", marginBottom:"16px" };
   const lbl = { fontSize:"11px", fontWeight:"600", color:"rgba(255,255,255,0.35)", letterSpacing:"0.07em", marginBottom:"14px", display:"block" };

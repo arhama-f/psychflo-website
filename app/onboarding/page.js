@@ -20,6 +20,18 @@ export default function Onboarding() {
 
   const days = ["Mon","Tue","Wed","Thu","Fri"];
 
+  async function handleSector() {
+    if (!sector) return;
+    try {
+      await fetch("/api/org", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sector }),
+      });
+    } catch {}
+    setStep(1);
+  }
+
   async function handleInvites() {
     const list = emails.split(/[\n,]+/).map(e=>e.trim()).filter(Boolean);
     if (!list.length) { setStep(2); return; }
@@ -28,7 +40,7 @@ export default function Onboarding() {
       const res = await fetch("/api/org", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emails: list, orgId: null, orgName: "Your Organisation" }),
+        body: JSON.stringify({ emails: list }),
       });
       const data = await res.json();
       setInviteResults(data.results);
@@ -78,7 +90,7 @@ export default function Onboarding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>setStep(1)} disabled={!sector}
+            <button onClick={handleSector} disabled={!sector}
               style={{width:"100%", background:sector?`linear-gradient(135deg,${gold},#f0d080)`:"rgba(255,255,255,0.06)", color:sector?"#0f172a":"rgba(255,255,255,0.3)", border:"none", padding:"14px", borderRadius:"10px", fontSize:"14px", fontWeight:"800", cursor:sector?"pointer":"not-allowed"}}>
               Continue →
             </button>
