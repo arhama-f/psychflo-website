@@ -57,12 +57,19 @@ Return ONLY valid JSON matching the exact schema requested. No prose, no markdow
       aiAnalysis = getFallbackAnalysis(scored, responses);
     }
 
-    // 3. Persist to Supabase if available
+    // 3. Persist to Supabase if available (upsert handles re-submissions same week)
     const db = getSupabaseServer();
     if (db && employeeId) {
-      await db.from("burnout_checkins").insert({
+      const weekStart = new Date();
+      const day = weekStart.getDay();
+      const diff = weekStart.getDate() - day + (day === 0 ? -6 : 1);
+      weekStart.setDate(diff);
+      const weekStartStr = weekStart.toISOString().split("T")[0];
+
+      await db.from("burnout_checkins").upsert({
         employee_id: employeeId,
         week_number: weekNumber,
+        week_start: weekStartStr,
         burnout_score: scored.burnoutScore,
         exhaustion_score: scored.dimensions.exhaustion,
         cynicism_score: scored.dimensions.cynicism,
@@ -70,7 +77,7 @@ Return ONLY valid JSON matching the exact schema requested. No prose, no markdow
         stressors: scored.stressors,
         raw_responses: responses,
         consent_given: true,
-      }).throwOnError();
+      }, { onConflict: "employee_id,week_start" }).throwOnError();
     }
 
     // 4. Build historical trend (real if DB available, seeded otherwise)

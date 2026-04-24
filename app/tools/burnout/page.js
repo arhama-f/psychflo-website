@@ -554,18 +554,18 @@ function BurnoutTool() {
                   <div style={card}>
                     <span style={lbl}>TEAM BURNOUT TREND — 6 WEEKS</span>
                     <div style={{display:"flex", gap:"8px", alignItems:"flex-end", height:"80px", marginBottom:"16px"}}>
-                      {team.weeklyTrend.map((s,i)=>(
+                      {(team.weeklyTrend||[]).map((s,i)=>(
                         <div key={i} style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:"4px"}}>
-                          <div style={{width:"100%", background:i===team.weeklyTrend.length-1?team.color:"rgba(255,255,255,0.15)", borderRadius:"3px 3px 0 0", height:`${s*1.2}px`}}/>
+                          <div style={{width:"100%", background:i===(team.weeklyTrend||[]).length-1?team.color:"rgba(255,255,255,0.15)", borderRadius:"3px 3px 0 0", height:`${s*1.2}px`}}/>
                           <span style={{fontSize:"10px", color:"rgba(255,255,255,0.3)"}}>W{i+1}</span>
                         </div>
                       ))}
                     </div>
-                    <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:0, lineHeight:"1.6"}}>Peak predicted at week {team.peakPrediction.week} with score {team.peakPrediction.score}/100 ({team.peakPrediction.confidence}% confidence). Intervention now reduces peak by an estimated 40%.</p>
+                    <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:0, lineHeight:"1.6"}}>Peak predicted at week {team.peakPrediction?.week||"?"} with score {team.peakPrediction?.score||"?"}/100 ({team.peakPrediction?.confidence||"?"}% confidence). Intervention now reduces peak by an estimated 40%.</p>
                   </div>
                   <div style={card}>
                     <span style={lbl}>TEAM DIMENSIONS vs INDUSTRY BENCHMARK</span>
-                    {Object.entries(team.dimensions).map(([key, dim])=>(
+                    {Object.entries(team.dimensions || {}).map(([key, dim])=>(
                       <div key={key} style={{marginBottom:"14px"}}>
                         <div style={{display:"flex", justifyContent:"space-between", marginBottom:"5px"}}>
                           <span style={{fontSize:"12px", color:"rgba(255,255,255,0.5)", textTransform:"capitalize"}}>{key}</span>
@@ -583,7 +583,7 @@ function BurnoutTool() {
                   </div>
                   <div style={card}>
                     <span style={lbl}>TOP TEAM STRESSORS (ANONYMISED)</span>
-                    {team.topTeamStressors.map((s,i)=>(
+                    {(team.topTeamStressors||[]).map((s,i)=>(
                       <div key={i} style={{marginBottom:"12px"}}>
                         <div style={{display:"flex", justifyContent:"space-between", marginBottom:"4px"}}>
                           <span style={{fontSize:"13px", color:"rgba(255,255,255,0.5)"}}>{s.stressor}</span>

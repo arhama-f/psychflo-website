@@ -87,13 +87,22 @@ create table if not exists team_snapshots (
 -- ─── Scheduled Reminders ───────────────────────────────────
 create table if not exists scheduled_reminders (
   id           uuid primary key default gen_random_uuid(),
-  employee_id  uuid references employees(id) on delete cascade,
+  employee_id  uuid unique references employees(id) on delete cascade,
   send_day     text check (send_day in ('Mon','Tue','Wed','Thu','Fri')) default 'Mon',
   send_time    time default '09:00',
   channel      text check (channel in ('email', 'slack')) default 'email',
   active       boolean default true,
   last_sent_at timestamptz,
   created_at   timestamptz default now()
+);
+
+-- ─── Manager Conversation Scripts Log ─────────────────────
+create table if not exists manager_scripts (
+  id            uuid primary key default gen_random_uuid(),
+  employee_id   uuid references employees(id) on delete cascade,
+  generated_at  timestamptz default now(),
+  risk_level    text check (risk_level in ('high', 'moderate', 'low')),
+  burnout_score int
 );
 
 -- ─── Invite Tokens ─────────────────────────────────────────
@@ -134,6 +143,7 @@ alter table team_snapshots      enable row level security;
 alter table scheduled_reminders enable row level security;
 alter table invite_tokens       enable row level security;
 alter table burnout_alerts      enable row level security;
+alter table manager_scripts     enable row level security;
 alter table deletion_requests   enable row level security;
 
 -- employees: read/write own row only
@@ -182,6 +192,12 @@ create policy "invite_tokens_org_read" on invite_tokens
 
 -- burnout_alerts: employees can read their own alerts
 create policy "burnout_alerts_own" on burnout_alerts
+  for all using (
+    employee_id = (select id from employees where auth_user_id = auth.uid())
+  );
+
+-- manager_scripts: managers can read scripts they generated
+create policy "manager_scripts_own" on manager_scripts
   for all using (
     employee_id = (select id from employees where auth_user_id = auth.uid())
   );

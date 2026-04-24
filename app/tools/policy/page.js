@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
+import Nav from "../../components/Nav";
 
-export default function Home() {
+export default function PolicyTool() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("idle");
   const [result, setResult] = useState(null);
@@ -20,38 +21,37 @@ export default function Home() {
   const handleOneTimePurchase = async () => {
     setOnceLoading(true);
     try {
-      const res = await fetch("/api/checkout-once", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: subEmail || undefined }),
+        body: JSON.stringify({ plan: "policy_once", email: subEmail || undefined }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
-    } catch {
-      setOnceLoading(false);
-    }
+    } catch {}
+    setOnceLoading(false);
   };
-
 
   const handleSubscribe = async (priceId) => {
     setCheckoutLoading(true);
     try {
-      const res = await fetch("/api/checkout", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId, email: subEmail || undefined }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
-    } catch {
-      setCheckoutLoading(false);
-    }
+    } catch {}
+    setCheckoutLoading(false);
   };
 
   const handleManageBilling = async () => {
-    const res = await fetch("/api/portal", { method: "POST" });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch {}
   };
 
   const gold = "#c9a84c";
@@ -64,14 +64,24 @@ export default function Home() {
   const handleTranslate = async () => {
     if (!file) return;
     setStatus("loading"); setError(null); setResult(null);
-    const fd = new FormData(); fd.append("file", file);
     try {
-      const res = await fetch("/api/translate", { method:"POST", body:fd });
+      // Read file content client-side to avoid server-side binary parsing
+      const text = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+      const res = await fetch("/api/policy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, fileName: file.name, companyName, industry, employees }),
+      });
       const data = await res.json();
       if (data.error === "subscription_required") { setSubStatus("inactive"); setStatus("idle"); }
       else if (data.error) { setError(data.error); setStatus("error"); }
       else { setResult(data); setStatus("done"); setActiveTab("summary"); }
-    } catch { setError("Something went wrong."); setStatus("error"); }
+    } catch { setError("Something went wrong. Please try again."); setStatus("error"); }
   };
 
   const handleCopy = () => {
@@ -155,15 +165,10 @@ export default function Home() {
 
   return (
     <div style={{minHeight:"100vh", background:"linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily:"system-ui,-apple-system,sans-serif"}}>
-
-      <div style={{borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"14px 32px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(0,0,0,0.2)"}}>
-        <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
-          <img src="/logo.png" alt="PsychFlo" style={{width:"34px", height:"34px", objectFit:"contain", filter:"invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(0.85)"}}/>
-          <span style={{color:"#f8fafc", fontWeight:"700", fontSize:"16px", letterSpacing:"-0.01em"}}>PsychFlo</span>
-          <span style={{color:"rgba(255,255,255,0.25)", fontSize:"13px"}}>/ Policy Intelligence Platform</span>
-        </div>
+      <Nav />
+      <div style={{borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"10px 32px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(0,0,0,0.15)"}}>
+        <span style={{color:"rgba(255,255,255,0.35)", fontSize:"13px"}}>Policy Intelligence Platform · 19 AI models</span>
         <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
-          <span style={{fontSize:"12px", color:"rgba(255,255,255,0.25)"}}>19 AI models · Org Psychology · ML Forecasting</span>
           {subStatus === "active" ? (
             <>
               <div style={{background:"rgba(16,185,129,0.12)", border:"1px solid rgba(16,185,129,0.25)", color:"#6ee7b7", fontSize:"11px", fontWeight:"700", padding:"4px 10px", borderRadius:"999px"}}>PRO</div>
