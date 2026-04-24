@@ -29,11 +29,22 @@ export async function POST(req) {
 
     if (authError) throw new Error(authError.message);
 
+    // Assign to the org's default (first) team
+    const { data: defaultTeam } = await db
+      .from("teams")
+      .select("id")
+      .eq("org_id", invite.org_id)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .single();
+
     // Create employee record
     await db.from("employees").insert({
       auth_user_id: authData.user.id,
       email: invite.email,
+      name,
       org_id: invite.org_id,
+      team_id: defaultTeam?.id || null,
       role: "employee",
       consent_given: false,
     });
