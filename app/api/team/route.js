@@ -1,5 +1,6 @@
 import { getSupabaseServer } from "../../../lib/supabase.js";
 import { riskLabel, dimensionLabel } from "../../../lib/mbi-score.js";
+import { cookies } from "next/headers";
 
 /**
  * GET /api/team?teamId=xxx&weekStart=2026-04-14
@@ -7,18 +8,39 @@ import { riskLabel, dimensionLabel } from "../../../lib/mbi-score.js";
  * Returns anonymised team burnout data for managers.
  * Never returns individual scores — only aggregates and risk buckets.
  * Suppresses results if fewer than 5 responses (anonymity threshold).
+ * If teamId is omitted, auto-resolves from the authenticated user's session.
  */
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const teamId    = searchParams.get("teamId");
+    let teamId      = searchParams.get("teamId");
     const weekStart = searchParams.get("weekStart") || getCurrentWeekStart();
 
-    if (!teamId) {
-      return Response.json({ error: "teamId required" }, { status: 400 });
+    const db = getSupabaseServer();
+
+    // Auto-detect teamId from session cookie if not provided
+    if (!teamId && db) {
+      try {
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("sb-access-token")?.value;
+        if (accessToken) {
+          const { data: { user } } = await db.auth.getUser(accessToken);
+          if (user) {
+            const { data: emp } = await db
+              .from("employees")
+              .select("team_id")
+              .eq("auth_user_id", user.id)
+              .single();
+            teamId = emp?.team_id;
+          }
+        }
+      } catch {}
     }
 
-    const db = getSupabaseServer();
+    if (!teamId) {
+      return Response.json(getMockTeamData(), { status: 200 });
+    }
+
     if (!db) return Response.json(getMockTeamData(), { status: 200 });
 
     // Fetch team members + their latest check-ins this week
@@ -26,9 +48,9 @@ export async function GET(req) {
       .from("burnout_checkins")
       .select(`
         burnout_score, exhaustion_score, cynicism_score, efficacy_score, stressors,
-        employee:employees!inner(team_id)
+        employees!inner(team_id)
       `)
-      .eq("employee.team_id", teamId)
+      .eq("employees.team_id", teamId)
       .gte("week_start", weekStart)
       .lt("week_start", addDays(weekStart, 7));
 
