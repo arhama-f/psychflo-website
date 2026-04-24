@@ -15,8 +15,7 @@ export default function BlogPost() {
   useEffect(() => {
     if (!post) return;
     import("marked").then(({ marked }) => {
-      marked.setOptions({ breaks: true, gfm: true });
-      setHtml(marked.parse(post.content));
+      setHtml(marked.parse(post.content, { breaks: true, gfm: true }));
     });
   }, [post]);
 
