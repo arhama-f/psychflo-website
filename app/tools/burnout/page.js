@@ -596,7 +596,15 @@ function BurnoutTool() {
                 </div>
               )}
 
-              {managerTab === "script" && (
+              {managerTab === "script" && !team?.interventionScript && (
+                <div style={{...card, textAlign:"center", padding:"48px 24px"}}>
+                  <div style={{fontSize:"32px", marginBottom:"16px"}}>💬</div>
+                  <div style={{fontSize:"15px", fontWeight:"700", color:"#f8fafc", marginBottom:"8px"}}>Conversation scripts loading…</div>
+                  <p style={{fontSize:"13px", color:"rgba(255,255,255,0.4)", margin:0}}>Complete the burnout check-in as a manager to generate personalised conversation scripts for your team.</p>
+                </div>
+              )}
+
+              {managerTab === "script" && team?.interventionScript && (
                 <div style={card}>
                   <span style={lbl}>CONVERSATION SCRIPT FOR HIGH-RISK TEAM MEMBERS</span>
                   <div style={{background:"rgba(16,185,129,0.06)", border:"1px solid rgba(16,185,129,0.15)", borderRadius:"12px", padding:"18px", marginBottom:"16px"}}>
@@ -640,7 +648,7 @@ function BurnoutTool() {
               {managerTab === "actions" && (
                 <div style={card}>
                   <span style={lbl}>EVIDENCE-BASED WEEKLY ACTIONS</span>
-                  {team.weeklyActions.map((a,i)=>(
+                  {(team?.weeklyActions || []).map((a,i)=>(
                     <div key={i} style={{background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:"12px", padding:"16px", marginBottom:"10px"}}>
                       <div style={{display:"flex", gap:"8px", marginBottom:"8px"}}>
                         <span style={{fontSize:"11px", fontWeight:"700", padding:"2px 8px", borderRadius:"999px", background:a.week==="This week"?"rgba(239,68,68,0.15)":a.week==="Next week"?"rgba(245,158,11,0.15)":"rgba(107,114,128,0.15)", color:a.week==="This week"?"#fca5a5":a.week==="Next week"?"#fcd34d":"#9ca3af"}}>{a.week}</span>
@@ -652,7 +660,21 @@ function BurnoutTool() {
                 </div>
               )}
 
-              {managerTab === "orgview" && (
+              {managerTab === "orgview" && !org && (
+                <div style={{...card, textAlign:"center", padding:"48px 24px"}}>
+                  <div style={{fontSize:"32px", marginBottom:"16px"}}>📊</div>
+                  <div style={{fontSize:"16px", fontWeight:"700", color:"#f8fafc", marginBottom:"8px"}}>Organisation-wide view</div>
+                  <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:"0 0 20px", lineHeight:"1.6"}}>
+                    Organisation-level analytics require 5+ teams with active check-ins.<br/>This view will populate automatically as your team data builds up.
+                  </p>
+                  <button onClick={()=>router.push("/dashboard")}
+                    style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"11px 24px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
+                    View dashboard →
+                  </button>
+                </div>
+              )}
+
+              {managerTab === "orgview" && org && (
                 <div>
                   <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"10px", marginBottom:"16px"}}>
                     {[
