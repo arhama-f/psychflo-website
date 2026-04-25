@@ -134,7 +134,73 @@ function aggregateTeamData(checkins, teamId) {
     ],
     topTeamStressors,
     responseCount: n,
+    interventionScript: buildInterventionScript(avgBurnout, topTeamStressors),
+    weeklyActions: buildWeeklyActions(avgBurnout),
   };
+}
+
+function buildInterventionScript(burnoutScore, stressors) {
+  const topStressor = stressors[0]?.stressor || "workload pressure";
+  const level = burnoutScore >= 67 ? "high" : burnoutScore >= 34 ? "moderate" : "low";
+  return {
+    opening: level === "high"
+      ? `I wanted to check in properly — not a quick hallway chat. I've noticed some signals that the team is under significant pressure right now, especially around ${topStressor}. I want to understand what's actually going on for you.`
+      : `I wanted to set aside some proper time for you. The team's been under a fair amount of pressure lately and I want to make sure you've got what you need.`,
+    explorationQuestions: [
+      "What's taking the most energy from you at the moment?",
+      "Are there things on your plate that feel unclear or conflicting?",
+      "What would genuinely help you most right now — even if it seems like a big ask?",
+      "Is there anything stopping you from raising problems early when they come up?",
+    ],
+    doSay: [
+      `"I'm asking because I care about how you're doing, not to check up on you."`,
+      `"You don't need to have solutions — I just want to understand what's happening."`,
+      `"What would feel like real support from me?"`,
+    ],
+    doNotSay: [
+      `"Everyone's struggling right now." (minimises their experience)`,
+      `"You just need to push through this period." (dismisses the concern)`,
+      `"I'll flag this with HR." (implies formal action when none is intended)`,
+    ],
+    followUp: `Within 48 hours: send a brief message referencing one specific thing they mentioned. Within one week: follow up on any action you committed to. Do not let the conversation disappear.`,
+  };
+}
+
+function buildWeeklyActions(burnoutScore) {
+  const isHigh = burnoutScore >= 67;
+  const isMod  = burnoutScore >= 34;
+  return [
+    {
+      week: "This week",
+      action: isHigh
+        ? "Cancel or reschedule all non-critical meetings for high-risk team members"
+        : isMod ? "Block 2 hours of uninterrupted focus time for each team member" : "Send a recognition message to each team member this week",
+      impact: isHigh
+        ? "Immediate workload reduction — meeting load is the strongest lever for exhaustion scores"
+        : isMod ? "Protected focus time reduces exhaustion scores by 31% within 14 days"
+        : "Regular recognition increases engagement scores by 22% and buffers against burnout onset",
+    },
+    {
+      week: "This week",
+      action: "Have individual 15-minute check-ins with each team member — agenda-free",
+      impact: "Early identification of specific stressors prevents escalation to high-risk",
+    },
+    {
+      week: "Next week",
+      action: "Review and reprioritise the team's current project commitments with them",
+      impact: "Role clarity and manageable scope are the two most effective cynicism interventions",
+    },
+    {
+      week: "Next week",
+      action: "Identify one recurring task per person that can be delegated, deferred, or dropped",
+      impact: "Workload reduction of 20% is associated with a 15-point drop in exhaustion scores within 4 weeks",
+    },
+    {
+      week: "This month",
+      action: "Run a team retrospective on working norms — what's draining us, what's working",
+      impact: "Team-designed norms have 3× the adherence of manager-imposed ones and create psychological safety",
+    },
+  ];
 }
 
 function getCurrentWeekStart() {
@@ -169,11 +235,13 @@ function getMockTeamData() {
       { label: "High risk",     count: 3, percentage: 25, color: "#ef4444" },
     ],
     topTeamStressors: [
-      { stressor: "Workload volume",   percentage: 83 },
-      { stressor: "Meeting overload",  percentage: 75 },
-      { stressor: "Priority conflicts",percentage: 67 },
+      { stressor: "Workload volume",    percentage: 83 },
+      { stressor: "Meeting overload",   percentage: 75 },
+      { stressor: "Priority conflicts", percentage: 67 },
       { stressor: "Recognition deficit",percentage: 58 },
-      { stressor: "Remote isolation",  percentage: 42 },
+      { stressor: "Remote isolation",   percentage: 42 },
     ],
+    interventionScript: buildInterventionScript(54, [{ stressor: "workload volume" }]),
+    weeklyActions: buildWeeklyActions(54),
   };
 }
