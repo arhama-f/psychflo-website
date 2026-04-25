@@ -1,4 +1,26 @@
 import { getAnthropicClient } from "../../../lib/anthropic.js";
+import { getSupabaseServer } from "../../../lib/supabase.js";
+import { cookies } from "next/headers";
+import { sendSlackWebhook, buildAlertPayload } from "../../../lib/slack.js";
+
+async function trySlackAlert(result) {
+  try {
+    if (result.safetyScore >= 70 && (!result.flags || result.flags.length === 0)) return;
+    const db = getSupabaseServer();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sb-access-token")?.value;
+    if (!token) return;
+    const { data: { user } } = await db.auth.getUser(token);
+    if (!user) return;
+    const { data: emp } = await db.from("employees").select("org_id").eq("auth_user_id", user.id).single();
+    if (!emp?.org_id) return;
+    const { data: conn } = await db.from("hris_connections")
+      .select("api_key").eq("org_id", emp.org_id).eq("provider", "slack").single();
+    if (!conn?.api_key) return;
+    const payload = buildAlertPayload({ type: "standup", score: result.safetyScore, flags: result.flags, tool: "Standup Check-in" });
+    await sendSlackWebhook(conn.api_key, payload);
+  } catch { /* silent — don't break the main response */ }
+}
 
 export async function POST(req) {
   try {
@@ -28,6 +50,7 @@ Return only valid JSON.`
 
     const raw = message.content[0].text.trim();
     const json = JSON.parse(raw.replace(/^```json\n?/, "").replace(/\n?```$/, ""));
+    await trySlackAlert(json);
     return Response.json(json);
   } catch (err) {
     console.error("Standup analysis error:", err);

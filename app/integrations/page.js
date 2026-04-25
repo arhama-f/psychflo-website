@@ -3,6 +3,187 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "../components/Nav";
 
+function SlackSection() {
+  const gold = "#c9a84c";
+  const [tab, setTab] = useState("alerts");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [botToken, setBotToken] = useState("");
+  const [channelId, setChannelId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [checkinLoading, setCheckinLoading] = useState(false);
+  const [checkinResult, setCheckinResult] = useState(null);
+  const [connected, setConnected] = useState({ hasWebhook: false, hasBot: false });
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/slack/connect").then(r => r.json()).then(d => {
+      if (d.connected) setConnected(d);
+    }).catch(() => null);
+  }, []);
+
+  async function handleTestWebhook() {
+    if (!webhookUrl) return;
+    setLoading(true); setResult(null);
+    try {
+      const res = await fetch("/api/slack/connect", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "test_webhook", webhookUrl }),
+      });
+      const data = await res.json();
+      setResult(data.error ? { error: data.error } : { ok: "Test message sent to Slack!" });
+      if (!data.error) setConnected(c => ({ ...c, hasWebhook: true }));
+    } catch (e) { setResult({ error: e.message }); }
+    setLoading(false);
+  }
+
+  async function handleConnectBot() {
+    if (!botToken || !channelId) return;
+    setLoading(true); setResult(null);
+    try {
+      const res = await fetch("/api/slack/connect", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "test_checkin", botToken, channelId }),
+      });
+      const data = await res.json();
+      setResult(data.error ? { error: data.error } : { ok: "Check-in bot connected! Test message sent." });
+      if (!data.error) setConnected(c => ({ ...c, hasBot: true }));
+    } catch (e) { setResult({ error: e.message }); }
+    setLoading(false);
+  }
+
+  async function handleSendCheckin(type) {
+    setCheckinLoading(true); setCheckinResult(null);
+    try {
+      const res = await fetch("/api/slack/checkin", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      const data = await res.json();
+      setCheckinResult(data.error ? { error: data.error } : { ok: "Check-in sent to Slack channel!" });
+    } catch (e) { setCheckinResult({ error: e.message }); }
+    setCheckinLoading(false);
+  }
+
+  const isConnected = connected.hasWebhook || connected.hasBot;
+
+  return (
+    <div style={{ background: "rgba(255,255,255,0.04)", border: open ? "1px solid rgba(74,144,226,0.35)" : isConnected ? "1px solid rgba(16,185,129,0.2)" : "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "24px", marginBottom: "12px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <span style={{ fontSize: "28px" }}>💬</span>
+          <div>
+            <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#f8fafc", margin: "0 0 4px" }}>Slack</h3>
+            <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 }}>Receive safety alerts in Slack and send check-in prompts to your team.</p>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+          {connected.hasWebhook && <span style={{ fontSize: "10px", fontWeight: "700", background: "rgba(16,185,129,0.15)", color: "#6ee7b7", padding: "3px 8px", borderRadius: "999px" }}>ALERTS ON</span>}
+          {connected.hasBot && <span style={{ fontSize: "10px", fontWeight: "700", background: "rgba(74,144,226,0.15)", color: "#93c5fd", padding: "3px 8px", borderRadius: "999px" }}>BOT ON</span>}
+          <button onClick={() => setOpen(o => !o)}
+            style={{ background: open ? "rgba(74,144,226,0.15)" : isConnected ? "rgba(16,185,129,0.1)" : `linear-gradient(135deg,${gold},#f0d080)`, border: open ? "1px solid rgba(74,144,226,0.3)" : isConnected ? "1px solid rgba(16,185,129,0.2)" : "none", color: open ? "#93c5fd" : isConnected ? "#6ee7b7" : "#0f172a", padding: "9px 18px", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
+            {open ? "Close" : isConnected ? "Manage" : "Connect"}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <div style={{ display: "flex", gap: "0", marginBottom: "24px", background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "3px", width: "fit-content" }}>
+            {["alerts", "checkin"].map(t => (
+              <button key={t} onClick={() => setTab(t)}
+                style={{ background: tab === t ? "rgba(255,255,255,0.1)" : "transparent", border: "none", color: tab === t ? "#f8fafc" : "rgba(255,255,255,0.35)", padding: "8px 18px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>
+                {t === "alerts" ? "Safety alerts" : "Check-in bot"}
+              </button>
+            ))}
+          </div>
+
+          {tab === "alerts" && (
+            <div>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px" }}>
+                <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.45)", margin: 0, lineHeight: "1.6" }}>
+                  Paste an <strong style={{ color: "rgba(255,255,255,0.7)" }}>Incoming Webhook URL</strong> from your Slack app. PsychFlo will post here whenever a safety flag is detected.{" "}
+                  <a href="https://api.slack.com/messaging/webhooks" target="_blank" rel="noreferrer" style={{ color: gold }}>Create webhook →</a>
+                </p>
+              </div>
+              <label style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.4)", display: "block", marginBottom: "6px", letterSpacing: "0.04em" }}>SLACK WEBHOOK URL</label>
+              <input type="password" value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)} placeholder="https://hooks.slack.com/services/T.../B.../..."
+                style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 14px", color: "#f8fafc", fontSize: "13px", outline: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: "14px" }} />
+              {result && <div style={{ background: result.error ? "rgba(239,68,68,0.08)" : "rgba(16,185,129,0.08)", border: `1px solid ${result.error ? "rgba(239,68,68,0.2)" : "rgba(16,185,129,0.2)"}`, borderRadius: "8px", padding: "10px 14px", marginBottom: "14px" }}>
+                <p style={{ fontSize: "13px", color: result.error ? "#fca5a5" : "#6ee7b7", margin: 0 }}>{result.error || result.ok}</p>
+              </div>}
+              <button onClick={handleTestWebhook} disabled={loading || !webhookUrl}
+                style={{ background: loading || !webhookUrl ? "rgba(255,255,255,0.06)" : `linear-gradient(135deg,${gold},#f0d080)`, color: loading || !webhookUrl ? "rgba(255,255,255,0.3)" : "#0f172a", border: "none", padding: "11px 24px", borderRadius: "9px", fontSize: "13px", fontWeight: "800", cursor: loading || !webhookUrl ? "default" : "pointer" }}>
+                {loading ? "Sending…" : "Test & save webhook"}
+              </button>
+
+              {connected.hasWebhook && (
+                <div style={{ marginTop: "24px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "20px" }}>
+                  <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "12px", letterSpacing: "0.06em" }}>SEND CHECK-IN PROMPT VIA WEBHOOK</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {["standup", "pulse"].map(type => (
+                      <button key={type} onClick={() => handleSendCheckin(type)} disabled={checkinLoading}
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", padding: "8px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>
+                        Send {type} check-in
+                      </button>
+                    ))}
+                  </div>
+                  {checkinResult && <p style={{ fontSize: "12px", color: checkinResult.error ? "#f87171" : "#6ee7b7", marginTop: "10px" }}>{checkinResult.error || checkinResult.ok}</p>}
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === "checkin" && (
+            <div>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px" }}>
+                <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.45)", margin: 0, lineHeight: "1.6" }}>
+                  Use a <strong style={{ color: "rgba(255,255,255,0.7)" }}>Bot Token</strong> to send interactive check-in prompts directly to a Slack channel. The bot posts standup and pulse survey links.{" "}
+                  <a href="https://api.slack.com/apps" target="_blank" rel="noreferrer" style={{ color: gold }}>Create Slack app →</a>
+                </p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "14px" }}>
+                <div>
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.4)", display: "block", marginBottom: "6px", letterSpacing: "0.04em" }}>BOT TOKEN (xoxb-...)</label>
+                  <input type="password" value={botToken} onChange={e => setBotToken(e.target.value)} placeholder="xoxb-your-bot-token"
+                    style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 14px", color: "#f8fafc", fontSize: "13px", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.4)", display: "block", marginBottom: "6px", letterSpacing: "0.04em" }}>CHANNEL ID</label>
+                  <input type="text" value={channelId} onChange={e => setChannelId(e.target.value)} placeholder="C0123456789 (right-click channel → Copy channel ID)"
+                    style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 14px", color: "#f8fafc", fontSize: "13px", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+                </div>
+              </div>
+              {result && <div style={{ background: result.error ? "rgba(239,68,68,0.08)" : "rgba(16,185,129,0.08)", border: `1px solid ${result.error ? "rgba(239,68,68,0.2)" : "rgba(16,185,129,0.2)"}`, borderRadius: "8px", padding: "10px 14px", marginBottom: "14px" }}>
+                <p style={{ fontSize: "13px", color: result.error ? "#fca5a5" : "#6ee7b7", margin: 0 }}>{result.error || result.ok}</p>
+              </div>}
+              <button onClick={handleConnectBot} disabled={loading || !botToken || !channelId}
+                style={{ background: loading || !botToken || !channelId ? "rgba(255,255,255,0.06)" : `linear-gradient(135deg,${gold},#f0d080)`, color: loading || !botToken || !channelId ? "rgba(255,255,255,0.3)" : "#0f172a", border: "none", padding: "11px 24px", borderRadius: "9px", fontSize: "13px", fontWeight: "800", cursor: loading || !botToken || !channelId ? "default" : "pointer" }}>
+                {loading ? "Connecting…" : "Connect check-in bot"}
+              </button>
+
+              {connected.hasBot && (
+                <div style={{ marginTop: "24px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "20px" }}>
+                  <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "12px", letterSpacing: "0.06em" }}>SEND NOW</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {["standup", "pulse"].map(type => (
+                      <button key={type} onClick={() => handleSendCheckin(type)} disabled={checkinLoading}
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)", padding: "8px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>
+                        Send {type} check-in
+                      </button>
+                    ))}
+                  </div>
+                  {checkinResult && <p style={{ fontSize: "12px", color: checkinResult.error ? "#f87171" : "#6ee7b7", marginTop: "10px" }}>{checkinResult.error || checkinResult.ok}</p>}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const gold = "#c9a84c";
 
 const PROVIDERS = [
@@ -150,8 +331,8 @@ export default function IntegrationsPage() {
       <div style={{ maxWidth: "860px", margin: "0 auto", padding: "60px 24px" }}>
 
         <div style={{ marginBottom: "48px" }}>
-          <div style={{ display: "inline-block", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", color: gold, fontSize: "11px", fontWeight: "700", padding: "5px 14px", borderRadius: "999px", marginBottom: "18px", letterSpacing: "0.06em" }}>HRIS INTEGRATIONS</div>
-          <h1 style={{ fontSize: "36px", fontWeight: "800", color: "#f8fafc", margin: "0 0 12px", letterSpacing: "-0.02em" }}>Connect your people system</h1>
+          <div style={{ display: "inline-block", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", color: gold, fontSize: "11px", fontWeight: "700", padding: "5px 14px", borderRadius: "999px", marginBottom: "18px", letterSpacing: "0.06em" }}>INTEGRATIONS</div>
+          <h1 style={{ fontSize: "36px", fontWeight: "800", color: "#f8fafc", margin: "0 0 12px", letterSpacing: "-0.02em" }}>Connect your tools</h1>
           <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.4)", margin: 0, lineHeight: "1.7" }}>Sync your employee directory so PsychFlo automatically knows your team structure. Employees are imported without consent — they only join the platform when they log in and consent.</p>
         </div>
 
@@ -186,7 +367,12 @@ export default function IntegrationsPage() {
           </div>
         )}
 
-        {/* Provider cards */}
+        {/* Slack */}
+        <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.25)", marginBottom: "12px", letterSpacing: "0.06em" }}>SLACK</p>
+        <SlackSection />
+
+        {/* HRIS providers */}
+        <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.25)", margin: "32px 0 12px", letterSpacing: "0.06em" }}>HRIS / PEOPLE SYSTEMS</p>
         {PROVIDERS.map((provider) => {
           const conn = getConnection(provider.id);
           const isActive = active === provider.id;

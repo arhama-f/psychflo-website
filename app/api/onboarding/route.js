@@ -1,4 +1,26 @@
 import { getAnthropicClient } from "../../../lib/anthropic.js";
+import { getSupabaseServer } from "../../../lib/supabase.js";
+import { cookies } from "next/headers";
+import { sendSlackWebhook, buildAlertPayload } from "../../../lib/slack.js";
+
+async function trySlackAlert(result, role) {
+  try {
+    if (result.riskLevel === "low") return;
+    const db = getSupabaseServer();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sb-access-token")?.value;
+    if (!token) return;
+    const { data: { user } } = await db.auth.getUser(token);
+    if (!user) return;
+    const { data: emp } = await db.from("employees").select("org_id").eq("auth_user_id", user.id).single();
+    if (!emp?.org_id) return;
+    const { data: conn } = await db.from("hris_connections")
+      .select("api_key").eq("org_id", emp.org_id).eq("provider", "slack").single();
+    if (!conn?.api_key) return;
+    const payload = buildAlertPayload({ type: "onboarding", score: result.safetyScore, flags: result.flags, name: role || "New hire", tool: "Onboarding Check-in" });
+    await sendSlackWebhook(conn.api_key, payload);
+  } catch { /* silent */ }
+}
 
 export async function POST(req) {
   try {
@@ -32,6 +54,7 @@ Return only valid JSON.`
 
     const raw = message.content[0].text.trim();
     const json = JSON.parse(raw.replace(/^```json\n?/, "").replace(/\n?```$/, ""));
+    await trySlackAlert(json, role);
     return Response.json(json);
   } catch (err) {
     console.error("Onboarding analysis error:", err);
