@@ -125,6 +125,29 @@ create table if not exists burnout_alerts (
   created_at        timestamptz default now()
 );
 
+-- ─── HRIS Connections ─────────────────────────────────────
+create table if not exists hris_connections (
+  id            uuid primary key default gen_random_uuid(),
+  org_id        uuid references organisations(id) on delete cascade,
+  provider      text check (provider in ('bamboohr', 'hibob', 'personio', 'workday', 'csv')) not null,
+  api_key       text,
+  subdomain     text,
+  client_id     text,
+  client_secret text,
+  status        text check (status in ('connected', 'error', 'syncing')) default 'connected',
+  last_synced_at timestamptz,
+  employee_count int default 0,
+  created_at    timestamptz default now(),
+  unique (org_id, provider)
+);
+
+alter table hris_connections enable row level security;
+
+create policy "hris_org_access" on hris_connections
+  for all using (
+    org_id in (select org_id from employees where auth_user_id = auth.uid())
+  );
+
 -- ─── Data Deletion Requests (GDPR) ────────────────────────
 create table if not exists deletion_requests (
   id           uuid primary key default gen_random_uuid(),
