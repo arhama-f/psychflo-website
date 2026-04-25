@@ -23,16 +23,29 @@ export default function JournalingTool() {
   const [promptIdx, setPromptIdx] = useState(0);
   const [entry, setEntry] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [aiFeedback, setAiFeedback] = useState(null);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [entries, setEntries] = useState([
     { date: "Mon 21 Apr", mood: 3, text: "Had a tough 1:1 with my manager. Felt like I couldn't be honest about being overwhelmed. Need to find a way to raise this.", prompt: "Boundaries" },
     { date: "Thu 17 Apr", mood: 4, text: "Shipped the new onboarding flow. The team celebrated. It's easy to forget how good it feels when something lands well.", prompt: "A win" },
     { date: "Tue 15 Apr", mood: 2, text: "Running on empty. Three back-to-back sprint reviews and no time to think. This pace isn't sustainable.", prompt: "Energy check" },
   ]);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!entry.trim() || mood === null) return;
     setEntries([{ date: "Today", mood, text: entry, prompt: prompts[promptIdx].label }, ...entries]);
     setSubmitted(true);
+    setFeedbackLoading(true);
+    try {
+      const res = await fetch("/api/journal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entry, prompt: prompts[promptIdx].q, mood }),
+      });
+      const data = await res.json();
+      if (!data.error) setAiFeedback(data);
+    } catch { /* non-fatal */ }
+    setFeedbackLoading(false);
   }
 
   const moodColor = (m) => m <= 1 ? "#f87171" : m === 2 ? "#fb923c" : m === 3 ? "#facc15" : m === 4 ? "#86efac" : "#34d399";
@@ -84,14 +97,27 @@ export default function JournalingTool() {
                 </button>
               </div>
             ) : (
-              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "16px", padding: "28px", textAlign: "center" }}>
-                <div style={{ fontSize: "40px", marginBottom: "12px" }}>✓</div>
-                <h3 style={{ color: "#6ee7b7", fontSize: "18px", fontWeight: "700", margin: "0 0 8px" }}>Entry saved</h3>
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: "0 0 20px" }}>PsychFlo is detecting patterns across your entries. You'll see insights after 5 check-ins.</p>
-                <button onClick={() => { setSubmitted(false); setEntry(""); setMood(null); }}
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
-                  New entry
-                </button>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "16px", padding: "28px" }}>
+                <div style={{ textAlign: "center", marginBottom: aiFeedback || feedbackLoading ? "24px" : "0" }}>
+                  <div style={{ fontSize: "40px", marginBottom: "12px" }}>✓</div>
+                  <h3 style={{ color: "#6ee7b7", fontSize: "18px", fontWeight: "700", margin: "0 0 8px" }}>Entry saved</h3>
+                  {feedbackLoading && <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", margin: "0 0 8px", fontStyle: "italic" }}>Generating your CBT reflection…</p>}
+                </div>
+                {aiFeedback && (
+                  <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "12px", padding: "20px", marginBottom: "20px" }}>
+                    <p style={{ fontSize: "11px", fontWeight: "700", color: gold, margin: "0 0 12px", letterSpacing: "0.06em" }}>AI REFLECTION</p>
+                    <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", margin: "0 0 12px", lineHeight: "1.7" }}>{aiFeedback.reflection}</p>
+                    {aiFeedback.pattern && <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: "0 0 10px", lineHeight: "1.6" }}><strong style={{ color: "rgba(255,255,255,0.6)" }}>Pattern noticed:</strong> {aiFeedback.pattern}</p>}
+                    {aiFeedback.reframe && <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: "0 0 10px", lineHeight: "1.6" }}><strong style={{ color: "rgba(255,255,255,0.6)" }}>Reframe:</strong> {aiFeedback.reframe}</p>}
+                    {aiFeedback.question && <p style={{ fontSize: "13px", color: gold, margin: "0", lineHeight: "1.6", fontStyle: "italic" }}>"{aiFeedback.question}"</p>}
+                  </div>
+                )}
+                <div style={{ textAlign: "center" }}>
+                  <button onClick={() => { setSubmitted(false); setEntry(""); setMood(null); setAiFeedback(null); }}
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+                    New entry
+                  </button>
+                </div>
               </div>
             )}
 

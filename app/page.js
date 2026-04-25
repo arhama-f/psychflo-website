@@ -56,9 +56,9 @@ export default function Home() {
             style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "16px 32px", borderRadius: "12px", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>
             Try 1 HR policy page free
           </button>
-          <button onClick={() => router.push("/learn")}
+          <button onClick={() => router.push("/demo")}
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "16px 32px", borderRadius: "12px", fontSize: "15px", fontWeight: "600", cursor: "pointer" }}>
-            Explore Microlearn
+            Book a demo
           </button>
         </div>
         <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.2)", margin: 0 }}>Free access includes 1 HR policy page only</p>

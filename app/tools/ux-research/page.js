@@ -36,11 +36,22 @@ export default function UXResearchTool() {
   const [input, setInput] = useState("");
   const [analysed, setAnalysed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
-  function handleAnalyse() {
+  async function handleAnalyse() {
     if (!input.trim()) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setAnalysed(true); }, 1800);
+    try {
+      const res = await fetch("/api/ux-research", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: input }),
+      });
+      const data = await res.json();
+      if (!data.error) { setResult(data); setAnalysed(true); }
+      else alert("Analysis failed. Please try again.");
+    } catch { alert("Analysis failed. Please try again."); }
+    setLoading(false);
   }
 
   function useSample() {
@@ -108,11 +119,11 @@ export default function UXResearchTool() {
                 <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "22px", marginBottom: "14px" }}>
                   <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "14px", letterSpacing: "0.06em" }}>KEY INSIGHTS</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {insights.map((ins, i) => (
+                    {(result?.insights || insights).map((ins, i) => (
                       <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", padding: "14px" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
                           <span style={{ fontSize: "12px", fontWeight: "700", color: ins.sentiment === "negative" ? "#fca5a5" : ins.sentiment === "positive" ? "#86efac" : gold }}>{ins.theme}</span>
-                          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "999px" }}>×{ins.count} participants</span>
+                          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "999px" }}>×{ins.count}</span>
                         </div>
                         <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", margin: 0, fontStyle: "italic", lineHeight: "1.5" }}>"{ins.quote}"</p>
                       </div>
@@ -123,7 +134,7 @@ export default function UXResearchTool() {
                 <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "22px" }}>
                   <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "14px", letterSpacing: "0.06em" }}>THEME FREQUENCY</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    {themes.map((t, i) => (
+                    {(result?.themes || themes).map((t, i) => (
                       <div key={i}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
                           <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.6)" }}>{t.name}</span>
@@ -145,15 +156,17 @@ export default function UXResearchTool() {
               <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "14px", padding: "18px" }}>
                 <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "12px", letterSpacing: "0.06em" }}>SUMMARY</p>
                 <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: "0 0 12px", lineHeight: "1.6" }}>
-                  Psychological safety is the dominant friction point — appearing in <strong style={{ color: gold }}>85% of transcripts</strong>. Participants were reluctant to ask for help, leading to extended time-to-competence.
+                  {result?.summary || "Analysis complete. Key themes and insights have been extracted from your transcript."}
                 </p>
-                <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "6px" }}>RECOMMENDED ACTIONS</p>
-                {["Add a 'no stupid questions' onboarding norm", "Pair new hires with a buddy for week 1", "Reduce tool setup to a single checklist"].map((a, i) => (
-                  <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "6px" }}>
-                    <span style={{ color: gold }}>→</span>
-                    <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>{a}</span>
-                  </div>
-                ))}
+                {result?.recommendation && (
+                  <>
+                    <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "6px" }}>TOP RECOMMENDATION</p>
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "6px" }}>
+                      <span style={{ color: gold }}>→</span>
+                      <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>{result.recommendation}</span>
+                    </div>
+                  </>
+                )}
               </div>
               <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "14px", padding: "18px" }}>
                 <p style={{ fontSize: "13px", fontWeight: "700", color: "#f8fafc", margin: "0 0 8px" }}>Full plan includes</p>

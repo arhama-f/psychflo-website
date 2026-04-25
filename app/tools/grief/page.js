@@ -34,6 +34,24 @@ export default function GriefTool() {
   const [promptIdx, setPromptIdx] = useState(0);
   const [entry, setEntry] = useState("");
   const [saved, setSaved] = useState(false);
+  const [aiResponse, setAiResponse] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function handleSave() {
+    if (!entry.trim()) return;
+    setSaved(true);
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/grief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entry, prompt: prompts[promptIdx] }),
+      });
+      const data = await res.json();
+      if (!data.error) setAiResponse(data.response);
+    } catch { /* non-fatal */ }
+    setAiLoading(false);
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
@@ -86,7 +104,7 @@ export default function GriefTool() {
             <>
               <textarea value={entry} onChange={(e) => setEntry(e.target.value)} placeholder="Write here — this is private and only visible to you..."
                 style={{ width: "100%", minHeight: "160px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "14px", color: "#f8fafc", fontSize: "14px", lineHeight: "1.8", resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
-              <button onClick={() => { if (entry.trim()) setSaved(true); }}
+              <button onClick={handleSave}
                 style={{ marginTop: "10px", background: entry.trim() ? `linear-gradient(135deg,${gold},#f0d080)` : "rgba(255,255,255,0.06)", color: entry.trim() ? "#0f172a" : "rgba(255,255,255,0.3)", border: "none", padding: "12px 24px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: entry.trim() ? "pointer" : "default" }}>
                 Save this entry
               </button>
@@ -94,8 +112,14 @@ export default function GriefTool() {
           ) : (
             <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "10px", padding: "18px" }}>
               <p style={{ color: "#6ee7b7", fontSize: "14px", fontWeight: "600", margin: "0 0 6px" }}>Saved.</p>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", margin: "0 0 14px" }}>Writing about loss is one of the most evidence-supported ways to process grief. You did something good today.</p>
-              <button onClick={() => { setSaved(false); setEntry(""); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "8px 16px", borderRadius: "8px", fontSize: "12px", cursor: "pointer" }}>Write again</button>
+              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", margin: "0 0 10px" }}>Writing about loss is one of the most evidence-supported ways to process grief. You did something good today.</p>
+              {aiLoading && <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px", fontStyle: "italic", margin: "0 0 10px" }}>Reflecting on what you've shared…</p>}
+              {aiResponse && (
+                <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "10px", padding: "16px", marginBottom: "14px" }}>
+                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", margin: 0, lineHeight: "1.8" }}>{aiResponse}</p>
+                </div>
+              )}
+              <button onClick={() => { setSaved(false); setEntry(""); setAiResponse(null); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "8px 16px", borderRadius: "8px", fontSize: "12px", cursor: "pointer" }}>Write again</button>
             </div>
           )}
         </div>

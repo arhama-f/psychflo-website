@@ -79,18 +79,28 @@ export default function CoachingTool() {
 
   const scenario = scenarios.find((s) => s.id === selected);
 
-  const feedbackOptions = [
-    { label: "Too direct — might feel threatening", tip: "Try opening with curiosity before raising the issue. 'How are you finding things?' before 'I've noticed X.'" },
-    { label: "Good empathy, unclear ask", tip: "After acknowledging feelings, anchor back to a specific question or next step." },
-    { label: "Strong — psychologically safe", tip: "This approach separates the person from the performance and creates space for honesty. Well done." },
-  ];
+  const [practiceLoading, setPracticeLoading] = useState(false);
 
-  function handlePracticeSubmit() {
-    if (!userInput.trim()) return;
-    const fb = feedbackOptions[Math.floor(Math.random() * feedbackOptions.length)];
-    setPracticeHistory([...practiceHistory, { role: "manager", text: userInput }]);
-    setFeedback(fb);
+  async function handlePracticeSubmit() {
+    if (!userInput.trim() || practiceLoading) return;
+    const msg = userInput;
     setUserInput("");
+    setPracticeLoading(true);
+    const newHistory = [...practiceHistory, { role: "manager", text: msg }];
+    setPracticeHistory(newHistory);
+    try {
+      const res = await fetch("/api/coaching", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ managerMessage: msg, scenario: scenario?.label, context: scenario?.context, history: newHistory }),
+      });
+      const data = await res.json();
+      if (!data.error) {
+        setFeedback({ label: data.label, tip: data.tip, score: data.score });
+        if (data.employeeReply) setPracticeHistory([...newHistory, { role: "employee", text: data.employeeReply }]);
+      }
+    } catch { /* non-fatal */ }
+    setPracticeLoading(false);
   }
 
   return (
@@ -164,21 +174,25 @@ export default function CoachingTool() {
                     <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "14px", marginBottom: "14px", minHeight: "80px" }}>
                       {practiceHistory.map((h, i) => (
                         <p key={i} style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: "0 0 6px", lineHeight: "1.6" }}>
-                          <strong style={{ color: gold }}>You:</strong> {h.text}
+                          <strong style={{ color: h.role === "manager" ? gold : "rgba(255,255,255,0.4)" }}>{h.role === "manager" ? "You:" : `${scenario.employee}:`}</strong> {h.text}
                         </p>
                       ))}
+                      {practiceLoading && <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>Analysing your response…</p>}
                     </div>
                     {feedback && (
                       <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "14px", marginBottom: "14px" }}>
-                        <p style={{ fontSize: "11px", fontWeight: "700", color: gold, margin: "0 0 6px" }}>AI FEEDBACK</p>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                          <p style={{ fontSize: "11px", fontWeight: "700", color: gold, margin: 0 }}>AI FEEDBACK</p>
+                          {feedback.score && <span style={{ fontSize: "12px", fontWeight: "700", color: feedback.score >= 7 ? "#10b981" : feedback.score >= 5 ? "#f59e0b" : "#ef4444" }}>{feedback.score}/10</span>}
+                        </div>
                         <p style={{ fontSize: "12px", fontWeight: "700", color: "#f8fafc", margin: "0 0 4px" }}>{feedback.label}</p>
                         <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: "1.6" }}>{feedback.tip}</p>
                       </div>
                     )}
-                    <textarea value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={`How would you start this conversation with ${scenario.employee}?`}
+                    <textarea value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={`How would you respond to ${scenario.employee}?`}
                       style={{ width: "100%", minHeight: "100px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "12px", color: "#f8fafc", fontSize: "13px", lineHeight: "1.7", resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box", marginBottom: "10px" }} />
-                    <button onClick={handlePracticeSubmit} style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "12px 24px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
-                      Get AI feedback
+                    <button onClick={handlePracticeSubmit} disabled={practiceLoading || !userInput.trim()} style={{ background: practiceLoading || !userInput.trim() ? "rgba(255,255,255,0.06)" : `linear-gradient(135deg,${gold},#f0d080)`, color: practiceLoading || !userInput.trim() ? "rgba(255,255,255,0.3)" : "#0f172a", border: "none", padding: "12px 24px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: practiceLoading || !userInput.trim() ? "default" : "pointer" }}>
+                      {practiceLoading ? "Analysing…" : "Get AI feedback"}
                     </button>
                   </div>
                 )}
