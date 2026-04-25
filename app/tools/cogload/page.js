@@ -31,8 +31,34 @@ const teamDay = [
 export default function CogLoadTool() {
   const router = useRouter();
   const [selected, setSelected] = useState(null);
-  const [activeTab, setActiveTab] = useState("team");
+  const [activeTab, setActiveTab] = useState("myday");
   const eng = engineers.find((e) => e.name === selected);
+
+  const [form, setForm] = useState({ meetingHours: "", deepWorkHours: "", interruptions: "", note: "" });
+  const [myResult, setMyResult] = useState(null);
+  const [myLoading, setMyLoading] = useState(false);
+  const [myError, setMyError] = useState(null);
+
+  async function handleAssess() {
+    if (!form.meetingHours || !form.deepWorkHours || !form.interruptions) return;
+    setMyLoading(true);
+    setMyError(null);
+    try {
+      const res = await fetch("/api/cogload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setMyResult(data);
+    } catch (e) {
+      setMyError(e.message);
+    }
+    setMyLoading(false);
+  }
+
+  const statusColor = (s) => s === "flow" ? "#6ee7b7" : s === "fragmented" ? "#f87171" : gold;
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
@@ -55,13 +81,78 @@ export default function CogLoadTool() {
         </div>
 
         <div style={{ display: "flex", gap: "0", marginBottom: "24px", background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "3px", width: "fit-content" }}>
-          {["team", "day-view", "recommendations"].map((t) => (
+          {["myday", "team", "day-view", "recommendations"].map((t) => (
             <button key={t} onClick={() => setActiveTab(t)}
               style={{ background: activeTab === t ? "rgba(255,255,255,0.1)" : "transparent", border: "none", color: activeTab === t ? "#f8fafc" : "rgba(255,255,255,0.35)", padding: "8px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>
-              {t === "team" ? "Team view" : t === "day-view" ? "Day heatmap" : "Recommendations"}
+              {t === "myday" ? "My day" : t === "team" ? "Team demo" : t === "day-view" ? "Day heatmap" : "Recommendations"}
             </button>
           ))}
         </div>
+
+        {activeTab === "myday" && (
+          <div style={{ maxWidth: "560px" }}>
+            {!myResult ? (
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "28px" }}>
+                <p style={{ fontSize: "12px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "20px", letterSpacing: "0.06em" }}>TODAY'S COGNITIVE LOAD ASSESSMENT</p>
+                {[
+                  { key: "meetingHours", label: "Meeting hours today", placeholder: "e.g. 3.5", type: "number" },
+                  { key: "deepWorkHours", label: "Deep work / focus hours", placeholder: "e.g. 4", type: "number" },
+                  { key: "interruptions", label: "Number of interruptions / context switches", placeholder: "e.g. 7", type: "number" },
+                ].map((f) => (
+                  <div key={f.key} style={{ marginBottom: "16px" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "6px" }}>{f.label}</label>
+                    <input type={f.type} value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.placeholder}
+                      style={{ width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 12px", color: "#f8fafc", fontSize: "13px", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+                  </div>
+                ))}
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "6px" }}>Anything else? (optional)</label>
+                  <textarea value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="e.g. had back-to-back calls, felt scattered after lunch..."
+                    style={{ width: "100%", minHeight: "70px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 12px", color: "#f8fafc", fontSize: "13px", lineHeight: "1.6", resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
+                </div>
+                <button onClick={handleAssess} disabled={myLoading} style={{ width: "100%", background: myLoading ? "rgba(201,168,76,0.4)" : `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "13px", borderRadius: "10px", fontSize: "14px", fontWeight: "700", cursor: myLoading ? "not-allowed" : "pointer" }}>
+                  {myLoading ? "Analysing your day…" : "Analyse my cognitive load"}
+                </button>
+                {myError && <p style={{ fontSize: "12px", color: "#f87171", marginTop: "8px", textAlign: "center" }}>{myError}</p>}
+              </div>
+            ) : (
+              <div>
+                <div style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${myResult.status === "fragmented" ? "rgba(248,113,113,0.25)" : myResult.status === "flow" ? "rgba(110,231,183,0.25)" : "rgba(201,168,76,0.25)"}`, borderRadius: "16px", padding: "28px", marginBottom: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                    <div>
+                      <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: "0 0 4px", letterSpacing: "0.06em" }}>FLOW SCORE</p>
+                      <div style={{ fontSize: "48px", fontWeight: "800", color: statusColor(myResult.status), lineHeight: 1 }}>{myResult.flowScore}</div>
+                    </div>
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: statusColor(myResult.status), background: `${statusColor(myResult.status)}18`, padding: "6px 16px", borderRadius: "999px", border: `1px solid ${statusColor(myResult.status)}44` }}>
+                      {myResult.status}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: "1.7" }}>{myResult.summary}</p>
+                  {myResult.warning && (
+                    <div style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: "8px", padding: "10px", marginTop: "12px" }}>
+                      <p style={{ fontSize: "12px", color: "#fca5a5", margin: 0 }}>⚠ {myResult.warning}</p>
+                    </div>
+                  )}
+                </div>
+                {myResult.recommendations && (
+                  <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "20px", marginBottom: "16px" }}>
+                    <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", marginBottom: "14px", letterSpacing: "0.06em" }}>RECOMMENDATIONS FOR TOMORROW</p>
+                    {myResult.recommendations.map((r, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "start", gap: "10px", marginBottom: "10px" }}>
+                        <span style={{ color: gold, fontWeight: "700", flexShrink: 0, marginTop: "1px" }}>{i + 1}.</span>
+                        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: 0, lineHeight: "1.6" }}>{r}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button onClick={() => { setMyResult(null); setForm({ meetingHours: "", deepWorkHours: "", interruptions: "", note: "" }); }}
+                  style={{ width: "100%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "11px", borderRadius: "10px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+                  Assess another day
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {activeTab === "team" && (
           <div style={{ display: "grid", gridTemplateColumns: selected ? "1fr 300px" : "1fr", gap: "20px", alignItems: "start" }}>

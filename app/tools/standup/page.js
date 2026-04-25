@@ -19,9 +19,27 @@ export default function StandupTool() {
   const [view, setView] = useState("dashboard");
   const [form, setForm] = useState({ yesterday: "", today: "", blockers: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!form.yesterday.trim() || !form.today.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/standup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setResult(data);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
     setSubmitted(true);
   }
 
@@ -110,19 +128,45 @@ export default function StandupTool() {
                       style={{ width: "100%", minHeight: "80px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 12px", color: "#f8fafc", fontSize: "13px", lineHeight: "1.6", resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }} />
                   </div>
                 ))}
-                <button onClick={handleSubmit} style={{ width: "100%", background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "13px", borderRadius: "10px", fontSize: "14px", fontWeight: "700", cursor: "pointer" }}>
-                  Submit standup
+                <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", background: loading ? "rgba(201,168,76,0.4)" : `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "13px", borderRadius: "10px", fontSize: "14px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer" }}>
+                  {loading ? "Analysing…" : "Submit standup"}
                 </button>
+                {error && <p style={{ fontSize: "12px", color: "#f87171", marginTop: "8px", textAlign: "center" }}>{error}</p>}
               </div>
             ) : (
-              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "16px", padding: "32px", textAlign: "center" }}>
-                <div style={{ fontSize: "40px", marginBottom: "12px" }}>✓</div>
-                <h3 style={{ color: "#6ee7b7", fontSize: "18px", fontWeight: "700", margin: "0 0 8px" }}>Standup submitted</h3>
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: "0 0 6px" }}>Your safety score: <strong style={{ color: gold }}>84</strong></p>
-                <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px", margin: "0 0 20px" }}>NLP analysis complete — no flags detected.</p>
-                <button onClick={() => setView("dashboard")} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
-                  View team dashboard
-                </button>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${result?.riskLevel === "high" ? "rgba(248,113,113,0.25)" : "rgba(16,185,129,0.2)"}`, borderRadius: "16px", padding: "32px" }}>
+                <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                  <div style={{ fontSize: "40px", marginBottom: "12px" }}>{result?.tone === "positive" ? "✓" : result?.tone === "frustrated" ? "⚠" : "✓"}</div>
+                  <h3 style={{ color: "#6ee7b7", fontSize: "18px", fontWeight: "700", margin: "0 0 8px" }}>Standup submitted</h3>
+                  <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: 0 }}>
+                    Psychological safety score: <strong style={{ color: result?.safetyScore >= 75 ? "#6ee7b7" : result?.safetyScore >= 50 ? gold : "#f87171", fontSize: "18px" }}>{result?.safetyScore ?? "—"}</strong>
+                  </p>
+                </div>
+                {result?.insight && (
+                  <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", padding: "14px", marginBottom: "16px" }}>
+                    <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: "1.7" }}>{result.insight}</p>
+                  </div>
+                )}
+                {result?.flags && result.flags.length > 0 && (
+                  <div style={{ marginBottom: "16px" }}>
+                    {result.flags.map((f, i) => (
+                      <div key={i} style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: "8px", padding: "8px 12px", marginBottom: "6px" }}>
+                        <span style={{ fontSize: "11px", color: "#fca5a5" }}>⚠ {f}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {result?.flags?.length === 0 && (
+                  <p style={{ fontSize: "12px", color: "#6ee7b7", textAlign: "center", marginBottom: "16px" }}>No flags detected — keep it up.</p>
+                )}
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button onClick={() => { setSubmitted(false); setResult(null); setForm({ yesterday: "", today: "", blockers: "" }); }} style={{ flex: 1, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+                    New standup
+                  </button>
+                  <button onClick={() => setView("dashboard")} style={{ flex: 1, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#f8fafc", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+                    View team dashboard
+                  </button>
+                </div>
               </div>
             )}
           </div>
