@@ -250,3 +250,24 @@ join employees e on e.team_id = t.id
 join burnout_checkins c on c.employee_id = e.id
 group by t.id, t.name, date_trunc('week', c.created_at)
 having count(*) >= 5;
+
+-- ─── SSO Connections ────────────────────────────────────────
+create table if not exists sso_connections (
+  id                    uuid primary key default gen_random_uuid(),
+  org_id                uuid references organisations(id) on delete cascade,
+  provider              text not null,
+  domain                text not null,
+  workos_connection_id  text,
+  workos_org_id         text,
+  status                text check (status in ('pending', 'active', 'error')) default 'pending',
+  created_at            timestamptz default now(),
+  unique (org_id)
+);
+alter table sso_connections enable row level security;
+create policy "sso_admin_access" on sso_connections
+  for all using (
+    org_id in (
+      select org_id from employees
+      where auth_user_id = auth.uid() and role = 'admin'
+    )
+  );

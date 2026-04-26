@@ -21,6 +21,7 @@ const QUICK_ACTIONS = [
   { label: "Export report", icon: "📄", href: "/report" },
   { label: "Invite team", icon: "✉️", href: "/onboarding" },
   { label: "Integrations", icon: "🔗", href: "/integrations" },
+  { label: "SSO / SAML", icon: "🔒", href: "/settings/sso" },
   { label: "Pricing", icon: "⭐", href: "/pricing" },
 ];
 

@@ -18,6 +18,17 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [magicSent, setMagicSent] = useState(false);
+  const [ssoMode, setSsoMode] = useState(false);
+  const [ssoDomain, setSsoDomain] = useState("");
+  const [ssoError, setSsoError] = useState("");
+
+  const ssoErrors = {
+    no_connection: "No SSO connection found for this domain. Contact your IT admin.",
+    sso_not_configured: "SSO is not enabled on this account.",
+    missing_domain: "Please enter your company domain.",
+    sso_failed: "SSO sign-in failed. Try again or contact support.",
+  };
+  const ssoErrorMsg = searchParams.get("error") ? (ssoErrors[searchParams.get("error")] || "SSO error") : null;
 
   const inp = { width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"10px", padding:"13px 16px", color:"#f8fafc", fontSize:"14px", outline:"none", boxSizing:"border-box" };
 
@@ -106,6 +117,34 @@ function Login() {
           No account?{" "}
           <span onClick={()=>router.push("/auth/signup")} style={{color:gold, cursor:"pointer", fontWeight:"600"}}>Create account</span>
         </p>
+
+        {/* SSO */}
+        <div style={{marginTop:"16px", borderTop:"1px solid rgba(255,255,255,0.06)", paddingTop:"16px"}}>
+          {!ssoMode ? (
+            <button onClick={()=>setSsoMode(true)} style={{width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.4)", padding:"11px", borderRadius:"10px", fontSize:"13px", fontWeight:"600", cursor:"pointer"}}>
+              Sign in with SSO →
+            </button>
+          ) : (
+            <div>
+              <p style={{fontSize:"12px", fontWeight:"700", color:"rgba(255,255,255,0.3)", margin:"0 0 10px", letterSpacing:"0.06em"}}>SINGLE SIGN-ON</p>
+              {ssoErrorMsg && <p style={{fontSize:"12px", color:"#fca5a5", background:"rgba(239,68,68,0.08)", padding:"8px 12px", borderRadius:"8px", margin:"0 0 10px"}}>{ssoErrorMsg}</p>}
+              <input
+                type="text" value={ssoDomain} onChange={e=>setSsoDomain(e.target.value)}
+                placeholder="yourcompany.com"
+                style={{...{width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:"10px", padding:"12px 16px", color:"#f8fafc", fontSize:"14px", outline:"none", boxSizing:"border-box"}, marginBottom:"10px"}}
+              />
+              <div style={{display:"flex", gap:"8px"}}>
+                <button onClick={()=>setSsoMode(false)} style={{flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.4)", padding:"10px", borderRadius:"8px", fontSize:"13px", cursor:"pointer"}}>
+                  Cancel
+                </button>
+                <a href={ssoDomain ? `/api/auth/sso?domain=${encodeURIComponent(ssoDomain.trim())}` : "#"}
+                  style={{flex:2, background:ssoDomain ? `linear-gradient(135deg,${gold},#f0d080)` : "rgba(255,255,255,0.06)", color:ssoDomain ? "#0f172a" : "rgba(255,255,255,0.3)", padding:"10px", borderRadius:"8px", fontSize:"13px", fontWeight:"700", textAlign:"center", textDecoration:"none", display:"block", cursor:ssoDomain?"pointer":"default"}}>
+                  Continue with SSO →
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
