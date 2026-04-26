@@ -60,7 +60,7 @@ export default function About() {
         <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "20px", padding: "40px", textAlign: "center" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "700", color: "#f8fafc", margin: "0 0 10px" }}>Want to work with us?</h2>
           <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)", margin: "0 0 24px" }}>We're always looking for psychologists, engineers, and HR practitioners who want to build the future of people science.</p>
-          <button style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
+          <button onClick={() => router.push("/demo")} style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 32px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
             Get in touch
           </button>
         </div>

@@ -1,12 +1,18 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Nav from "../../components/Nav";
 
 const gold = "#c9a84c";
 
-export default function Login() {
+export default function LoginPage() {
+  return <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0a0f1e" }} />}><Login /></Suspense>;
+}
+
+function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +32,7 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      router.push("/dashboard");
+      router.push(next);
     } catch (err) {
       setError(err.message);
     }

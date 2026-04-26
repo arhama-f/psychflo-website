@@ -14,7 +14,7 @@ export async function POST(req) {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
         body: JSON.stringify({
           from: "PsychFlo <noreply@psychflo.com>",
-          to: ["arhamafaridi@gmail.com"],
+          to: [process.env.DEMO_NOTIFY_EMAIL || "arhamafaridi@gmail.com"],
           subject: `🎯 New demo request — ${company} (${size || "unknown size"})`,
           html: `
 <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#0f172a;color:#f8fafc;border-radius:12px;">

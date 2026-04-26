@@ -2,20 +2,16 @@ import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Only apply rate limiting to API routes
 const RATE_LIMITED_PATHS = ["/api/burnout", "/api/team"];
+const PROTECTED_PATHS = ["/dashboard", "/report", "/scripts", "/onboarding"];
 
 let ratelimit = null;
 
 function getRatelimit() {
   if (ratelimit) return ratelimit;
-  // Requires UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN env vars
-  // Get free tier at https://upstash.com
   if (!process.env.UPSTASH_REDIS_REST_URL) return null;
-
   ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
-    // 10 requests per 60 seconds per IP
     limiter: Ratelimit.slidingWindow(10, "60 s"),
     analytics: true,
   });
@@ -25,13 +21,25 @@ function getRatelimit() {
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
+  // Auth guard for protected pages
+  const isProtected = PROTECTED_PATHS.some(p => pathname.startsWith(p));
+  if (isProtected) {
+    const token = request.cookies.get("sb-access-token")?.value;
+    if (!token) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/auth/login";
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Rate limiting for API routes
   const isRateLimited = RATE_LIMITED_PATHS.some(p => pathname.startsWith(p));
   if (!isRateLimited) return NextResponse.next();
 
   const rl = getRatelimit();
-  if (!rl) return NextResponse.next(); // gracefully skip if Redis not configured
+  if (!rl) return NextResponse.next();
 
-  // Use IP address as identifier (X-Forwarded-For in production)
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
@@ -62,5 +70,12 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/api/burnout/:path*", "/api/team/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/report/:path*",
+    "/scripts/:path*",
+    "/onboarding/:path*",
+    "/api/burnout/:path*",
+    "/api/team/:path*",
+  ],
 };

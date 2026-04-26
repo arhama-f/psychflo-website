@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "../components/Nav";
 
 const gold = "#c9a84c";
 
-// Demo employees — in prod these come from /api/team
 const DEMO_EMPLOYEES = [
   { id: "1", name: "Sarah M.", score: 78, stressors: ["workload", "lack of recognition", "unclear expectations"], dimensions: { exhaustion: 82, cynicism: 71, efficacy: 38 } },
   { id: "2", name: "James K.", score: 65, stressors: ["work-life balance", "remote isolation"], dimensions: { exhaustion: 68, cynicism: 58, efficacy: 52 } },
@@ -29,6 +28,25 @@ export default function ScriptsPage() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(null);
   const [activeSection, setActiveSection] = useState("opening");
+  const [employees, setEmployees] = useState(DEMO_EMPLOYEES);
+
+  useEffect(() => {
+    fetch("/api/team")
+      .then(r => r.json())
+      .then(d => {
+        const members = d?.teamMembers || d?.members;
+        if (Array.isArray(members) && members.length > 0) {
+          setEmployees(members.map(m => ({
+            id: m.id || m.employee_id,
+            name: m.name || "Team member",
+            score: m.burnoutScore ?? m.burnout_score ?? 50,
+            stressors: m.stressors || [],
+            dimensions: { exhaustion: m.exhaustionScore ?? 50, cynicism: m.cynicismScore ?? 50, efficacy: m.efficacyScore ?? 50 },
+          })));
+        }
+      })
+      .catch(() => null);
+  }, []);
 
   async function generateScript(emp) {
     setSelected(emp);
@@ -92,7 +110,7 @@ export default function ScriptsPage() {
           {/* Left — employee list */}
           <div>
             <div style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", letterSpacing: "0.08em", marginBottom: "12px" }}>AT-RISK TEAM MEMBERS</div>
-            {DEMO_EMPLOYEES.sort((a, b) => b.score - a.score).map(emp => (
+            {[...employees].sort((a, b) => b.score - a.score).map(emp => (
               <button key={emp.id} onClick={() => generateScript(emp)}
                 style={{
                   width: "100%", textAlign: "left", display: "block",
