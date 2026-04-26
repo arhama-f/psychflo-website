@@ -5,9 +5,28 @@ import Nav from "../components/Nav";
 
 const gold = "#c9a84c";
 
+const TOOLS = [
+  { id: "burnout", icon: "🔥", name: "Burnout Monitor", desc: "Team risk scores & trends", href: "/tools/burnout?view=manager" },
+  { id: "standup", icon: "💬", name: "Standup Safety", desc: "AI-scored async standups", href: "/tools/standup" },
+  { id: "coaching", icon: "🎯", name: "Manager Coaching", desc: "Practice hard conversations", href: "/tools/coaching" },
+  { id: "cogload", icon: "🧠", name: "Cognitive Load", desc: "Flow state & interruptions", href: "/tools/cogload" },
+  { id: "onboarding", icon: "📊", name: "Onboarding Tracker", desc: "90-day belonging score", href: "/tools/onboarding" },
+  { id: "journaling", icon: "📓", name: "Reflective Journal", desc: "CBT-powered journaling", href: "/tools/journaling" },
+  { id: "grief", icon: "💛", name: "Grief Support", desc: "Compassionate guidance", href: "/tools/grief" },
+  { id: "ux", icon: "🔬", name: "UX Research", desc: "Transcript & insight analysis", href: "/tools/ux-research" },
+  { id: "policy", icon: "📋", name: "Policy Analyser", desc: "Mental health policy audit", href: "/tools/policy" },
+];
+
+const QUICK_ACTIONS = [
+  { label: "Export report", icon: "📄", href: "/report" },
+  { label: "Invite team", icon: "✉️", href: "/onboarding" },
+  { label: "Integrations", icon: "🔗", href: "/integrations" },
+  { label: "Pricing", icon: "⭐", href: "/pricing" },
+];
+
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<div style={{minHeight:"100vh",background:"#0a0f1e"}}/>}>
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0a0f1e" }} />}>
       <Dashboard />
     </Suspense>
   );
@@ -17,139 +36,230 @@ function Dashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const upgraded = searchParams.get("upgraded") === "true";
+
   const [teamData, setTeamData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [teamLoading, setTeamLoading] = useState(true);
+  const [integrations, setIntegrations] = useState([]);
+  const [slackConnected, setSlackConnected] = useState(false);
+  const [checkinLoading, setCheckinLoading] = useState(false);
+  const [checkinSent, setCheckinSent] = useState(false);
 
   useEffect(() => {
     fetch("/api/team")
       .then(r => r.json())
-      .then(d => { setTeamData(d); setLoading(false); })
-      .catch(() => setLoading(false));
+      .then(d => { setTeamData(d); setTeamLoading(false); })
+      .catch(() => setTeamLoading(false));
+
+    fetch("/api/integrations/sync")
+      .then(r => r.json())
+      .then(d => setIntegrations(d.connections || []))
+      .catch(() => null);
+
+    fetch("/api/slack/connect")
+      .then(r => r.json())
+      .then(d => setSlackConnected(d.connected || false))
+      .catch(() => null);
   }, []);
 
-  const Bar = ({value, color="#c9a84c", height=6}) => (
-    <div style={{background:"rgba(255,255,255,0.07)", borderRadius:"999px", height, overflow:"hidden"}}>
-      <div style={{width:`${Math.min(value,100)}%`, height:"100%", background:color, borderRadius:"999px"}}/>
+  async function sendCheckin(type) {
+    setCheckinLoading(true);
+    await fetch("/api/slack/checkin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type }),
+    }).catch(() => null);
+    setCheckinLoading(false);
+    setCheckinSent(true);
+    setTimeout(() => setCheckinSent(false), 3000);
+  }
+
+  const Bar = ({ value, color = gold, height = 5 }) => (
+    <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: "999px", height, overflow: "hidden" }}>
+      <div style={{ width: `${Math.min(value, 100)}%`, height: "100%", background: color, borderRadius: "999px" }} />
     </div>
   );
 
+  const riskColor = (score) => score >= 70 ? "#ef4444" : score >= 40 ? "#f59e0b" : "#10b981";
+
   return (
-    <div style={{minHeight:"100vh", background:"linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily:"system-ui,-apple-system,sans-serif"}}>
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
       <Nav />
-      <div style={{maxWidth:"860px", margin:"0 auto", padding:"48px 24px"}}>
+      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "48px 24px 80px" }}>
 
         {upgraded && (
-          <div style={{background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.2)", borderRadius:"12px", padding:"14px 20px", marginBottom:"24px", display:"flex", alignItems:"center", gap:"10px"}}>
-            <span style={{fontSize:"18px"}}>🎉</span>
-            <span style={{fontSize:"14px", color:"#6ee7b7", fontWeight:"600"}}>Plan upgraded successfully. Team features are now unlocked.</span>
+          <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "12px", padding: "14px 20px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "18px" }}>🎉</span>
+            <span style={{ fontSize: "14px", color: "#6ee7b7", fontWeight: "600" }}>Plan upgraded — team features unlocked.</span>
           </div>
         )}
 
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"28px"}}>
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "36px" }}>
           <div>
-            <h1 style={{fontSize:"24px", fontWeight:"800", color:"#f8fafc", margin:"0 0 4px"}}>Manager Dashboard</h1>
-            <p style={{fontSize:"13px", color:"rgba(255,255,255,0.35)", margin:0}}>Team wellbeing overview · Updated weekly</p>
+            <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#f8fafc", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Manager Dashboard</h1>
+            <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.35)", margin: 0 }}>Team wellbeing overview · Updated weekly</p>
           </div>
-          <div style={{display:"flex", gap:"8px"}}>
-            <button onClick={()=>router.push("/report")}
-              style={{background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.5)", padding:"10px 16px", borderRadius:"9px", fontSize:"13px", fontWeight:"600", cursor:"pointer"}}>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {slackConnected && (
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button onClick={() => sendCheckin("standup")} disabled={checkinLoading}
+                  style={{ background: checkinSent ? "rgba(16,185,129,0.12)" : "rgba(255,255,255,0.06)", border: `1px solid ${checkinSent ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)"}`, color: checkinSent ? "#6ee7b7" : "rgba(255,255,255,0.6)", padding: "9px 14px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", cursor: "pointer", whiteSpace: "nowrap" }}>
+                  {checkinSent ? "✓ Sent" : "💬 Send check-in"}
+                </button>
+              </div>
+            )}
+            <button onClick={() => router.push("/report")}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", padding: "9px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
               📄 Export report
             </button>
-            <button onClick={()=>router.push("/tools/burnout")}
-              style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"10px 20px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
+            <button onClick={() => router.push("/tools/burnout")}
+              style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
               Take check-in →
             </button>
           </div>
         </div>
 
-        {loading ? (
-          <div style={{textAlign:"center", padding:"60px", color:"rgba(255,255,255,0.3)"}}>Loading team data...</div>
+        {/* Team metrics */}
+        {teamLoading ? (
+          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "40px", textAlign: "center", marginBottom: "24px" }}>
+            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "13px", margin: 0 }}>Loading team data…</p>
+          </div>
         ) : teamData?.suppressed ? (
-          <div style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"16px", padding:"48px", textAlign:"center"}}>
-            <div style={{fontSize:"36px", marginBottom:"16px"}}>⏳</div>
-            <h3 style={{fontSize:"18px", fontWeight:"700", color:"#f8fafc", margin:"0 0 8px"}}>Waiting for more responses</h3>
-            <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:"0 0 8px", lineHeight:"1.6"}}>{teamData.reason}</p>
-            <div style={{fontSize:"13px", color:"rgba(255,255,255,0.25)"}}>{teamData.responseCount} / 5 responses received this week</div>
-            <div style={{marginTop:"20px", background:"rgba(255,255,255,0.03)", borderRadius:"10px", padding:"12px", display:"inline-block"}}>
-              <div style={{width:"200px", background:"rgba(255,255,255,0.07)", borderRadius:"999px", height:"6px", overflow:"hidden"}}>
-                <div style={{width:`${(teamData.responseCount/5)*100}%`, height:"100%", background:gold, borderRadius:"999px"}}/>
-              </div>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "32px", textAlign: "center", marginBottom: "24px" }}>
+            <div style={{ fontSize: "32px", marginBottom: "12px" }}>⏳</div>
+            <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#f8fafc", margin: "0 0 6px" }}>Waiting for more responses</h3>
+            <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: "0 0 16px", lineHeight: "1.6" }}>{teamData.reason}</p>
+            <div style={{ width: "200px", margin: "0 auto 16px", background: "rgba(255,255,255,0.07)", borderRadius: "999px", height: "6px", overflow: "hidden" }}>
+              <div style={{ width: `${(teamData.responseCount / 5) * 100}%`, height: "100%", background: gold, borderRadius: "999px" }} />
             </div>
-            <div style={{marginTop:"20px"}}>
-              <button onClick={()=>router.push("/onboarding")}
-                style={{background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"11px 24px", borderRadius:"9px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
-                Invite more team members →
-              </button>
-            </div>
+            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", margin: "0 0 20px" }}>{teamData.responseCount} / 5 responses this week</p>
+            <button onClick={() => router.push("/onboarding")}
+              style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "11px 24px", borderRadius: "9px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
+              Invite team members →
+            </button>
           </div>
         ) : teamData ? (
-          <div>
-            {/* Stats row */}
-            <div style={{display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"10px", marginBottom:"16px"}}>
+          <div style={{ marginBottom: "24px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "10px", marginBottom: "14px" }}>
               {[
-                {label:"Team risk score", value:`${teamData.overallRisk}/100`, color:teamData.color},
-                {label:"High risk", value:teamData.atHighRisk, color:"#ef4444"},
-                {label:"Moderate risk", value:teamData.atModerateRisk, color:"#f59e0b"},
-                {label:"Low risk", value:teamData.atLowRisk, color:"#10b981"},
-              ].map((s,i)=>(
-                <div key={i} style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"12px", padding:"16px", textAlign:"center"}}>
-                  <div style={{fontSize:"24px", fontWeight:"700", color:s.color, marginBottom:"4px"}}>{s.value}</div>
-                  <div style={{fontSize:"11px", color:"rgba(255,255,255,0.35)"}}>{s.label}</div>
+                { label: "Team risk score", value: `${teamData.overallRisk}/100`, color: riskColor(teamData.overallRisk) },
+                { label: "High risk", value: teamData.atHighRisk, color: "#ef4444" },
+                { label: "Moderate risk", value: teamData.atModerateRisk, color: "#f59e0b" },
+                { label: "Low risk", value: teamData.atLowRisk, color: "#10b981" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", padding: "16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "24px", fontWeight: "700", color: s.color, marginBottom: "4px" }}>{s.value}</div>
+                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>{s.label}</div>
                 </div>
               ))}
             </div>
-
-            {/* Trend + stressors */}
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"14px", marginBottom:"16px"}}>
-              <div style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"14px", padding:"20px"}}>
-                <div style={{fontSize:"11px", fontWeight:"600", color:"rgba(255,255,255,0.35)", letterSpacing:"0.07em", marginBottom:"14px"}}>6-WEEK TEAM TREND</div>
-                <div style={{display:"flex", gap:"6px", alignItems:"flex-end", height:"70px", marginBottom:"8px"}}>
-                  {(teamData.weeklyTrend||[]).map((s,i,arr)=>(
-                    <div key={i} style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:"4px"}}>
-                      <div style={{width:"100%", background:i===arr.length-1?teamData.color:"rgba(255,255,255,0.15)", borderRadius:"3px 3px 0 0", height:`${s*1.1}px`}}/>
-                      <span style={{fontSize:"9px", color:"rgba(255,255,255,0.3)"}}>W{i+1}</span>
-                    </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "18px" }}>
+                <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: "0 0 12px", letterSpacing: "0.06em" }}>6-WEEK TREND</p>
+                <div style={{ display: "flex", gap: "5px", alignItems: "flex-end", height: "60px" }}>
+                  {(teamData.weeklyTrend || []).map((s, i, arr) => (
+                    <div key={i} style={{ flex: 1, background: i === arr.length - 1 ? riskColor(teamData.overallRisk) : "rgba(255,255,255,0.12)", borderRadius: "3px 3px 0 0", height: `${s * 1.1}px` }} />
                   ))}
                 </div>
               </div>
-              <div style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"14px", padding:"20px"}}>
-                <div style={{fontSize:"11px", fontWeight:"600", color:"rgba(255,255,255,0.35)", letterSpacing:"0.07em", marginBottom:"14px"}}>TOP STRESSORS</div>
-                {(teamData.topTeamStressors||[]).slice(0,4).map((s,i)=>(
-                  <div key={i} style={{marginBottom:"10px"}}>
-                    <div style={{display:"flex", justifyContent:"space-between", marginBottom:"4px"}}>
-                      <span style={{fontSize:"12px", color:"rgba(255,255,255,0.5)"}}>{s.stressor}</span>
-                      <span style={{fontSize:"11px", color:s.percentage>70?"#ef4444":s.percentage>50?"#f59e0b":"#10b981", fontWeight:"600"}}>{s.percentage}%</span>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "18px" }}>
+                <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: "0 0 12px", letterSpacing: "0.06em" }}>TOP STRESSORS</p>
+                {(teamData.topTeamStressors || []).slice(0, 3).map((s, i) => (
+                  <div key={i} style={{ marginBottom: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                      <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>{s.stressor}</span>
+                      <span style={{ fontSize: "10px", color: s.percentage > 70 ? "#ef4444" : s.percentage > 50 ? "#f59e0b" : "#10b981", fontWeight: "700" }}>{s.percentage}%</span>
                     </div>
-                    <Bar value={s.percentage} color={s.percentage>70?"#ef4444":s.percentage>50?"#f59e0b":"#10b981"} height={5}/>
+                    <Bar value={s.percentage} color={s.percentage > 70 ? "#ef4444" : s.percentage > 50 ? "#f59e0b" : "#10b981"} />
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* CTAs */}
-            <div style={{display:"flex", gap:"10px"}}>
-              <button onClick={()=>router.push("/tools/burnout?view=manager")}
-                style={{flex:1, background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"800", cursor:"pointer"}}>
-                Full team dashboard →
-              </button>
-              <button onClick={()=>router.push("/scripts")}
-                style={{flex:1, background:"rgba(201,168,76,0.08)", border:"1px solid rgba(201,168,76,0.25)", color:gold, padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"700", cursor:"pointer"}}>
-                💬 Conversation scripts
-              </button>
-              <button onClick={()=>router.push("/onboarding")}
-                style={{flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.5)", padding:"13px", borderRadius:"10px", fontSize:"13px", fontWeight:"600", cursor:"pointer"}}>
-                Invite more people
-              </button>
-            </div>
+            <button onClick={() => router.push("/tools/burnout?view=manager")}
+              style={{ width: "100%", background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "12px", borderRadius: "10px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
+              Full team dashboard →
+            </button>
           </div>
         ) : (
-          <div style={{textAlign:"center", padding:"60px"}}>
-            <p style={{color:"rgba(255,255,255,0.3)", fontSize:"14px"}}>No data yet. Take the first check-in to get started.</p>
-            <button onClick={()=>router.push("/tools/burnout")} style={{marginTop:"16px", background:`linear-gradient(135deg,${gold},#f0d080)`, color:"#0f172a", border:"none", padding:"12px 28px", borderRadius:"10px", fontSize:"14px", fontWeight:"800", cursor:"pointer"}}>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "40px", textAlign: "center", marginBottom: "24px" }}>
+            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "13px", margin: "0 0 16px" }}>No team data yet. Take the first check-in to get started.</p>
+            <button onClick={() => router.push("/tools/burnout")} style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "11px 24px", borderRadius: "9px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
               Take check-in →
             </button>
           </div>
         )}
+
+        {/* Tools grid */}
+        <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.25)", marginBottom: "12px", letterSpacing: "0.07em" }}>AI TOOLS</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px", marginBottom: "28px" }}>
+          {TOOLS.map(tool => (
+            <button key={tool.id} onClick={() => router.push(tool.href)}
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px", textAlign: "left", cursor: "pointer", transition: "border-color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"}>
+              <div style={{ fontSize: "22px", marginBottom: "8px" }}>{tool.icon}</div>
+              <p style={{ fontSize: "13px", fontWeight: "700", color: "#f8fafc", margin: "0 0 3px" }}>{tool.name}</p>
+              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", margin: 0 }}>{tool.desc}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Bottom row: integrations + quick actions */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+
+          {/* Integrations status */}
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "14px", padding: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+              <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: 0, letterSpacing: "0.06em" }}>INTEGRATIONS</p>
+              <button onClick={() => router.push("/integrations")}
+                style={{ fontSize: "11px", color: gold, background: "none", border: "none", cursor: "pointer", fontWeight: "600" }}>
+                Manage →
+              </button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {[
+                { label: "Slack", connected: slackConnected, icon: "💬" },
+                ...["bamboohr", "hibob", "personio", "csv"].map(p => ({
+                  label: p === "csv" ? "CSV Import" : p.charAt(0).toUpperCase() + p.slice(1),
+                  connected: integrations.some(c => c.provider === p),
+                  icon: p === "bamboohr" ? "🎋" : p === "hibob" ? "👋" : p === "personio" ? "🟠" : "📄",
+                })),
+              ].map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "14px" }}>{item.icon}</span>
+                    <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.55)" }}>{item.label}</span>
+                  </div>
+                  <span style={{ fontSize: "10px", fontWeight: "700", color: item.connected ? "#6ee7b7" : "rgba(255,255,255,0.2)", background: item.connected ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "999px" }}>
+                    {item.connected ? "CONNECTED" : "NOT SET"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick actions */}
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "14px", padding: "20px" }}>
+            <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: "0 0 14px", letterSpacing: "0.06em" }}>QUICK ACTIONS</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {QUICK_ACTIONS.map((a, i) => (
+                <button key={i} onClick={() => router.push(a.href)}
+                  style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "9px", padding: "10px 14px", cursor: "pointer", textAlign: "left" }}>
+                  <span style={{ fontSize: "16px" }}>{a.icon}</span>
+                  <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", fontWeight: "500" }}>{a.label}</span>
+                </button>
+              ))}
+              {slackConnected && (
+                <button onClick={() => sendCheckin("pulse")} disabled={checkinLoading}
+                  style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "9px", padding: "10px 14px", cursor: "pointer", textAlign: "left" }}>
+                  <span style={{ fontSize: "16px" }}>💬</span>
+                  <span style={{ fontSize: "13px", color: gold, fontWeight: "600" }}>{checkinSent ? "✓ Sent!" : "Send Slack pulse check-in"}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
