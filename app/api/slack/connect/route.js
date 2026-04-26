@@ -73,25 +73,34 @@ export async function POST(req) {
   }
 }
 
-// GET /api/slack/connect — get current Slack config for org
+// GET /api/slack/connect — get current Slack config + OAuth URL
 export async function GET() {
+  const base = process.env.NEXT_PUBLIC_URL || "https://psychflo-website.vercel.app";
+  const clientId = process.env.SLACK_CLIENT_ID;
+  const scopes = "incoming-webhook,chat:write,chat:write.public,channels:read";
+  const redirectUri = encodeURIComponent(`${base}/api/slack/oauth`);
+  const oauthUrl = clientId
+    ? `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}`
+    : null;
+
   try {
     const db = getSupabaseServer();
     const orgId = await getOrgFromSession(db);
-    if (!orgId) return Response.json({ connected: false });
+    if (!orgId) return Response.json({ connected: false, oauthUrl });
 
     const { data: conn } = await db.from("hris_connections")
       .select("api_key,client_id,subdomain,status")
       .eq("org_id", orgId).eq("provider", "slack").single();
 
-    if (!conn) return Response.json({ connected: false });
+    if (!conn) return Response.json({ connected: false, oauthUrl });
     return Response.json({
       connected: true,
       hasWebhook: !!conn.api_key,
       hasBot: !!conn.client_id,
       channelId: conn.subdomain,
+      oauthUrl,
     });
   } catch {
-    return Response.json({ connected: false });
+    return Response.json({ connected: false, oauthUrl });
   }
 }

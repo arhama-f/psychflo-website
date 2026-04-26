@@ -1,0 +1,34 @@
+{
+  "display_information": {
+    "name": "PsychFlo",
+    "description": "Psychological safety alerts and check-in prompts for your team",
+    "background_color": "#0f172a",
+    "long_description": "PsychFlo connects to your Slack workspace to send real-time psychological safety alerts when flags are detected in standups or onboarding check-ins, and to deliver daily check-in prompts directly to your team channels."
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "PsychFlo",
+      "always_online": true
+    }
+  },
+  "oauth_config": {
+    "redirect_urls": [
+      "https://psychflo-website.vercel.app/api/slack/oauth"
+    ],
+    "scopes": {
+      "bot": [
+        "chat:write",
+        "chat:write.public",
+        "incoming-webhook",
+        "channels:read",
+        "users:read",
+        "users:read.email"
+      ]
+    }
+  },
+  "settings": {
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
