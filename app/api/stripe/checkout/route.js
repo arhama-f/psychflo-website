@@ -82,7 +82,7 @@ export async function POST(req) {
       sessionParams.success_url = `${baseUrl}/dashboard?upgraded=true`;
       sessionParams.subscription_data = {
         metadata: { orgId: resolvedOrgId || "", plan: plan || "custom" },
-        trial_period_days: 14,
+        trial_period_days: 7,
       };
     }
 
