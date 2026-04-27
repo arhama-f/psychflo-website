@@ -21,10 +21,10 @@ export default function PolicyTool() {
   const handleOneTimePurchase = async () => {
     setOnceLoading(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: "policy_once", email: subEmail || undefined }),
+        body: JSON.stringify({ plan: "team", email: subEmail || undefined }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
@@ -35,10 +35,10 @@ export default function PolicyTool() {
   const handleSubscribe = async (priceId) => {
     setCheckoutLoading(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, email: subEmail || undefined }),
+        body: JSON.stringify({ plan: "team", email: subEmail || undefined }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
@@ -46,12 +46,8 @@ export default function PolicyTool() {
     setCheckoutLoading(false);
   };
 
-  const handleManageBilling = async () => {
-    try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-    } catch {}
+  const handleManageBilling = () => {
+    window.open("https://app.lemonsqueezy.com/my-orders", "_blank");
   };
 
   const gold = "#c9a84c";
@@ -303,7 +299,7 @@ export default function PolicyTool() {
                 onChange={(e) => setSubEmail(e.target.value)}
                 style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "10px 14px", color: "#f8fafc", fontSize: "13px", outline: "none", boxSizing: "border-box", marginBottom: "12px" }}
               />
-              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.2)" }}>Secure payment via Stripe · Cancel anytime · No contracts</p>
+              <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.2)" }}>Secure payment via Lemon Squeezy · Cancel anytime · No contracts</p>
             </div>
           </div>
         )}

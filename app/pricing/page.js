@@ -51,7 +51,7 @@ export default function Pricing() {
     if (plan.href) { router.push(plan.href); return; }
     setLoading(plan.id);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ plan: plan.id }),
