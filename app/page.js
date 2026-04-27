@@ -51,17 +51,17 @@ export default function Home() {
         <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.45)", margin: "0 0 40px", lineHeight: "1.7", maxWidth: "620px", marginLeft: "auto", marginRight: "auto" }}>
           9 AI-powered tools built on organisational psychology research. Prevent tribunal risk, reduce burnout, improve retention, and build psychologically safe workplaces — all in one platform.
         </p>
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "20px" }}>
-          <button onClick={() => router.push("/tools/policy")}
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "16px" }}>
+          <button onClick={() => router.push("/auth/signup")}
             style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "16px 32px", borderRadius: "12px", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>
-            Try 1 HR policy page free
+            Start free 7-day trial →
           </button>
           <button onClick={() => router.push("/demo")}
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "16px 32px", borderRadius: "12px", fontSize: "15px", fontWeight: "600", cursor: "pointer" }}>
             Book a demo
           </button>
         </div>
-        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.2)", margin: 0 }}>Free access includes 1 HR policy page only</p>
+        <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", margin: 0 }}>No credit card required · Full access · Cancel before day 7 and pay nothing</p>
       </div>
 
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 24px 80px" }}>

@@ -13,9 +13,10 @@ const PLANS = [
     period: "per month",
     desc: "For teams of over 20 people that need weekly wellbeing visibility.",
     features: ["Best for teams with 20+ people", "Team burnout dashboard", "Anonymised risk map", "Manager conversation scripts", "Weekly action plans", "Email reminders", "Slack integration"],
-    cta: "Get started",
+    cta: "Start free 7-day trial",
     highlight: true,
     badge: "Most popular",
+    trial: true,
   },
   {
     id: "growth",
@@ -24,18 +25,21 @@ const PLANS = [
     period: "per month",
     desc: "For HR teams managing multiple departments.",
     features: ["Everything in Team", "Org-wide risk dashboard", "Department breakdown", "Cost-of-burnout calculator", "HR admin panel", "Custom benchmarks", "Priority support"],
-    cta: "Get started",
+    cta: "Start free 7-day trial",
     highlight: false,
+    trial: true,
   },
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "£600",
+    price: "Custom",
     period: "per month",
     desc: "For larger organisations that need deeper support and rollout control.",
-    features: ["Everything in Growth", "HRIS integration", "SSO / SAML", "Dedicated customer support", "Custom reporting", "SLA guarantee", "Priority implementation"],
-    cta: "Get started",
+    features: ["Everything in Growth", "HRIS integration", "SSO / SAML", "Dedicated customer success", "Custom reporting", "99.99% SLA", "Priority implementation"],
+    cta: "Book a demo",
     highlight: false,
+    href: "/demo",
+    trial: false,
   },
 ];
 
@@ -67,13 +71,16 @@ export default function Pricing() {
       <div style={{maxWidth:"960px", margin:"0 auto", padding:"60px 24px"}}>
 
         <div style={{textAlign:"center", marginBottom:"48px"}}>
+          <div style={{display:"inline-flex", alignItems:"center", gap:"8px", background:"rgba(16,185,129,0.1)", border:"1px solid rgba(16,185,129,0.25)", color:"#6ee7b7", fontSize:"12px", fontWeight:"700", padding:"6px 16px", borderRadius:"999px", marginBottom:"20px", letterSpacing:"0.05em"}}>
+            ✦ FREE 7-DAY TRIAL — NO CARD REQUIRED
+          </div>
           <h1 style={{fontSize:"38px", fontWeight:"800", color:"#f8fafc", margin:"0 0 12px", letterSpacing:"-0.03em"}}>
             Simple, transparent pricing
           </h1>
           <p style={{fontSize:"16px", color:"rgba(255,255,255,0.4)", margin:"0 0 8px"}}>
-            Three paid plans for growing teams and organisations.
+            Try any plan free for 7 days. Cancel anytime. No credit card needed to start.
           </p>
-          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)"}}>No free trial · Straightforward monthly pricing</p>
+          <p style={{fontSize:"13px", color:"rgba(255,255,255,0.25)"}}>Full access · No commitment · Cancel before day 7 and pay nothing</p>
         </div>
 
         <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"14px", marginBottom:"48px"}}>
@@ -88,11 +95,15 @@ export default function Pricing() {
                 <h3 style={{fontSize:"16px", fontWeight:"700", color:"#f8fafc", margin:"0 0 4px"}}>{plan.name}</h3>
                 <div style={{display:"flex", alignItems:"baseline", gap:"4px", marginBottom:"6px"}}>
                   <span style={{fontSize:"28px", fontWeight:"800", color:plan.highlight?gold:"#f8fafc"}}>{plan.price}</span>
-                  {plan.period !== "forever" && plan.price !== "Custom" && (
+                  {plan.price !== "Custom" && (
                     <span style={{fontSize:"11px", color:"rgba(255,255,255,0.35)"}}>{plan.period}</span>
                   )}
-                  {plan.period === "forever" && <span style={{fontSize:"11px", color:"rgba(255,255,255,0.35)"}}>forever</span>}
                 </div>
+                {plan.trial && (
+                  <div style={{display:"inline-flex", alignItems:"center", gap:"5px", background:"rgba(16,185,129,0.1)", border:"1px solid rgba(16,185,129,0.2)", color:"#6ee7b7", fontSize:"10px", fontWeight:"700", padding:"3px 8px", borderRadius:"999px", marginBottom:"8px", letterSpacing:"0.04em"}}>
+                    ✦ 7 days free · No card required
+                  </div>
+                )}
                 <p style={{fontSize:"12px", color:"rgba(255,255,255,0.4)", margin:0, lineHeight:"1.5"}}>{plan.desc}</p>
               </div>
 

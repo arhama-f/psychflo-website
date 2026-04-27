@@ -53,10 +53,10 @@ export default function Signup() {
 
         <div style={{textAlign:"center", marginBottom:"28px"}}>
           <h1 style={{fontSize:"24px", fontWeight:"800", color:"#f8fafc", margin:"0 0 8px"}}>
-            {step===1 ? "Create your account" : "Tell us about your organisation"}
+            {step===1 ? "Start your free trial" : "Tell us about your organisation"}
           </h1>
           <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:0}}>
-            {step===1 ? "Free 14-day trial · No card required" : "Helps us personalise your dashboard"}
+            {step===1 ? "7 days free · No credit card required" : "Helps us personalise your dashboard"}
           </p>
         </div>
 

@@ -102,6 +102,23 @@ function Dashboard() {
       <Nav />
       <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "48px 24px 80px" }}>
 
+        {/* Trial banner — shown during 7-day trial */}
+        {!upgraded && (
+          <div style={{ background: "rgba(201,168,76,0.07)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: "14px", padding: "14px 20px", marginBottom: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ fontSize: "20px" }}>⏳</span>
+              <div>
+                <p style={{ fontSize: "13px", fontWeight: "700", color: gold, margin: "0 0 2px" }}>You&apos;re on a free 7-day trial — 6 days remaining</p>
+                <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: 0 }}>Full access to all features. No charge until day 7. Cancel anytime.</p>
+              </div>
+            </div>
+            <button onClick={() => router.push("/pricing")}
+              style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px 20px", borderRadius: "9px", fontSize: "13px", fontWeight: "800", cursor: "pointer", whiteSpace: "nowrap" }}>
+              Upgrade now →
+            </button>
+          </div>
+        )}
+
         {upgraded && (
           <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "12px", padding: "14px 20px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "10px" }}>
             <span style={{ fontSize: "18px" }}>🎉</span>
