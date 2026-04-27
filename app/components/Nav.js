@@ -28,6 +28,7 @@ export default function Nav() {
         <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => router.push("/")}>
           <img src="/logo.svg" alt="PsychFlo" style={{ width: "32px", height: "32px", objectFit: "contain", filter: "invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(0.85)" }} />
           <span style={{ color: "#f8fafc", fontWeight: "700", fontSize: "16px", letterSpacing: "-0.01em" }}>PsychFlo</span>
+          <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "11px", fontWeight: "500", letterSpacing: "0.02em", borderLeft: "1px solid rgba(255,255,255,0.1)", paddingLeft: "10px", marginLeft: "2px" }}>Workforce Intelligence Platform</span>
         </div>
       </div>
 
