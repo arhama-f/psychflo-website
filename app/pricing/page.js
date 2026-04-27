@@ -115,6 +115,24 @@ export default function Pricing() {
           ))}
         </div>
 
+        {/* SLA guarantee strip */}
+        <div style={{background:"rgba(201,168,76,0.04)", border:"1px solid rgba(201,168,76,0.15)", borderRadius:"14px", padding:"20px 28px", marginBottom:"20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"12px"}}>
+          <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
+            <span style={{fontSize:"24px"}}>🛡️</span>
+            <div>
+              <p style={{fontSize:"13px", fontWeight:"700", color:gold, margin:"0 0 2px"}}>99.9% Uptime SLA — Growth & Enterprise plans</p>
+              <p style={{fontSize:"12px", color:"rgba(255,255,255,0.4)", margin:0}}>Automatic service credits if we miss the mark. No questions asked.</p>
+            </div>
+          </div>
+          <div style={{display:"flex", gap:"10px", flexShrink:0}}>
+            <a href="/sla" style={{background:"rgba(201,168,76,0.12)", border:"1px solid rgba(201,168,76,0.25)", color:gold, padding:"8px 16px", borderRadius:"8px", fontSize:"12px", fontWeight:"700", textDecoration:"none"}}>View SLA →</a>
+            <a href="/status" style={{background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.2)", color:"#6ee7b7", padding:"8px 16px", borderRadius:"8px", fontSize:"12px", fontWeight:"700", textDecoration:"none", display:"flex", alignItems:"center", gap:"6px"}}>
+              <span style={{width:"6px", height:"6px", borderRadius:"50%", background:"#10b981", display:"inline-block"}}></span>
+              Status
+            </a>
+          </div>
+        </div>
+
         <div style={{background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:"16px", padding:"32px", textAlign:"center"}}>
           <h3 style={{fontSize:"18px", fontWeight:"700", color:"#f8fafc", margin:"0 0 8px"}}>The ROI is immediate</h3>
           <p style={{fontSize:"14px", color:"rgba(255,255,255,0.4)", margin:"0 0 24px"}}>For a team of 20+ people on the Team plan at £100/month</p>

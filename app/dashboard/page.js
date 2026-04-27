@@ -6,23 +6,26 @@ import Nav from "../components/Nav";
 const gold = "#c9a84c";
 
 const TOOLS = [
-  { id: "burnout", icon: "🔥", name: "Burnout Monitor", desc: "Team risk scores & trends", href: "/tools/burnout?view=manager" },
-  { id: "standup", icon: "💬", name: "Standup Safety", desc: "AI-scored async standups", href: "/tools/standup" },
-  { id: "coaching", icon: "🎯", name: "Manager Coaching", desc: "Practice hard conversations", href: "/tools/coaching" },
-  { id: "cogload", icon: "🧠", name: "Cognitive Load", desc: "Flow state & interruptions", href: "/tools/cogload" },
-  { id: "onboarding", icon: "📊", name: "Onboarding Tracker", desc: "90-day belonging score", href: "/tools/onboarding" },
-  { id: "journaling", icon: "📓", name: "Reflective Journal", desc: "CBT-powered journaling", href: "/tools/journaling" },
-  { id: "grief", icon: "💛", name: "Grief Support", desc: "Compassionate guidance", href: "/tools/grief" },
-  { id: "ux", icon: "🔬", name: "UX Research", desc: "Transcript & insight analysis", href: "/tools/ux-research" },
-  { id: "policy", icon: "📋", name: "Policy Analyser", desc: "Mental health policy audit", href: "/tools/policy" },
+  { id: "burnout",      icon: "🔥", name: "Burnout Monitor",       desc: "Team risk scores & trends",        href: "/tools/burnout?view=manager" },
+  { id: "standup",      icon: "💬", name: "Standup Safety",         desc: "AI-scored async standups",         href: "/tools/standup" },
+  { id: "coaching",     icon: "🎯", name: "Manager Coaching",       desc: "Practice hard conversations",      href: "/tools/coaching" },
+  { id: "cogload",      icon: "🧠", name: "Cognitive Load",         desc: "Flow state & interruptions",       href: "/tools/cogload" },
+  { id: "onboarding",   icon: "📊", name: "Onboarding Tracker",     desc: "90-day belonging score",           href: "/tools/onboarding" },
+  { id: "journaling",   icon: "📓", name: "Reflective Journal",     desc: "CBT-powered journaling",           href: "/tools/journaling" },
+  { id: "grief",        icon: "💛", name: "Grief Support",          desc: "Compassionate guidance",           href: "/tools/grief" },
+  { id: "ux",           icon: "🔬", name: "UX Research",            desc: "Transcript & insight analysis",    href: "/tools/ux-research" },
+  { id: "policy",       icon: "📋", name: "Policy Analyser",        desc: "Mental health policy audit",       href: "/tools/policy" },
+  { id: "benchmarks",   icon: "📈", name: "Industry Benchmarks",    desc: "How you compare to peers",         href: "/benchmarks" },
+  { id: "compliance",   icon: "🏛️", name: "ISO 45003 Compliance",   desc: "Audit trail & evidence pack",      href: "/compliance" },
+  { id: "pulse",        icon: "💗", name: "Daily Pulse",            desc: "Employee 30-sec check-in",         href: "/pulse" },
 ];
 
 const QUICK_ACTIONS = [
-  { label: "Export report", icon: "📄", href: "/report" },
-  { label: "Invite team", icon: "✉️", href: "/onboarding" },
-  { label: "Integrations", icon: "🔗", href: "/integrations" },
-  { label: "SSO / SAML", icon: "🔒", href: "/settings/sso" },
-  { label: "Pricing", icon: "⭐", href: "/pricing" },
+  { label: "Flight Risk Dashboard", icon: "🚨", href: "/attrition",          highlight: true },
+  { label: "Board Report",          icon: "📄", href: "/report/board" },
+  { label: "Benchmarks",            icon: "📈", href: "/benchmarks" },
+  { label: "Compliance / ISO 45003",icon: "🏛️", href: "/compliance" },
+  { label: "Invite team",           icon: "✉️", href: "/onboarding" },
 ];
 
 export default function DashboardPage() {
@@ -44,6 +47,8 @@ function Dashboard() {
   const [slackConnected, setSlackConnected] = useState(false);
   const [checkinLoading, setCheckinLoading] = useState(false);
   const [checkinSent, setCheckinSent] = useState(false);
+  const [attritionSummary, setAttritionSummary] = useState({ at_risk: 3, critical: 1, avg_risk: 45 });
+  const [roi, setRoi] = useState(null);
 
   useEffect(() => {
     fetch("/api/team")
@@ -59,6 +64,16 @@ function Dashboard() {
     fetch("/api/slack/connect")
       .then(r => r.json())
       .then(d => setSlackConnected(d.connected || false))
+      .catch(() => null);
+
+    fetch("/api/attrition?org_id=demo")
+      .then(r => r.json())
+      .then(d => { if (d.summary) setAttritionSummary(d.summary); })
+      .catch(() => null);
+
+    fetch("/api/report/board?org_id=demo")
+      .then(r => r.json())
+      .then(d => { if (d.financials) setRoi(d.financials); })
       .catch(() => null);
   }, []);
 
@@ -190,6 +205,71 @@ function Dashboard() {
           </div>
         )}
 
+        {/* Attrition risk widget */}
+        <div onClick={() => router.push("/attrition")}
+          style={{ background: attritionSummary.critical > 0 ? "rgba(239,68,68,0.06)" : "rgba(255,255,255,0.03)", border: `1px solid ${attritionSummary.critical > 0 ? "rgba(239,68,68,0.2)" : "rgba(255,255,255,0.07)"}`, borderRadius: "14px", padding: "18px 22px", marginBottom: "24px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: attritionSummary.critical > 0 ? "rgba(239,68,68,0.12)" : "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", flexShrink: 0 }}>🚨</div>
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: "700", color: "#f8fafc", margin: "0 0 2px" }}>Predictive Attrition</p>
+              <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: 0 }}>
+                <span style={{ color: attritionSummary.at_risk > 0 ? "#fb923c" : "#10b981", fontWeight: "700" }}>{attritionSummary.at_risk} employees</span> at high or critical flight risk · Org avg risk: {attritionSummary.avg_risk}/100
+              </p>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+            {attritionSummary.critical > 0 && (
+              <span style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)", color: "#fca5a5", fontSize: "11px", fontWeight: "700", padding: "4px 10px", borderRadius: "999px" }}>
+                🔴 {attritionSummary.critical} CRITICAL
+              </span>
+            )}
+            <span style={{ color: gold, fontSize: "13px", fontWeight: "700" }}>View →</span>
+          </div>
+        </div>
+
+        {/* Live ROI widget + Manager Effectiveness */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "24px" }}>
+          {/* ROI Widget */}
+          <div style={{ background: "rgba(201,168,76,0.05)", border: "1px solid rgba(201,168,76,0.18)", borderRadius: "14px", padding: "20px 22px" }}>
+            <p style={{ fontSize: "10px", fontWeight: "700", color: gold, margin: "0 0 14px", letterSpacing: "0.08em" }}>LIVE ROI CALCULATOR</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
+              {[
+                { label: "Cost exposure", value: roi ? `£${(roi.attrition_exposure || 0).toLocaleString("en-GB")}` : "£120,000", color: "#fb923c" },
+                { label: "Cost prevented", value: roi ? `£${(roi.cost_prevented || 0).toLocaleString("en-GB")}` : "£104,000", color: "#10b981" },
+                { label: "Platform cost", value: roi ? `£${(roi.psychflo_cost || 0).toLocaleString("en-GB")}/yr` : "£3,600/yr", color: "rgba(255,255,255,0.45)" },
+                { label: "Your ROI", value: roi ? `${roi.roi || 0}x` : "29x", color: gold },
+              ].map((s, i) => (
+                <div key={i} style={{ background: "rgba(0,0,0,0.2)", borderRadius: "8px", padding: "10px 12px" }}>
+                  <p style={{ fontSize: "9px", fontWeight: "700", color: "rgba(255,255,255,0.3)", margin: "0 0 4px", letterSpacing: "0.05em" }}>{s.label.toUpperCase()}</p>
+                  <div style={{ fontSize: "18px", fontWeight: "900", color: s.color }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => router.push("/report/board")}
+              style={{ width: "100%", background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px", borderRadius: "8px", fontSize: "12px", fontWeight: "800", cursor: "pointer" }}>
+              Generate Board Report →
+            </button>
+          </div>
+
+          {/* Manager Effectiveness */}
+          <div onClick={() => router.push("/manager-effectiveness")}
+            style={{ background: "rgba(139,92,246,0.05)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: "14px", padding: "20px 22px", cursor: "pointer" }}>
+            <p style={{ fontSize: "10px", fontWeight: "700", color: "#a78bfa", margin: "0 0 14px", letterSpacing: "0.08em" }}>MANAGER EFFECTIVENESS</p>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+              {[{ name: "J. Park", grade: "A+", color: "#10b981" }, { name: "R. Torres", grade: "A", color: "#6ee7b7" }, { name: "D. Kim", grade: "B", color: gold }, { name: "S. Obi", grade: "C", color: "#fb923c" }].map((m, i) => (
+                <div key={i} style={{ flex: 1, background: "rgba(0,0,0,0.2)", borderRadius: "8px", padding: "8px", textAlign: "center" }}>
+                  <div style={{ fontSize: "16px", fontWeight: "900", color: m.color }}>{m.grade}</div>
+                  <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.3)", marginTop: "3px" }}>{m.name}</div>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: "0 0 12px", lineHeight: "1.5" }}>1 manager needs urgent coaching. 1 is a model to replicate.</p>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+              <span style={{ fontSize: "12px", color: "#a78bfa", fontWeight: "700" }}>View all managers →</span>
+            </div>
+          </div>
+        </div>
+
         {/* Tools grid */}
         <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.25)", marginBottom: "12px", letterSpacing: "0.07em" }}>AI TOOLS</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px", marginBottom: "28px" }}>
@@ -245,9 +325,9 @@ function Dashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {QUICK_ACTIONS.map((a, i) => (
                 <button key={i} onClick={() => router.push(a.href)}
-                  style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "9px", padding: "10px 14px", cursor: "pointer", textAlign: "left" }}>
+                  style={{ display: "flex", alignItems: "center", gap: "10px", background: a.highlight ? "rgba(239,68,68,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${a.highlight ? "rgba(239,68,68,0.2)" : "rgba(255,255,255,0.07)"}`, borderRadius: "9px", padding: "10px 14px", cursor: "pointer", textAlign: "left" }}>
                   <span style={{ fontSize: "16px" }}>{a.icon}</span>
-                  <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", fontWeight: "500" }}>{a.label}</span>
+                  <span style={{ fontSize: "13px", color: a.highlight ? "#fca5a5" : "rgba(255,255,255,0.6)", fontWeight: a.highlight ? "700" : "500" }}>{a.label}</span>
                 </button>
               ))}
               {slackConnected && (
