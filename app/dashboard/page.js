@@ -258,7 +258,7 @@ function Dashboard() {
               </button>
               <button onClick={() => router.push("/founding")}
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)", padding: "11px 22px", borderRadius: "12px", fontSize: "12px", fontWeight: "600", cursor: "pointer", whiteSpace: "nowrap", textAlign: "center" }}>
-                Book Full Audit — $750
+                Book Full Audit — £750
               </button>
             </div>
           </div>

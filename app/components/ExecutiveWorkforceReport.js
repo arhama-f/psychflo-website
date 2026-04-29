@@ -238,7 +238,7 @@ export default function ExecutiveWorkforceReport({ scores, companyName, onBook, 
           {[
             { label: "Estimated financial exposure", value: `£${estImpact.toLocaleString("en-GB")}`, sub: "if risks go unaddressed (12 months)", color: "#fca5a5" },
             { label: "Preventable with intervention", value: `£${Math.round(estImpact * 0.7).toLocaleString("en-GB")}`, sub: "estimated savings with PsychFlo monitoring", color: "#6ee7b7" },
-            { label: "ROI on Growth Prevention plan", value: `${Math.max(3, Math.round(estImpact * 0.7 / 24000))}×`, sub: "vs $2,000/month platform cost", color: gold },
+            { label: "ROI on Growth Prevention plan", value: `${Math.max(3, Math.round(estImpact * 0.7 / 24000))}×`, sub: "vs £2,000/month platform cost", color: gold },
           ].map((s, i) => (
             <div key={i} style={{ background: "rgba(0,0,0,0.2)", borderRadius: "12px", padding: "18px" }}>
               <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginBottom: "8px", letterSpacing: "0.04em" }}>{s.label.toUpperCase()}</div>
@@ -348,7 +348,7 @@ export default function ExecutiveWorkforceReport({ scores, companyName, onBook, 
           {onBook && (
             <button onClick={onBook}
               style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "15px 32px", borderRadius: "10px", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>
-              Book Audit — $750 →
+              Book Audit — £750 →
             </button>
           )}
           {onGrowth && (

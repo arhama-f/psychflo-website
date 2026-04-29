@@ -131,7 +131,7 @@ export default function HowItWorksPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "0" }}>
               {[
                 { day: "Day 0", event: "Run diagnostic", sub: "5 minutes" },
-                { day: "Day 0", event: "Book audit", sub: "$750 one-time" },
+                { day: "Day 0", event: "Book audit", sub: "£750 one-time" },
                 { day: "Day 1", event: "Engines analyse", sub: "AI processing" },
                 { day: "Day 2", event: "Report delivered", sub: "Board-ready PDF" },
                 { day: "Day 3", event: "Actions started", sub: "30-day plan live" },
@@ -191,7 +191,7 @@ export default function HowItWorksPage() {
               },
               {
                 q: "What happens after the 30-day plan?",
-                a: "You can book a follow-up audit to measure improvement, or move to a monthly Growth Prevention System subscription ($2,000/month) for continuous monitoring, quarterly executive reports, and manager coaching support.",
+                a: "You can book a follow-up audit to measure improvement, or move to a monthly Growth Prevention System subscription (£2,000/month) for continuous monitoring, quarterly executive reports, and manager coaching support.",
               },
             ].map((faq, i) => (
               <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "20px 24px" }}>

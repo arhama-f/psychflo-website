@@ -11,7 +11,7 @@ const INCLUDES = [
   { icon: "📞", title: "60-minute expert debrief call", desc: "We walk through the findings with your leadership team and answer every question." },
   { icon: "🎯", title: "30-day priority action plan", desc: "Specific steps, owners, and week-by-week sequencing — ready to execute on Monday." },
   { icon: "📊", title: "Industry benchmark comparison", desc: "How your scores compare against sector peers with similar headcount." },
-  { icon: "⭐", title: "Founding client credit", desc: "The $750 audit fee counts as full credit if you upgrade to a subscription within 30 days." },
+  { icon: "⭐", title: "Founding client credit", desc: "The £750 audit fee counts as full credit if you upgrade to a subscription within 30 days." },
 ];
 
 const FOR_WHO = [
@@ -117,7 +117,7 @@ export default function BookAuditPage() {
         {/* ── Hero ── */}
         <div style={{ textAlign: "center", marginBottom: "70px" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(201,168,76,0.08)", border: "1px solid rgba(201,168,76,0.2)", color: gold, fontSize: "11px", fontWeight: "700", padding: "5px 14px", borderRadius: "999px", marginBottom: "22px", letterSpacing: "0.07em" }}>
-            📋 WORKFORCE RISK AUDIT · $750 ONE-TIME
+            📋 WORKFORCE RISK AUDIT · £750 ONE-TIME
           </div>
           <h1 style={{ fontSize: "44px", fontWeight: "800", color: "#f8fafc", margin: "0 0 18px", lineHeight: "1.08", letterSpacing: "-0.03em" }}>
             Know your workforce risk<br />
@@ -169,8 +169,8 @@ export default function BookAuditPage() {
                 { label: "Format",          value: "Board-ready PDF + live online view" },
                 { label: "Call",            value: "60-minute expert walkthrough included" },
                 { label: "Action plan",     value: "30-day plan with named owners" },
-                { label: "Price",           value: "$750 one-time — no lock-in" },
-                { label: "Upgrade credit",  value: "Full $750 credited toward any plan" },
+                { label: "Price",           value: "£750 one-time — no lock-in" },
+                { label: "Upgrade credit",  value: "Full £750 credited toward any plan" },
               ].map((r, i) => (
                 <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: i < 5 ? "1px solid rgba(255,255,255,0.05)" : "none", paddingBottom: i < 5 ? "10px" : 0, marginBottom: i < 5 ? "10px" : 0, gap: "12px" }}>
                   <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>{r.label}</span>
@@ -259,7 +259,7 @@ export default function BookAuditPage() {
 
                 <button type="submit" disabled={loading}
                   style={{ width: "100%", background: loading ? "rgba(201,168,76,0.4)" : `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "15px", borderRadius: "11px", fontSize: "15px", fontWeight: "800", cursor: loading ? "not-allowed" : "pointer" }}>
-                  {loading ? "Booking…" : "Book Audit — $750 →"}
+                  {loading ? "Booking…" : "Book Audit — £750 →"}
                 </button>
 
                 <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.2)", textAlign: "center", margin: "12px 0 0", lineHeight: "1.55" }}>

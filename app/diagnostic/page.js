@@ -153,7 +153,7 @@ function ResultScreen({ scores, form, onRetake }) {
         <button
           onClick={() => router.push("/auth/signup")}
           style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", padding: "11px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: "pointer", marginBottom: "10px" }}>
-          Book Workforce Risk Audit — $750 →
+          Book Workforce Risk Audit — £750 →
         </button>
         <button
           onClick={() => router.push("/pricing")}

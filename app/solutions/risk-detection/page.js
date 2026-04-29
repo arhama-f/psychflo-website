@@ -169,7 +169,7 @@ export default function RiskDetectionPage() {
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginBottom: "14px" }}>
               <button onClick={() => router.push("/founding")}
                 style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "15px 32px", borderRadius: "10px", fontSize: "15px", fontWeight: "800", cursor: "pointer" }}>
-                Book Audit — $750 →
+                Book Audit — £750 →
               </button>
               <button onClick={() => router.push("/solutions/retention-burnout")}
                 style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)", padding: "15px 28px", borderRadius: "10px", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>
