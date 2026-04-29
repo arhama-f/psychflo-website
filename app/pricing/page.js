@@ -26,9 +26,9 @@ const AUDIT = {
 
 const PLANS = [
   {
-    id: "growth",
-    name: "Growth Prevention System",
-    price: "$2,000",
+    id: "team",
+    name: "Team Plan",
+    price: "£500",
     period: "/month",
     desc: "Continuous workforce intelligence across all 3 outcomes. Weekly executive reports, manager scorecards, and Slack alerts.",
     badge: null,
@@ -48,19 +48,19 @@ const PLANS = [
     href: "/founding",
   },
   {
-    id: "executive",
-    name: "Executive Workforce Intelligence",
-    price: "$3,500",
+    id: "growth",
+    name: "Growth Plan",
+    price: "£1,000",
     period: "/month",
-    desc: "Full platform with dedicated success manager, quarterly board presentations, and custom HRIS integration.",
+    desc: "For organisations of 150–200 people. Org-wide risk dashboard, department breakdowns, cost-of-burnout calculator, and priority support.",
     badge: null,
     highlight: false,
     features: [
-      "Everything in Growth Prevention System",
-      "Dedicated customer success manager",
-      "Quarterly board presentation (prepared for you)",
+      "Everything in Team Plan",
+      "Org-wide risk dashboard",
+      "Department-level breakdowns",
+      "Cost-of-burnout calculator",
       "Custom HRIS integration (BambooHR, HiBob, Personio)",
-      "SSO / SAML for enterprise auth",
       "ISO 45003 compliance evidence pack",
       "Bespoke benchmarking against sector peers",
       "Priority implementation (live in 48 hrs)",
@@ -71,19 +71,19 @@ const PLANS = [
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "Custom",
-    period: "",
-    desc: "Bespoke deployment for organisations with complex structures, regulatory requirements, or multi-entity reporting.",
+    price: "£2,000",
+    period: "/month",
+    desc: "Bespoke deployment for large organisations with complex structures, regulatory requirements, or multi-entity reporting.",
     badge: null,
     highlight: false,
     features: [
-      "Everything in Executive Workforce Intelligence",
+      "Everything in Growth Plan",
+      "Dedicated customer success manager",
+      "Quarterly board presentation (prepared for you)",
+      "SSO / SAML for enterprise auth",
       "Multi-entity / multi-country reporting",
-      "Custom AI model fine-tuning",
-      "Dedicated legal & compliance review",
       "SLA: 99.99% uptime guarantee",
       "On-site executive workshops",
-      "White-label option available",
       "Negotiated annual contract",
     ],
     cta: "Contact Us",
@@ -92,8 +92,8 @@ const PLANS = [
 ];
 
 const ROI_STATS = [
-  { value: "$750",    label: "Entry point — one audit" },
-  { value: "$130k+",  label: "Avg cost prevented per year" },
+  { value: "£750",    label: "Entry point — one audit" },
+  { value: "£130k+",  label: "Avg cost prevented per year" },
   { value: "43×",     label: "Typical ROI on Growth plan" },
   { value: "48 hrs",  label: "To your first Executive Report" },
 ];
@@ -296,10 +296,10 @@ export default function Pricing() {
               <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", letterSpacing: "0.07em", margin: "0 0 16px" }}>FOUNDING CLIENT PRICING vs STANDARD</p>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "12px" }}>
                 {[
-                  { plan: "Workforce Risk Audit",  standard: "$750",        founding: "Included free",  saving: "Save $750" },
-                  { plan: "Growth Prevention",     standard: "$2,000/mo",   founding: "$1,000/mo",      saving: "Save 50%" },
-                  { plan: "Executive Intelligence", standard: "$3,500/mo",  founding: "$1,750/mo",      saving: "Save 50%" },
-                  { plan: "Enterprise",            standard: "Custom",      founding: "Negotiated",     saving: "Preferred" },
+                  { plan: "Workforce Risk Audit",  standard: "£750",        founding: "Included free",  saving: "Save £750" },
+                  { plan: "Team Plan",             standard: "£500/mo",     founding: "£250/mo",        saving: "Save 50%" },
+                  { plan: "Growth Plan",           standard: "£1,000/mo",   founding: "£500/mo",        saving: "Save 50%" },
+                  { plan: "Enterprise",            standard: "£2,000/mo",   founding: "£1,000/mo",      saving: "Save 50%" },
                 ].map((r, i) => (
                   <div key={i} style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
                     <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", margin: "0 0 10px", lineHeight: "1.4" }}>{r.plan}</p>

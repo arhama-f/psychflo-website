@@ -120,15 +120,21 @@ export default function Home() {
     },
     {
       name: "Team Plan",
-      price: "£100", period: "/month",
+      price: "£500", period: "/month",
       desc: "Continuous monitoring across all 3 outcomes. Weekly reports, manager scorecards, Slack alerts. 7-day free trial.",
       cta: "Start Free Trial", href: "/pricing", highlight: true,
     },
     {
       name: "Growth Plan",
-      price: "£300", period: "/month",
-      desc: "Org-wide risk dashboard, department breakdowns, cost-of-burnout calculator, HR admin panel, and priority support.",
+      price: "£1,000", period: "/month",
+      desc: "For organisations of 150–200 people. Org-wide risk dashboard, department breakdowns, cost-of-burnout calculator, HR admin panel, and priority support.",
       cta: "Start Free Trial", href: "/pricing", highlight: false,
+    },
+    {
+      name: "Enterprise",
+      price: "£2,000", period: "/month",
+      desc: "Bespoke deployment for large organisations. Custom HRIS integration, dedicated success manager, quarterly board presentations, SSO, and SLA.",
+      cta: "Contact Us", href: "/pricing", highlight: false,
     },
   ];
 
