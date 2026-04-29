@@ -8,7 +8,7 @@ const gold = "#c9a84c";
 
 const AUDIT = {
   name: "Workforce Risk Audit",
-  price: "$750",
+  price: "£750",
   period: "one-time",
   badge: "START HERE",
   desc: "A complete workforce risk assessment delivered in 48 hours. You receive an Executive Report, board-ready PDF, and a 60-minute expert debrief call.",
@@ -100,7 +100,7 @@ const ROI_STATS = [
 
 const FOUNDING_BENEFITS = [
   { icon: "💰", title: "50% off for life",        desc: "Lock in half-price on any subscription plan. Price never increases." },
-  { icon: "📋", title: "Free Audit included",     desc: "The $750 Workforce Risk Audit is included at no charge." },
+  { icon: "📋", title: "Free Audit included",     desc: "The £750 Workforce Risk Audit is included at no charge." },
   { icon: "🎯", title: "Direct founder access",   desc: "Monthly calls with our founding team. You shape what we build." },
   { icon: "🚀", title: "White-glove onboarding",  desc: "We configure everything. You are live in 48 hours." },
   { icon: "🏆", title: "Roadmap influence",        desc: "Vote on features and join early beta programmes." },
