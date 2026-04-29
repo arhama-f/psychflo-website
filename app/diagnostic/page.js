@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "../components/Nav";
+import { calculateWorkforceRiskScores } from "../../lib/scoringUtils";
 
 const gold = "#c9a84c";
 
@@ -73,50 +74,7 @@ const STEPS = [
   },
 ];
 
-// ── Scoring logic ─────────────────────────────────────────────────────────────
-
-function calcScores(form) {
-  let workforceRisk = 0;
-  let burnoutRetention = 0;
-  let managerCulture = 0;
-
-  // Challenges multiselect
-  (form.challenges || []).forEach(val => {
-    const opt = STEPS[1].fields[0].options.find(o => o.value === val);
-    if (!opt) return;
-    workforceRisk    += opt.scores.workforceRisk    || 0;
-    burnoutRetention += opt.scores.burnoutRetention || 0;
-    managerCulture   += opt.scores.managerCulture   || 0;
-  });
-
-  // Sliders: each point above 1 adds weight to its category
-  const sliderWeight = 8;
-  workforceRisk    += ((form.policyConcern   || 1) - 1) * sliderWeight;
-  burnoutRetention += ((form.turnoverConcern || 1) - 1) * sliderWeight;
-  burnoutRetention += ((form.burnoutConcern  || 1) - 1) * sliderWeight;
-  managerCulture   += ((form.managerConcern  || 1) - 1) * sliderWeight;
-
-  // Urgency multiplier
-  if (form.urgency === "immediate") {
-    workforceRisk    = Math.round(workforceRisk    * 1.15);
-    burnoutRetention = Math.round(burnoutRetention * 1.15);
-    managerCulture   = Math.round(managerCulture   * 1.15);
-  }
-
-  // Clamp to 0–100
-  workforceRisk    = Math.min(100, Math.max(0, workforceRisk));
-  burnoutRetention = Math.min(100, Math.max(0, burnoutRetention));
-  managerCulture   = Math.min(100, Math.max(0, managerCulture));
-
-  const overallRiskScore = Math.round((workforceRisk + burnoutRetention + managerCulture) / 3);
-
-  // Risk band
-  const band =
-    overallRiskScore >= 66 ? "High" :
-    overallRiskScore >= 31 ? "Medium" : "Low";
-
-  return { workforceRiskScore: workforceRisk, burnoutRetentionScore: burnoutRetention, managerCultureScore: managerCulture, overallRiskScore, band };
-}
+// Scoring logic lives in lib/scoringUtils.js — edit weights there.
 
 // ── Result screen ─────────────────────────────────────────────────────────────
 
@@ -138,7 +96,7 @@ function ResultScreen({ scores, form, onRetake }) {
 
   // Persist for use by the executive report (Step 8)
   if (typeof window !== "undefined") {
-    sessionStorage.setItem("diagnosticResult", JSON.stringify({ scores, form, ts: Date.now() }));
+    localStorage.setItem("diagnosticResult", JSON.stringify({ scores, form, ts: Date.now() }));
   }
 
   return (
@@ -188,8 +146,13 @@ function ResultScreen({ scores, form, onRetake }) {
           Book a full audit and receive your board-ready Executive Workforce Report in 48 hours.
         </p>
         <button
-          onClick={() => router.push("/auth/signup")}
+          onClick={() => router.push("/report/executive")}
           style={{ width: "100%", background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "13px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer", marginBottom: "10px" }}>
+          View Executive Report →
+        </button>
+        <button
+          onClick={() => router.push("/auth/signup")}
+          style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", padding: "11px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: "pointer", marginBottom: "10px" }}>
           Book Workforce Risk Audit — $750 →
         </button>
         <button
@@ -341,7 +304,8 @@ export default function DiagnosticPage() {
 
   function handleNext() {
     if (step < STEPS.length - 1) { setStep(s => s + 1); return; }
-    setScores(calcScores(form));
+    const result = calculateWorkforceRiskScores(form);
+    setScores({ ...result, band: result.riskLevel });
   }
 
   function retake() {

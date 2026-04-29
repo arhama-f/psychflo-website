@@ -10,15 +10,16 @@ export default function Nav() {
   const isHome = pathname === "/";
 
   const solutions = [
-    { label: "Workforce Risk Detection", href: "/solutions/workforce-risk", icon: "⚠️", desc: "Policy, tribunal, compliance & HR risk" },
-    { label: "Retention & Burnout Prevention", href: "/solutions/retention", icon: "🔥", desc: "Burnout, wellbeing & psychological safety" },
+    { label: "Workforce Risk Detection", href: "/solutions/risk-detection", icon: "⚠️", desc: "Policy, tribunal, compliance & HR risk" },
+    { label: "Retention & Burnout Prevention", href: "/solutions/retention-burnout", icon: "🔥", desc: "Burnout, wellbeing & psychological safety" },
     { label: "Manager & Culture Intelligence", href: "/solutions/manager-culture", icon: "🧠", desc: "Leadership, coaching & onboarding" },
   ];
 
   const links = [
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "Executive Report", href: "/report/board" },
-    { label: "Pricing", href: "/pricing" },
+    { label: "Home",             href: "/" },
+    { label: "How It Works",     href: "/how-it-works" },
+    { label: "Executive Report", href: "/report/executive" },
+    { label: "Pricing",          href: "/pricing" },
   ];
 
   return (
@@ -39,23 +40,36 @@ export default function Nav() {
       </div>
 
       {/* Centre: nav links */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "2px", flexWrap: "wrap" }}>
+
+        {/* Home */}
+        <button onClick={() => router.push("/")}
+          style={{ background: pathname === "/" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
+          Home
+        </button>
+
+        {/* How It Works */}
+        <button onClick={() => router.push("/how-it-works")}
+          style={{ background: pathname === "/how-it-works" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/how-it-works" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
+          How It Works
+        </button>
 
         {/* Solutions dropdown */}
         <div style={{ position: "relative" }} onMouseEnter={() => setSolutionsOpen(true)} onMouseLeave={() => setSolutionsOpen(false)}>
-          <button style={{ background: pathname.startsWith("/solutions") ? "rgba(201,168,76,0.12)" : "none", border: pathname.startsWith("/solutions") ? `1px solid rgba(201,168,76,0.25)` : "1px solid transparent", color: pathname.startsWith("/solutions") ? gold : "rgba(255,255,255,0.5)", padding: "7px 14px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}>
-            Solutions <span style={{ fontSize: "10px", opacity: 0.6 }}>▾</span>
+          <button style={{ background: pathname.startsWith("/solutions") ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname.startsWith("/solutions") ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}>
+            Solutions <span style={{ fontSize: "9px", opacity: 0.5 }}>▾</span>
           </button>
           {solutionsOpen && (
-            <div style={{ position: "absolute", top: "100%", left: 0, marginTop: "8px", background: "#0f172a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "8px", minWidth: "280px", zIndex: 200, boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }}>
+            <div style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "14px", padding: "8px", minWidth: "300px", zIndex: 200, boxShadow: "0 24px 48px rgba(0,0,0,0.6)" }}>
               {solutions.map(s => (
-                <div key={s.href} onClick={() => { router.push(s.href); setSolutionsOpen(false); }} style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "10px 12px", borderRadius: "8px", cursor: "pointer", transition: "background 0.1s" }}
+                <div key={s.href} onClick={() => { router.push(s.href); setSolutionsOpen(false); }}
+                  style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "11px 13px", borderRadius: "9px", cursor: "pointer" }}
                   onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
                   onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                  <span style={{ fontSize: "18px", marginTop: "1px" }}>{s.icon}</span>
+                  <span style={{ fontSize: "18px", marginTop: "1px", flexShrink: 0 }}>{s.icon}</span>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", marginBottom: "2px" }}>{s.label}</div>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>{s.desc}</div>
+                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", lineHeight: "1.4" }}>{s.desc}</div>
                   </div>
                 </div>
               ))}
@@ -63,23 +77,34 @@ export default function Nav() {
           )}
         </div>
 
-        {links.map(link => (
-          <button key={link.href} onClick={() => router.push(link.href)}
-            style={{ background: pathname === link.href ? "rgba(201,168,76,0.12)" : "none", border: pathname === link.href ? `1px solid rgba(201,168,76,0.25)` : "1px solid transparent", color: pathname === link.href ? gold : "rgba(255,255,255,0.5)", padding: "7px 14px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
-            {link.label}
-          </button>
-        ))}
+        {/* Executive Report */}
+        <button onClick={() => router.push("/report/executive")}
+          style={{ background: pathname === "/report/executive" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/report/executive" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
+          Executive Report
+        </button>
+
+        {/* Pricing */}
+        <button onClick={() => router.push("/pricing")}
+          style={{ background: pathname === "/pricing" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/pricing" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
+          Pricing
+        </button>
+
+        {/* Book Audit — prominent pill in centre nav */}
+        <button onClick={() => router.push("/book-audit")}
+          style={{ background: pathname === "/book-audit" ? `linear-gradient(135deg,${gold},#f0d080)` : "rgba(201,168,76,0.12)", border: `1px solid ${pathname === "/book-audit" ? "transparent" : "rgba(201,168,76,0.35)"}`, color: pathname === "/book-audit" ? "#0f172a" : gold, padding: "7px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer", marginLeft: "6px" }}>
+          Book Audit →
+        </button>
       </div>
 
-      {/* Right: CTAs */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+      {/* Right: Login only */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <button onClick={() => router.push("/auth/login")}
-          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "9px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.55)", padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
           Login
         </button>
-        <button onClick={() => router.push("/diagnostic")}
-          style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
-          Book Audit →
+        <button onClick={() => router.push("/dashboard")}
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.55)", padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+          Dashboard
         </button>
       </div>
     </nav>
