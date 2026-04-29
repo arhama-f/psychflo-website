@@ -541,7 +541,6 @@ export default function Home() {
             { label: "Pricing", href: "/pricing" },
             { label: "Blog", href: "/blog" },
             { label: "Founding Programme", href: "/founding" },
-            { label: "Status", href: "/status" },
             { label: "SLA", href: "/sla" },
           ].map((l, i) => (
             <button key={i} onClick={() => router.push(l.href)}
