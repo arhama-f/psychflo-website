@@ -1,137 +1,208 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "./components/Nav";
 
+const STATS = [
+  { value: "6–10 wks",  label: "Before observable decline" },
+  { value: "12",        label: "Prediction models" },
+  { value: "6",         label: "Risk surfaces" },
+  { value: "48 hrs",    label: "Audit to report" },
+];
+
+const FEATURES = [
+  {
+    icon: "◎",
+    title: "Burnout & Attrition Prediction",
+    desc: "Detects sustained fatigue and attrition signals weeks before they affect performance or headcount.",
+    accent: "text-cyan-400",
+  },
+  {
+    icon: "◈",
+    title: "Cognitive Load Index",
+    desc: "Measures meeting density, context-switching, and focus-time erosion across teams in real time.",
+    accent: "text-violet-400",
+  },
+  {
+    icon: "◇",
+    title: "Psychological Safety Score",
+    desc: "Tracks team voice, feedback participation, and communication patterns — without annual surveys.",
+    accent: "text-amber-400",
+  },
+];
+
+const STEPS = [
+  { n: "01", title: "Connect your HR stack",       desc: "API integrations with HRIS, Slack, and onboarding workflows. No rip-and-replace." },
+  { n: "02", title: "Models run continuously",      desc: "12 proprietary models score behavioural signals across six risk surfaces, updated in real time." },
+  { n: "03", title: "Executive report delivered",   desc: "Board-ready intelligence with ranked risks, named interventions, and financial exposure estimates." },
+];
+
 export default function HomePage() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
 
   return (
-    <main className="bg-slate-950 text-white">
+    <div className="min-h-screen" style={{ background: "#080c14", color: "#fff" }}>
       <Nav />
 
-      {/* Explore bar */}
-      <div className="border-b border-slate-800/40">
-        <div className="mx-auto max-w-5xl px-6">
-          <button
-            onClick={() => setOpen(o => !o)}
-            className="flex w-full items-center gap-3 border-0 bg-transparent py-2.5 text-left cursor-pointer"
-          >
-            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-700">Explore</span>
-            <span className="text-[10px] text-slate-800">/</span>
-            {["Case Studies", "Research", "Platform", "Pricing"].map((l, i) => (
-              <span key={i} className="text-[11px] text-slate-700">{l}</span>
-            ))}
-            <span className={`ml-auto text-[10px] text-slate-700 transition-transform duration-150 ${open ? "rotate-180" : ""}`}>▾</span>
-          </button>
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center overflow-hidden px-6 text-center">
 
-          {open && (
-            <div className="grid grid-cols-2 gap-2 pb-3 md:grid-cols-4">
-              {[
-                { l: "Case Studies", h: "/case-studies", d: "How executives acted on risk early." },
-                { l: "Research",     h: "/research",     d: "Peer-reviewed psychology behind the models." },
-                { l: "Platform",     h: "/platform",     d: "Six risk surfaces, enterprise architecture." },
-                { l: "Pricing",      h: "/pricing",      d: "Founding client plans, no surprises." },
-              ].map((e, i) => (
-                <button
-                  key={i}
-                  onClick={() => { router.push(e.h); setOpen(false); }}
-                  className="rounded-lg border border-slate-800/60 bg-slate-900/40 p-3.5 text-left hover:bg-slate-900 cursor-pointer transition-colors border-0 group"
-                  style={{ border: "1px solid rgba(255,255,255,0.05)" }}
-                >
-                  <p className="mb-1 text-xs font-semibold text-white">{e.l}</p>
-                  <p className="text-[11px] leading-relaxed text-slate-600">{e.d}</p>
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Glow orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.15]"
+            style={{ background: "radial-gradient(ellipse,#7c3aed,transparent 65%)" }} />
+          <div className="absolute left-1/4 top-1/2 h-[400px] w-[400px] -translate-y-1/2 rounded-full opacity-[0.08]"
+            style={{ background: "radial-gradient(circle,#06b6d4,transparent 70%)" }} />
         </div>
-      </div>
 
-      {/* Hero */}
-      <section className="flex min-h-[calc(100svh-6rem)] flex-col items-center justify-center px-6 text-center">
-        <div className="w-full max-w-xl">
+        <div className="relative max-w-3xl">
+          {/* Badge */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="text-[11px] font-medium tracking-widest text-white/50 uppercase">Workforce Behaviour Intelligence</span>
+          </div>
 
-          <h1
-            className="text-4xl font-black leading-[1.08] text-white sm:text-5xl md:text-[3.5rem]"
-            style={{ letterSpacing: "-0.03em" }}
-          >
-            Predict workforce risk{" "}
-            <span className="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">
-              before it surfaces.
+          {/* Headline */}
+          <h1 className="text-[2.8rem] font-bold leading-[1.1] tracking-tight text-white sm:text-5xl md:text-[4rem]">
+            Know which employees<br className="hidden sm:block" /> are at risk{" "}
+            <span style={{ background: "linear-gradient(90deg,#67e8f9,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              weeks in advance.
             </span>
           </h1>
 
-          <p className="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-slate-500">
-            AI-powered behavioural intelligence for HR and executive teams. Burnout, attrition, and disengagement — detected weeks early.
+          {/* Sub */}
+          <p className="mx-auto mt-6 max-w-md text-[15px] leading-7 text-white/40">
+            PsychFlo turns HR signals into real-time behavioural intelligence — surfacing burnout, attrition, and disengagement before they affect your organisation.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+          {/* CTAs */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={() => router.push("/diagnostic")}
-              className="rounded-lg bg-gradient-to-r from-cyan-400 to-violet-500 px-5 py-2.5 text-[13px] font-bold text-slate-950 transition-opacity hover:opacity-90 cursor-pointer border-0"
+              className="rounded-lg bg-white px-6 py-2.5 text-[13px] font-semibold text-[#080c14] hover:bg-white/90 cursor-pointer border-0 transition-colors"
             >
-              Free workforce audit
+              Free workforce audit →
             </button>
             <button
               onClick={() => router.push("/demo")}
-              className="rounded-lg border border-slate-800 bg-transparent px-5 py-2.5 text-[13px] font-medium text-slate-500 hover:border-slate-700 hover:text-slate-300 cursor-pointer transition-colors"
+              className="rounded-lg border border-white/10 bg-white/[0.04] px-6 py-2.5 text-[13px] font-medium text-white/50 hover:bg-white/[0.08] hover:text-white/70 cursor-pointer transition-colors"
             >
-              Book a demo →
+              Book a demo
             </button>
           </div>
 
-          <p className="mt-4 text-[11px] text-slate-800">
-            Decision-support only · Not clinical diagnosis · Fully opt-in
+          <p className="mt-5 text-[11px] text-white/20">
+            Decision-support only · Not clinical diagnosis · Employee tools are fully opt-in
           </p>
         </div>
       </section>
 
-      {/* What you get */}
-      <section className="border-t border-slate-800/40 px-6 py-20">
-        <div className="mx-auto max-w-lg">
-          {[
-            {
-              n: "01",
-              title: "Prediction, not reporting",
-              desc: "Twelve AI models surface burnout, attrition, and overload risk weeks before they become visible — grounded in peer-reviewed organisational psychology.",
-              color: "text-cyan-500",
-            },
-            {
-              n: "02",
-              title: "Signals with clear next steps",
-              desc: "Every risk flag comes with a named intervention and action protocol. Your team acts — it never just reads a number.",
-              color: "text-violet-400",
-            },
-            {
-              n: "03",
-              title: "Board-ready reports in 48 hours",
-              desc: "Risk scores, financial exposure, and recommendations formatted for leadership — from audit submission to report delivery.",
-              color: "text-amber-400",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className={`flex gap-7 py-9 ${i > 0 ? "border-t border-slate-800/40" : ""}`}
-            >
-              <span className={`mt-0.5 shrink-0 text-[10px] font-black tabular-nums tracking-widest ${item.color}`}>
-                {item.n}
-              </span>
-              <div>
-                <h3 className="mb-2 text-[15px] font-bold leading-snug text-white">{item.title}</h3>
-                <p className="text-[13px] leading-relaxed text-slate-600">{item.desc}</p>
-              </div>
+      {/* ── STATS ────────────────────────────────────────────────────────── */}
+      <div className="border-y border-white/[0.06]">
+        <div className="mx-auto grid max-w-4xl grid-cols-2 md:grid-cols-4">
+          {STATS.map((s, i) => (
+            <div key={i} className={`px-8 py-10 ${i > 0 ? "border-l border-white/[0.06]" : ""}`}>
+              <p className="text-2xl font-bold tracking-tight text-white" style={{ letterSpacing: "-0.02em" }}>{s.value}</p>
+              <p className="mt-1 text-[12px] text-white/30">{s.label}</p>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── FEATURES ─────────────────────────────────────────────────────── */}
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 max-w-md">
+            <p className="mb-3 text-[11px] font-medium uppercase tracking-widest text-white/30">Platform capabilities</p>
+            <h2 className="text-3xl font-bold leading-snug tracking-tight text-white" style={{ letterSpacing: "-0.02em" }}>
+              Six risk surfaces.<br />Running simultaneously.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {FEATURES.map((f, i) => (
+              <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7 transition-colors hover:bg-white/[0.05]">
+                <span className={`text-2xl ${f.accent}`}>{f.icon}</span>
+                <h3 className="mt-5 mb-3 text-[15px] font-semibold text-white leading-snug">{f.title}</h3>
+                <p className="text-[13px] leading-relaxed text-white/40">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-[13px] font-semibold text-white">+ Sentiment Drift · Leadership Friction · Psychological Safety</p>
+                <p className="mt-1 text-[12px] text-white/30">All six surfaces active simultaneously across your organisation.</p>
+              </div>
+              <button
+                onClick={() => router.push("/platform")}
+                className="shrink-0 rounded-lg border border-white/10 bg-transparent px-4 py-2 text-[12px] font-medium text-white/50 hover:text-white/70 cursor-pointer transition-colors"
+              >
+                View platform →
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800/40 px-6 py-6">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
-          <span className="text-[11px] font-bold text-slate-500">PsychFlo</span>
-          <div className="flex gap-5">
+      {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.06] px-6 py-28">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 max-w-md">
+            <p className="mb-3 text-[11px] font-medium uppercase tracking-widest text-white/30">How it works</p>
+            <h2 className="text-3xl font-bold leading-snug tracking-tight text-white" style={{ letterSpacing: "-0.02em" }}>
+              Signal to intelligence<br />in three steps.
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-0">
+            {STEPS.map((s, i) => (
+              <div key={i} className={`flex gap-8 py-8 ${i > 0 ? "border-t border-white/[0.06]" : ""}`}>
+                <span className="shrink-0 text-[11px] font-bold tabular-nums text-white/20 pt-0.5">{s.n}</span>
+                <div>
+                  <h3 className="mb-2 text-[15px] font-semibold text-white">{s.title}</h3>
+                  <p className="text-[13px] leading-relaxed text-white/40">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.06] px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="relative overflow-hidden rounded-2xl p-px"
+            style={{ background: "linear-gradient(135deg,rgba(103,232,249,0.3),rgba(167,139,250,0.3),rgba(103,232,249,0.1))" }}>
+            <div className="rounded-2xl px-10 py-16 text-center" style={{ background: "#0e1320" }}>
+              <p className="mb-4 text-[11px] font-medium uppercase tracking-widest text-white/30">
+                Founding client programme
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl" style={{ letterSpacing: "-0.02em" }}>
+                Start predicting. Stop reacting.
+              </h2>
+              <p className="mx-auto mt-4 max-w-sm text-[14px] leading-relaxed text-white/40">
+                Submit your organisation profile and receive a workforce intelligence report within 48 hours. Free. No commitment.
+              </p>
+              <button
+                onClick={() => router.push("/diagnostic")}
+                className="mt-8 rounded-lg bg-white px-7 py-2.5 text-[13px] font-semibold text-[#080c14] hover:bg-white/90 cursor-pointer border-0 transition-colors"
+              >
+                Free workforce audit →
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
+      <footer className="border-t border-white/[0.06] px-6 py-8">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-cyan-400 to-violet-500 text-[11px] font-black text-white">Ψ</div>
+            <span className="text-[12px] font-semibold text-white/60">PsychFlo</span>
+          </div>
+          <div className="flex gap-6">
             {[
               { l: "Platform",     h: "/platform" },
               { l: "Pricing",      h: "/pricing" },
@@ -139,14 +210,14 @@ export default function HomePage() {
               { l: "Case Studies", h: "/case-studies" },
             ].map((lk, i) => (
               <button key={i} onClick={() => router.push(lk.h)}
-                className="border-0 bg-transparent p-0 text-[11px] text-slate-700 hover:text-slate-500 cursor-pointer transition-colors">
+                className="border-0 bg-transparent p-0 text-[12px] text-white/25 hover:text-white/50 cursor-pointer transition-colors">
                 {lk.l}
               </button>
             ))}
           </div>
-          <span className="text-[11px] text-slate-800">© 2026 PsychFlo</span>
+          <span className="text-[12px] text-white/20">© 2026 PsychFlo</span>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }
