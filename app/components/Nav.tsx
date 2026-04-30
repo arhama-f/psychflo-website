@@ -1,99 +1,57 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
-
-const LINKS = [
-  { label: "Platform",     href: "/platform" },
-  { label: "Case Studies", href: "/case-studies" },
-  { label: "Research",     href: "/research" },
-  { label: "Pricing",      href: "/pricing" },
-];
 
 export default function Nav() {
-  const router   = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const gold = "#c9a84c";
+  const isHome = pathname === "/";
+  const links = [
+    { label: "Pricing", href: "/pricing" },
+    { label: "Blog", href: "/blog" },
+    { label: "Microlearn", href: "/learn" },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#080c14]/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+    <nav style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap", background: "rgba(0,0,0,0.3)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(12px)" }}>
 
-        {/* Logo */}
-        <button onClick={() => router.push("/")} className="flex items-center gap-3 border-0 bg-transparent p-0 cursor-pointer">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 text-[15px] font-black text-white select-none">
-            Ψ
-          </div>
-          <span className="text-[15px] font-semibold tracking-tight text-white">PsychFlo</span>
-        </button>
-
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex">
-          {LINKS.map((lk) => (
-            <button
-              key={lk.href}
-              onClick={() => router.push(lk.href)}
-              className={`rounded-md px-3.5 py-1.5 text-[13px] font-medium transition-colors cursor-pointer border-0 bg-transparent ${
-                pathname === lk.href ? "text-white bg-white/[0.07]" : "text-white/40 hover:text-white/70"
-              }`}
-            >
-              {lk.label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+      {/* Left: logo + optional back button */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {!isHome && (
           <button
-            onClick={() => router.push("/auth/login")}
-            className="hidden rounded-md px-3.5 py-1.5 text-[13px] font-medium text-white/40 hover:text-white/70 cursor-pointer border-0 bg-transparent transition-colors md:block"
+            onClick={() => router.back()}
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", padding: "6px 12px", borderRadius: "8px", fontSize: "13px", cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}
           >
-            Log in
+            ← Back
           </button>
-          <button
-            onClick={() => router.push("/diagnostic")}
-            className="rounded-md bg-white px-4 py-1.5 text-[13px] font-semibold text-[#080c14] hover:bg-white/90 cursor-pointer border-0 transition-colors"
-          >
-            Get started
-          </button>
-
-          {/* Mobile burger */}
-          <button
-            onClick={() => setOpen(o => !o)}
-            className="ml-1 flex h-8 w-8 flex-col items-center justify-center gap-[5px] cursor-pointer border-0 bg-transparent md:hidden"
-          >
-            <span className={`h-[1.5px] w-5 bg-white/40 transition-all duration-200 ${open ? "translate-y-[6.5px] rotate-45" : ""}`} />
-            <span className={`h-[1.5px] w-5 bg-white/40 transition-all duration-200 ${open ? "opacity-0" : ""}`} />
-            <span className={`h-[1.5px] w-5 bg-white/40 transition-all duration-200 ${open ? "-translate-y-[6.5px] -rotate-45" : ""}`} />
-          </button>
+        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => router.push("/")}>
+          <img src="/logo.svg" alt="PsychFlo" style={{ width: "32px", height: "32px", objectFit: "contain", filter: "invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(0.85)" }} />
+          <span style={{ color: "#f8fafc", fontWeight: "700", fontSize: "16px", letterSpacing: "-0.01em" }}>PsychFlo</span>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {open && (
-        <div className="border-t border-white/[0.06] px-6 py-4 md:hidden">
-          <div className="flex flex-col gap-1">
-            {LINKS.map((lk) => (
-              <button
-                key={lk.href}
-                onClick={() => { router.push(lk.href); setOpen(false); }}
-                className={`rounded-md px-3.5 py-2.5 text-left text-[13px] font-medium cursor-pointer border-0 transition-colors ${
-                  pathname === lk.href ? "bg-white/[0.07] text-white" : "bg-transparent text-white/40"
-                }`}
-              >
-                {lk.label}
-              </button>
-            ))}
-            <div className="mt-2 border-t border-white/[0.06] pt-3">
-              <button
-                onClick={() => { router.push("/auth/login"); setOpen(false); }}
-                className="w-full rounded-md px-3.5 py-2.5 text-left text-[13px] font-medium text-white/40 cursor-pointer border-0 bg-transparent"
-              >
-                Log in
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </header>
+      {/* Centre: nav links */}
+      <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+        {links.map(link => (
+          <button key={link.href} onClick={() => router.push(link.href)}
+            style={{ background: pathname === link.href ? "rgba(201,168,76,0.12)" : "none", border: pathname === link.href ? `1px solid rgba(201,168,76,0.25)` : "1px solid transparent", color: pathname === link.href ? gold : "rgba(255,255,255,0.5)", padding: "7px 14px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
+            {link.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Right: CTAs */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+        <button onClick={() => router.push("/auth/login")}
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "9px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
+          Login
+        </button>
+        <button onClick={() => router.push("/auth/signup")}
+          style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "9px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
+          Sign up
+        </button>
+      </div>
+    </nav>
   );
 }
