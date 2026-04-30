@@ -67,16 +67,6 @@ const PREDICTION_STEPS = [
   },
 ];
 
-const INTEGRATIONS = [
-  { name: "Slack", icon: "💬", desc: "Async standup language analysis" },
-  { name: "BambooHR", icon: "🎋", desc: "Employee lifecycle signals" },
-  { name: "Notion", icon: "📄", desc: "Documentation & policy review" },
-  { name: "Google Workspace", icon: "📧", desc: "Communication pattern signals" },
-  { name: "Personio", icon: "👥", desc: "HR data & onboarding flows" },
-  { name: "Workday", icon: "🏢", desc: "Enterprise HRIS integration" },
-  { name: "Jira", icon: "🔧", desc: "Cognitive load & sprint stress" },
-  { name: "Microsoft Teams", icon: "🟦", desc: "Meeting & language behaviour" },
-];
 
 const USE_CASES = [
   {
@@ -253,55 +243,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. HR INTEGRATIONS LAYER ─────────────────────────────── */}
-      <section style={{ ...section, paddingBottom: "96px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", alignItems: "center" }}>
-          {/* Left: copy */}
+      {/* ── 4. INTELLIGENCE LAYER ────────────────────────────────── */}
+      <section className="px-6 pb-24">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(196,181,253,0.08)", border: "1px solid rgba(196,181,253,0.18)", color: purple, fontSize: "11px", fontWeight: "700", padding: "4px 14px", borderRadius: "999px", marginBottom: "20px", letterSpacing: "0.07em" }}>
-              INTEGRATIONS LAYER
-            </div>
-            <h2 style={{ fontSize: "34px", fontWeight: "700", color: "#f8fafc", margin: "0 0 16px", letterSpacing: "-0.025em", lineHeight: "1.2" }}>
-              Sits on top of<br />your existing HR stack
-            </h2>
-            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.4)", margin: "0 0 28px", lineHeight: "1.75" }}>
-              PsychFlo is a behavioural intelligence layer, not a replacement for your HRIS. It reads signals from the tools your team already uses — then surfaces what your HR system cannot see.
+            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-cyan-400">
+              Behavioural Intelligence Layer
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
-              {[
-                "Reads language and behaviour — not just headcount",
-                "No rip-and-replace of existing systems",
-                "Enterprise HRIS integrations via API",
-                "GDPR-compliant signal processing",
-                "Employee-facing tools are fully opt-in",
-              ].map((pt, i) => (
-                <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                  <span style={{ color: gold, fontSize: "13px", marginTop: "1px" }}>✓</span>
-                  <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>{pt}</span>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => router.push("/book-audit")}
-              style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "14px 28px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
-              Book Integration Scoping Call →
-            </button>
+            <h2 className="text-3xl font-bold md:text-5xl text-white leading-tight">
+              We don't replace your HR systems. We make them predictive.
+            </h2>
+            <p className="mt-6 text-lg text-slate-400">
+              PsychFlo connects behavioural signals from HR tools, surveys, Slack, Microsoft Teams, onboarding workflows and manager notes to generate predictive workforce intelligence.
+            </p>
           </div>
 
-          {/* Right: integration grid */}
-          <div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: "10px" }}>
-              {INTEGRATIONS.map((intg, i) => (
-                <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "14px", padding: "18px 20px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
-                  <span style={{ fontSize: "24px", flexShrink: 0 }}>{intg.icon}</span>
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "700", color: "#f8fafc", marginBottom: "3px" }}>{intg.name}</div>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", lineHeight: "1.45" }}>{intg.desc}</div>
-                  </div>
+          <div className="rounded-3xl bg-slate-900 border border-slate-800 p-8">
+            <div className="space-y-3">
+              {[
+                "HRIS data",
+                "Pulse surveys",
+                "Slack / Teams signals",
+                "Onboarding feedback",
+                "Manager observations",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-xl bg-slate-800 border border-slate-700 p-4 font-medium text-slate-200"
+                >
+                  {item}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: "12px", textAlign: "center" }}>
-              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.2)" }}>Enterprise integrations available on Growth & Enterprise plans</span>
+
+            <div className="my-8 text-center text-sm font-semibold text-slate-500">
+              ↓ AI behavioural modelling ↓
+            </div>
+
+            <div className="rounded-2xl bg-slate-950 border border-slate-700 p-6 text-white">
+              <h3 className="text-xl font-bold">PsychFlo Prediction Engine</h3>
+              <p className="mt-3 text-slate-300">
+                Converts workplace signals into risk scores, explanations and recommended HR actions.
+              </p>
             </div>
           </div>
         </div>
