@@ -46,8 +46,54 @@ export default function HomePage() {
     <main className="min-h-screen bg-slate-950 text-white">
       <Nav />
 
+      {/* ── EXPLORE TOGGLE — directly below nav ──────────────────────────── */}
+      <div className="border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-sm">
+        <div className="mx-auto max-w-3xl px-6">
+          <button
+            onClick={() => setExploreOpen(o => !o)}
+            className="flex w-full items-center justify-between py-3.5 cursor-pointer bg-transparent border-0 text-left group"
+          >
+            <div className="flex items-center gap-6">
+              <span className="text-xs font-semibold uppercase tracking-widest text-slate-600">Explore</span>
+              <div className="hidden items-center gap-4 sm:flex">
+                {EXPLORE.map((item, i) => (
+                  <span key={i} className="text-xs text-slate-700 group-hover:text-slate-600 transition-colors">
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className={`text-slate-700 text-xs transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`}>
+              ▾
+            </span>
+          </button>
+
+          {exploreOpen && (
+            <div className="grid gap-3 pb-4 sm:grid-cols-2 lg:grid-cols-4">
+              {EXPLORE.map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => { router.push(item.route); setExploreOpen(false); }}
+                  className="group flex flex-col items-start rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left hover:border-slate-700 hover:bg-slate-900 cursor-pointer transition-all"
+                >
+                  <div className="mb-3 flex items-center justify-between w-full">
+                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${item.tagColor}`}>
+                      {item.tag}
+                    </span>
+                    <span className="text-slate-700 text-xs group-hover:text-slate-400 transition-colors">→</span>
+                  </div>
+                  <p className="text-xs font-bold text-white mb-1.5">{item.label}</p>
+                  <p className="text-[11px] text-slate-600 leading-relaxed mb-3">{item.summary}</p>
+                  <p className="text-[10px] text-slate-700 mt-auto">{item.stat}</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <section className="relative flex min-h-[calc(100vh-120px)] flex-col items-center justify-center overflow-hidden px-6 text-center">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute right-0 top-0 h-[700px] w-[700px] -translate-y-1/4 translate-x-1/4 rounded-full opacity-[0.06] blur-3xl"
             style={{ background: "radial-gradient(circle,#22d3ee,transparent 70%)" }} />
@@ -61,33 +107,33 @@ export default function HomePage() {
             Workforce Behaviour Intelligence
           </div>
 
-          <h1 className="text-5xl font-black leading-[1.05] md:text-[66px]" style={{ letterSpacing: "-0.04em" }}>
+          <h1 className="text-5xl font-black leading-[1.05] md:text-[64px]" style={{ letterSpacing: "-0.04em" }}>
             Know which employees are at risk{" "}
             <span className="bg-gradient-to-r from-cyan-300 via-violet-300 to-cyan-300 bg-clip-text text-transparent">
               6–10 weeks in advance.
             </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-lg text-slate-400 leading-relaxed">
+          <p className="mx-auto mt-6 max-w-lg text-lg text-slate-400 leading-relaxed">
             PsychFlo predicts burnout, attrition, and disengagement before they surface — giving HR and executive teams the intelligence to act early.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={() => router.push("/diagnostic")}
-              className="rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 px-8 py-3.5 text-sm font-bold text-slate-950 transition-all hover:scale-[1.02] cursor-pointer border-0"
+              className="rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-7 py-3 text-sm font-bold text-slate-950 transition-all hover:scale-[1.02] cursor-pointer border-0"
             >
               Get your free workforce audit
             </button>
             <button
               onClick={() => router.push("/demo")}
-              className="rounded-2xl border border-slate-800 px-8 py-3.5 text-sm font-semibold text-slate-400 hover:border-slate-600 hover:text-slate-200 cursor-pointer transition-colors bg-transparent"
+              className="rounded-xl border border-slate-800 px-7 py-3 text-sm font-semibold text-slate-400 hover:border-slate-600 hover:text-slate-200 cursor-pointer transition-colors bg-transparent"
             >
               Book a demo →
             </button>
           </div>
 
-          <p className="mt-4 text-xs text-slate-700">
+          <p className="mt-5 text-xs text-slate-700">
             Decision-support only · Not clinical diagnosis · Employee tools are fully opt-in
           </p>
         </div>
@@ -96,7 +142,7 @@ export default function HomePage() {
       {/* ── VALUE ────────────────────────────────────────────────────────── */}
       <section className="border-t border-slate-800/50 px-6 py-28">
         <div className="mx-auto max-w-2xl">
-          <p className="mb-16 text-center text-xs font-semibold uppercase tracking-widest text-slate-700">
+          <p className="mb-16 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-700">
             What PsychFlo gives you
           </p>
           <div className="flex flex-col">
@@ -120,55 +166,15 @@ export default function HomePage() {
                 color: "text-amber-400",
               },
             ].map((item, i) => (
-              <div key={i} className={`flex gap-10 py-14 ${i > 0 ? "border-t border-slate-800/50" : ""}`}>
-                <span className={`text-xs font-black flex-shrink-0 pt-1.5 tabular-nums ${item.color}`}>{item.n}</span>
+              <div key={i} className={`flex gap-10 py-12 ${i > 0 ? "border-t border-slate-800/40" : ""}`}>
+                <span className={`text-[11px] font-black flex-shrink-0 pt-1.5 tabular-nums tracking-wider ${item.color}`}>{item.n}</span>
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 leading-snug">{item.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── EXPLORE TOGGLE ───────────────────────────────────────────────── */}
-      <section className="border-t border-slate-800/50 px-6 py-16">
-        <div className="mx-auto max-w-2xl">
-          <button
-            onClick={() => setExploreOpen(o => !o)}
-            className="flex w-full items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/40 px-7 py-5 text-left cursor-pointer hover:bg-slate-900 transition-colors"
-          >
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-1">Explore PsychFlo</p>
-              <p className="text-base font-semibold text-white">Case studies, research, platform and pricing</p>
-            </div>
-            <span className="ml-6 flex-shrink-0 text-2xl font-light text-slate-600 leading-none">
-              {exploreOpen ? "−" : "+"}
-            </span>
-          </button>
-
-          {exploreOpen && (
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              {EXPLORE.map((item, i) => (
-                <button
-                  key={i}
-                  onClick={() => router.push(item.route)}
-                  className="group flex flex-col items-start rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-left hover:border-slate-700 hover:bg-slate-900 cursor-pointer transition-all"
-                >
-                  <div className="mb-4 flex items-center justify-between w-full">
-                    <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${item.tagColor}`}>
-                      {item.tag}
-                    </span>
-                    <span className="text-slate-700 text-sm group-hover:text-slate-400 transition-colors">→</span>
-                  </div>
-                  <p className="text-sm font-bold text-white mb-2">{item.label}</p>
-                  <p className="text-xs text-slate-500 leading-relaxed mb-4">{item.summary}</p>
-                  <p className="text-xs text-slate-700">{item.stat}</p>
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
