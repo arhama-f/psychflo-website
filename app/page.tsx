@@ -2,7 +2,37 @@
 import { useRouter } from "next/navigation";
 import Nav from "./components/Nav";
 
-const predictionCards = [
+interface PredictionCard {
+  label: string;
+  value: string;
+  status: string;
+  insight: string;
+  action: string;
+}
+
+interface BlogPost {
+  title: string;
+  type: string;
+}
+
+interface CaseStudy {
+  role: string;
+  problem: string;
+  solution: string;
+}
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface EngineStep {
+  step: string;
+  title: string;
+  text: string;
+}
+
+const predictionCards: PredictionCard[] = [
   {
     label: "Burnout Risk",
     value: "72%",
@@ -33,7 +63,7 @@ const predictionCards = [
   },
 ];
 
-const industries = [
+const industries: string[] = [
   "Technology Companies",
   "Consulting Firms",
   "Financial Institutions",
@@ -44,7 +74,7 @@ const industries = [
   "Global People Teams",
 ];
 
-const features = [
+const features: string[] = [
   "Burnout early-warning signals",
   "Attrition prediction models",
   "Team sentiment drift detection",
@@ -55,7 +85,7 @@ const features = [
   "Leadership risk dashboards",
 ];
 
-const blogPosts = [
+const blogPosts: BlogPost[] = [
   {
     title: "Why burnout becomes predictable before it becomes visible",
     type: "Scientific Research",
@@ -70,7 +100,7 @@ const blogPosts = [
   },
 ];
 
-const caseStudies = [
+const caseStudies: CaseStudy[] = [
   {
     role: "Chief People Officer",
     problem: "Rising disengagement across distributed teams",
@@ -89,6 +119,45 @@ const caseStudies = [
     solution:
       "Used behavioural intelligence to detect decision bottlenecks and improve executive alignment.",
   },
+];
+
+const engineSteps: EngineStep[] = [
+  {
+    step: "01",
+    title: "Collect Signals",
+    text: "Connect HR data, surveys, communication patterns and manager observations.",
+  },
+  {
+    step: "02",
+    title: "Model Behaviour",
+    text: "Apply AI and organisational psychology to detect behavioural patterns.",
+  },
+  {
+    step: "03",
+    title: "Predict Risk",
+    text: "Surface early indicators of burnout, churn, overload and disengagement.",
+  },
+  {
+    step: "04",
+    title: "Recommend Action",
+    text: "Guide leaders with practical interventions and measurable next steps.",
+  },
+];
+
+const signalSources: string[] = [
+  "HRIS platforms",
+  "Pulse surveys",
+  "Slack and Microsoft Teams",
+  "Performance reviews",
+  "Manager feedback",
+];
+
+const footerLinks: NavLink[] = [
+  { label: "About",              href: "/about" },
+  { label: "Pricing",            href: "/pricing" },
+  { label: "Research",           href: "/blog" },
+  { label: "Founding Programme", href: "/founding" },
+  { label: "SLA",                href: "/sla" },
 ];
 
 export default function HomePage() {
@@ -190,28 +259,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-4">
-            {[
-              {
-                step: "01",
-                title: "Collect Signals",
-                text: "Connect HR data, surveys, communication patterns and manager observations.",
-              },
-              {
-                step: "02",
-                title: "Model Behaviour",
-                text: "Apply AI and organisational psychology to detect behavioural patterns.",
-              },
-              {
-                step: "03",
-                title: "Predict Risk",
-                text: "Surface early indicators of burnout, churn, overload and disengagement.",
-              },
-              {
-                step: "04",
-                title: "Recommend Action",
-                text: "Guide leaders with practical interventions and measurable next steps.",
-              },
-            ].map((item) => (
+            {engineSteps.map((item) => (
               <div key={item.step} className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
                 <p className="text-sm font-bold text-cyan-300">{item.step}</p>
                 <h3 className="mt-6 text-xl font-bold">{item.title}</h3>
@@ -240,22 +288,14 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-3xl bg-slate-100 p-8">
-            {[
-              "HRIS platforms",
-              "Pulse surveys",
-              "Slack and Microsoft Teams",
-              "Performance reviews",
-              "Manager feedback",
-            ].map((source) => (
+            {signalSources.map((source) => (
               <div key={source} className="mb-4 rounded-2xl bg-white p-4 font-semibold shadow-sm">
                 {source}
               </div>
             ))}
-
             <div className="my-8 text-center font-bold text-slate-500">
               ↓ PsychFlo AI Behaviour Engine ↓
             </div>
-
             <div className="rounded-3xl bg-slate-950 p-6 text-white">
               <h3 className="text-2xl font-bold">Predictive Workforce Intelligence</h3>
               <p className="mt-4 text-slate-300">
@@ -390,15 +430,12 @@ export default function HomePage() {
             <p className="mt-1 text-xs text-slate-600">AI-Powered Workforce Behaviour Prediction Platform</p>
           </div>
           <div className="flex flex-wrap gap-6">
-            {[
-              { label: "About",              href: "/about" },
-              { label: "Pricing",            href: "/pricing" },
-              { label: "Research",           href: "/blog" },
-              { label: "Founding Programme", href: "/founding" },
-              { label: "SLA",                href: "/sla" },
-            ].map((l) => (
-              <button key={l.label} onClick={() => router.push(l.href)}
-                className="bg-transparent border-0 text-xs text-slate-600 hover:text-slate-400 cursor-pointer p-0 transition-colors">
+            {footerLinks.map((l) => (
+              <button
+                key={l.label}
+                onClick={() => router.push(l.href)}
+                className="bg-transparent border-0 text-xs text-slate-600 hover:text-slate-400 cursor-pointer p-0 transition-colors"
+              >
                 {l.label}
               </button>
             ))}
