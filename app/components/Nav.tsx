@@ -9,7 +9,6 @@ export default function Nav() {
   const links = [
     { label: "Pricing", href: "/pricing" },
     { label: "Blog", href: "/blog" },
-    { label: "Microlearn", href: "/learn" },
   ];
 
   return (
