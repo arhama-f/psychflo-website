@@ -15,7 +15,7 @@ const BENEFITS = [
 ];
 
 const SPOTS_TAKEN = 3;
-const TOTAL_SPOTS = 10;
+const TOTAL_SPOTS = 5;
 
 export default function FoundingClientPage() {
   const router = useRouter();
@@ -83,10 +83,10 @@ export default function FoundingClientPage() {
           </div>
           <h1 style={{ fontSize: "42px", fontWeight: "800", color: "#f8fafc", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: "1.15" }}>
             Be one of our first<br />
-            <span style={{ color: gold }}>10 founding clients</span>
+            <span style={{ color: gold }}>5 founding clients</span>
           </h1>
           <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.45)", margin: "0 auto", maxWidth: "540px", lineHeight: "1.7" }}>
-            We&apos;re hand-picking 10 organisations to build PsychFlo alongside us. In return, you get lifetime pricing, a free audit, and direct access to our founding team.
+            We&apos;re hand-picking 5 organisations to build PsychFlo alongside us. In return, you get lifetime pricing, a free audit, and direct access to our founding team.
           </p>
         </div>
 
