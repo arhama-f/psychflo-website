@@ -8,22 +8,61 @@ export default function Blog() {
   const router = useRouter();
   const gold = "#c9a84c";
   const [activeCategory, setActiveCategory] = useState("All");
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
   const categories = ["All", "HR Strategy", "Psychology", "Compliance", "Productivity", "Leadership", "DEI"];
-
   const filtered = activeCategory === "All" ? posts : posts.filter((p) => p.category === activeCategory);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email) setSubscribed(true);
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
       <Nav />
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "60px 24px" }}>
 
-        <div style={{ marginBottom: "48px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "36px" }}>
           <div style={{ display: "inline-block", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", color: gold, fontSize: "11px", fontWeight: "700", padding: "5px 14px", borderRadius: "999px", marginBottom: "18px", letterSpacing: "0.06em" }}>FREE BLOG</div>
           <h1 style={{ fontSize: "38px", fontWeight: "800", color: "#f8fafc", margin: "0 0 14px", letterSpacing: "-0.02em" }}>The PsychFlo Blog</h1>
           <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.4)", margin: 0, lineHeight: "1.7" }}>Practical HR strategy, organisational psychology, and compliance insights for people leaders.</p>
         </div>
 
+        {/* Newsletter */}
+        <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "16px", padding: "28px 32px", marginBottom: "40px" }}>
+          {subscribed ? (
+            <div style={{ textAlign: "center", padding: "8px 0" }}>
+              <p style={{ fontSize: "15px", fontWeight: "700", color: gold, margin: "0 0 6px" }}>You&apos;re on the list.</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 }}>New posts land in your inbox every two weeks.</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
+              <div>
+                <p style={{ fontSize: "14px", fontWeight: "700", color: "#f8fafc", margin: "0 0 4px" }}>Get new posts in your inbox</p>
+                <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", margin: 0 }}>Every two weeks. No spam. Unsubscribe anytime.</p>
+              </div>
+              <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "10px 16px", borderRadius: "8px", fontSize: "13px", outline: "none", width: "220px" }}
+                />
+                <button type="submit"
+                  style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
+                  Subscribe →
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+
+        {/* Category filter */}
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "36px" }}>
           {categories.map((c) => {
             const active = c === activeCategory;
@@ -36,6 +75,7 @@ export default function Blog() {
           })}
         </div>
 
+        {/* Posts grid */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
           {filtered.map((p) => (
             <div key={p.slug} onClick={() => router.push(`/blog/${p.slug}`)}

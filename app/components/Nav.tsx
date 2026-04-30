@@ -9,6 +9,7 @@ export default function Nav() {
   const links = [
     { label: "Pricing", href: "/pricing" },
     { label: "Blog", href: "/blog" },
+    { label: "Research", href: "/research" },
   ];
 
   return (

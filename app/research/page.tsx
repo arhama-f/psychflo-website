@@ -1,159 +1,183 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "../components/Nav";
 
-interface Article {
-  category: string;
-  title: string;
-  desc: string;
-  readTime: string;
-  tag: string;
-  tagColor: string;
-}
+const gold = "#c9a84c";
 
-interface Topic {
-  title: string;
-  desc: string;
-  color: string;
-}
-
-const ARTICLES: Article[] = [
+const ARTICLES = [
   {
     category: "Burnout Science",
-    title: "Behavioural signal latency: How early can burnout be predicted?",
-    desc: "Analysis of signal-to-outcome timing across 14 organisational psychology frameworks. Burnout risk surfaces an average of 6–10 weeks before observable performance decline.",
-    readTime: "8 min",
     tag: "Research",
-    tagColor: "bg-cyan-500/10 text-cyan-300 border-cyan-500/20",
+    title: "Behavioural signal latency: How early can burnout be predicted?",
+    desc: "Analysis of signal-to-outcome timing across 14 organisational psychology frameworks. Burnout risk surfaces an average of 6–10 weeks before observable performance decline — giving HR leaders a structural window to intervene before attrition or sick leave follows.",
+    readTime: "8 min",
+    date: "Apr 2026",
+    hot: true,
   },
   {
     category: "Attrition Modelling",
-    title: "The attrition signal stack: What language, behaviour and cadence reveal",
-    desc: "A multi-signal analysis of the variables that predict voluntary attrition — and why self-reported surveys systematically underperform against behavioural models.",
-    readTime: "6 min",
     tag: "Analysis",
-    tagColor: "bg-violet-500/10 text-violet-300 border-violet-500/20",
+    title: "The attrition signal stack: What language, behaviour and cadence reveal",
+    desc: "Self-reported surveys systematically underperform against behavioural models for predicting voluntary attrition. This analysis examines the multi-signal stack that outperforms traditional engagement scoring by 3–4x.",
+    readTime: "6 min",
+    date: "Apr 2026",
+    hot: false,
   },
   {
     category: "Leadership Science",
+    tag: "Executive",
     title: "Leadership friction as a predictive variable: The underused signal",
-    desc: "Quantifying the relationship between manager-team alignment signals and downstream attrition, disengagement, and psychological safety outcomes.",
+    desc: "Manager-team alignment signals are among the highest-value predictors of downstream attrition, disengagement, and psychological safety collapse — yet most HR platforms capture none of them.",
     readTime: "10 min",
-    tag: "Science",
-    tagColor: "bg-amber-500/10 text-amber-300 border-amber-500/20",
+    date: "Mar 2026",
+    hot: true,
   },
   {
     category: "Cognitive Science",
-    title: "Cognitive overload at scale: Detection, thresholds, and intervention timing",
-    desc: "How sustained cognitive load patterns manifest in communication signals, and the intervention windows that prevent performance degradation.",
-    readTime: "7 min",
     tag: "Research",
-    tagColor: "bg-cyan-500/10 text-cyan-300 border-cyan-500/20",
+    title: "Cognitive overload at scale: Detection, thresholds, and intervention timing",
+    desc: "How sustained cognitive load patterns manifest in communication signals, and the intervention windows that prevent performance degradation in knowledge-intensive workforces.",
+    readTime: "7 min",
+    date: "Mar 2026",
+    hot: false,
   },
   {
     category: "Psychological Safety",
-    title: "Measuring psychological safety without surveys: A signal-based approach",
-    desc: "An alternative framework for measuring psychological safety using participation signals, communication asymmetry, and feedback frequency — without annual surveys.",
-    readTime: "9 min",
     tag: "Methodology",
-    tagColor: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+    title: "Measuring psychological safety without surveys: A signal-based approach",
+    desc: "An alternative framework for measuring psychological safety using participation signals, communication asymmetry, and feedback frequency — without relying on annual survey cycles that lag reality by 6–12 months.",
+    readTime: "9 min",
+    date: "Feb 2026",
+    hot: false,
   },
   {
     category: "AI + HR",
-    title: "The future of AI in organisational psychology: Prediction vs. diagnosis",
-    desc: "A principled distinction between AI-powered decision-support tools and clinical diagnosis — and why the difference matters for HR, legal, and employee trust.",
+    tag: "Executive",
+    title: "AI in organisational psychology: Decision-support vs. clinical diagnosis",
+    desc: "A principled distinction between AI-powered decision-support tools and clinical diagnosis — and why the difference matters for HR, legal, board governance, and employee trust.",
     readTime: "5 min",
-    tag: "Perspective",
-    tagColor: "bg-rose-500/10 text-rose-300 border-rose-500/20",
+    date: "Feb 2026",
+    hot: false,
   },
 ];
 
-const TOPICS: Topic[] = [
-  { title: "Burnout prediction", desc: "Signal-based early warning before performance decline", color: "text-red-400" },
-  { title: "Attrition modelling", desc: "Multi-variable probability frameworks for retention risk", color: "text-amber-400" },
-  { title: "Cognitive load", desc: "Sustained overload detection in knowledge workers", color: "text-violet-400" },
-  { title: "Psychological safety", desc: "Participation and voice signal analysis", color: "text-cyan-400" },
-  { title: "Leadership friction", desc: "Manager-team alignment and decision bottleneck signals", color: "text-emerald-400" },
-  { title: "Sentiment drift", desc: "Communication tone trajectory analysis", color: "text-rose-400" },
-];
+const TOPICS = ["All", "Burnout Science", "Attrition Modelling", "Leadership Science", "Cognitive Science", "Psychological Safety", "AI + HR"];
 
 export default function ResearchPage() {
   const router = useRouter();
+  const [topic, setTopic] = useState("All");
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const filtered = topic === "All" ? ARTICLES : ARTICLES.filter(a => a.category === topic);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) setSubscribed(true);
+  };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#0a0f1e 0%,#0f172a 40%,#1a0a2e 100%)", fontFamily: "system-ui,-apple-system,sans-serif" }}>
       <Nav />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden px-6 py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,#8b5cf622,transparent_40%)]" />
-        <div className="relative mx-auto max-w-7xl">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-violet-400">
-            Research & Intelligence
-          </p>
-          <h1 className="max-w-3xl text-5xl font-bold tracking-tight md:text-6xl" style={{ letterSpacing: "-0.03em" }}>
-            The science behind workforce behaviour prediction.
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "60px 24px" }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: "48px" }}>
+          <div style={{ display: "inline-block", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", color: gold, fontSize: "11px", fontWeight: "700", padding: "5px 14px", borderRadius: "999px", marginBottom: "18px", letterSpacing: "0.06em" }}>
+            EXECUTIVE RESEARCH · FREE ACCESS
+          </div>
+          <h1 style={{ fontSize: "38px", fontWeight: "800", color: "#f8fafc", margin: "0 0 14px", letterSpacing: "-0.02em" }}>
+            Workforce Intelligence Research
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-slate-400 leading-relaxed">
-            PsychFlo's prediction models are grounded in peer-reviewed organisational psychology. We publish our methodology openly so practitioners, executives, and researchers can evaluate the foundations.
+          <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.4)", margin: 0, lineHeight: "1.7", maxWidth: "580px" }}>
+            Peer-reviewed organisational psychology translated for HR leaders, CHROs, and C-suite executives. The science behind prediction — published openly.
           </p>
         </div>
-      </section>
 
-      {/* Topics */}
-      <section className="border-y border-slate-800/50 px-6 py-12">
-        <div className="mx-auto max-w-7xl">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-slate-600">Research areas</p>
-          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {TOPICS.map((t, i) => (
-              <div key={i} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
-                <p className={`text-sm font-bold mb-1 ${t.color}`}>{t.title}</p>
-                <p className="text-xs text-slate-600 leading-relaxed">{t.desc}</p>
+        {/* Newsletter */}
+        <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "16px", padding: "28px 32px", marginBottom: "48px" }}>
+          {subscribed ? (
+            <div style={{ textAlign: "center", padding: "8px 0" }}>
+              <p style={{ fontSize: "15px", fontWeight: "700", color: gold, margin: "0 0 6px" }}>You&apos;re on the list.</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 }}>New research lands in your inbox every two weeks.</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "24px", flexWrap: "wrap" }}>
+              <div>
+                <p style={{ fontSize: "14px", fontWeight: "700", color: "#f8fafc", margin: "0 0 4px" }}>Get research in your inbox</p>
+                <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", margin: 0 }}>New articles every two weeks. No spam. Unsubscribe anytime.</p>
               </div>
-            ))}
-          </div>
+              <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "10px 16px", borderRadius: "8px", fontSize: "13px", outline: "none", width: "220px" }}
+                />
+                <button type="submit"
+                  style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "10px 20px", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
+                  Subscribe →
+                </button>
+              </form>
+            </div>
+          )}
         </div>
-      </section>
 
-      {/* Articles */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="mb-12 text-2xl font-bold text-white">Latest research</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {ARTICLES.map((a, i) => (
-              <article key={i} className="group flex cursor-pointer flex-col rounded-3xl border border-slate-800 bg-slate-900/50 p-7 transition-all hover:border-slate-700 hover:bg-slate-900">
-                <div className="mb-5 flex items-center justify-between">
-                  <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${a.tagColor}`}>{a.tag}</span>
-                  <span className="text-xs text-slate-700">{a.readTime} read</span>
-                </div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-600">{a.category}</p>
-                <h3 className="mb-4 text-base font-bold text-white leading-snug flex-1">{a.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{a.desc}</p>
-                <div className="mt-6 text-xs font-semibold text-slate-600 group-hover:text-slate-300 transition-colors">
-                  Read article →
-                </div>
-              </article>
-            ))}
-          </div>
+        {/* Topic filter */}
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "32px" }}>
+          {TOPICS.map(t => (
+            <button key={t} onClick={() => setTopic(t)}
+              style={{ background: t === topic ? "rgba(201,168,76,0.15)" : "rgba(255,255,255,0.04)", border: t === topic ? "1px solid rgba(201,168,76,0.3)" : "1px solid rgba(255,255,255,0.08)", color: t === topic ? gold : "rgba(255,255,255,0.4)", padding: "7px 16px", borderRadius: "999px", fontSize: "12px", fontWeight: "500", cursor: "pointer" }}>
+              {t}
+            </button>
+          ))}
         </div>
-      </section>
 
-      {/* CTA */}
-      <section className="border-t border-slate-800 px-6 py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-white mb-4" style={{ letterSpacing: "-0.02em" }}>
+        {/* Articles grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "64px" }}>
+          {filtered.map((a, i) => (
+            <div key={i}
+              style={{ background: "rgba(255,255,255,0.04)", border: a.hot ? "1px solid rgba(201,168,76,0.2)" : "1px solid rgba(255,255,255,0.07)", borderRadius: "14px", padding: "24px", cursor: "default", position: "relative", display: "flex", flexDirection: "column", transition: "border-color 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = a.hot ? "rgba(201,168,76,0.2)" : "rgba(255,255,255,0.07)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}>
+              {a.hot && (
+                <div style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px" }}>FEATURED</div>
+              )}
+              <div style={{ display: "flex", gap: "8px", marginBottom: "14px", alignItems: "center" }}>
+                <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.05)", color: gold, padding: "3px 10px", borderRadius: "999px" }}>{a.category}</span>
+              </div>
+              <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#f8fafc", margin: "0 0 10px", lineHeight: "1.45", paddingRight: a.hot ? "60px" : "0", flex: 1 }}>{a.title}</h3>
+              <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.38)", margin: "0 0 16px", lineHeight: "1.65" }}>{a.desc}</p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto" }}>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.25)" }}>{a.readTime} read</span>
+                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.15)" }}>·</span>
+                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.25)" }}>{a.date}</span>
+                </div>
+                <span style={{ fontSize: "12px", color: gold, fontWeight: "600" }}>Read →</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "36px", textAlign: "center" }}>
+          <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#f8fafc", margin: "0 0 10px", letterSpacing: "-0.02em" }}>
             Put the research into practice.
           </h2>
-          <p className="text-slate-400 mb-8">
+          <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.38)", margin: "0 0 24px", lineHeight: "1.7" }}>
             Run a free workforce behaviour audit and see which prediction signals apply to your organisation.
           </p>
           <button onClick={() => router.push("/diagnostic")}
-            className="rounded-2xl px-8 py-4 text-sm font-bold text-slate-950 cursor-pointer border-0"
-            style={{ background: "linear-gradient(135deg,#67e8f9,#818cf8)" }}>
-            Get free workforce audit →
+            style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "13px 28px", borderRadius: "10px", fontSize: "14px", fontWeight: "800", cursor: "pointer" }}>
+            Get your free workforce audit →
           </button>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
