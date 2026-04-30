@@ -42,7 +42,7 @@ export default function Learn() {
           <h1 style={{ fontSize: "38px", fontWeight: "800", color: "#f8fafc", margin: "0 0 14px", letterSpacing: "-0.02em" }}>Psychology-grounded<br /><span style={{ color: gold }}>workplace learning</span></h1>
           <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.4)", margin: "0 0 32px", lineHeight: "1.7", maxWidth: "520px", marginLeft: "auto", marginRight: "auto" }}>10 courses built on real organisational psychology research. Not soft skills fluff — evidence-based techniques that change behaviour and show measurable results.</p>
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-            {[{ v: "10", l: "courses" }, { v: "4–7", l: "modules each" }, { v: "CPD", l: "accredited" }, { v: "Certificate", l: "on completion" }].map((s, i) => (
+            {[{ v: "10", l: "courses" }, { v: "4–7", l: "modules each" }, { v: "Certificate", l: "on completion" }].map((s, i) => (
               <div key={i} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: "20px", fontWeight: "700", color: gold }}>{s.v}</div>
                 <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)" }}>{s.l}</div>
