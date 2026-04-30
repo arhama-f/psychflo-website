@@ -522,7 +522,7 @@ export default function HomePage() {
               Behavioural intelligence layer
             </p>
             <h2 className="text-4xl font-bold leading-tight md:text-5xl" style={{ letterSpacing: "-0.03em" }}>
-              We don't replace your HR systems.<br />We make them predictive.
+              We don&apos;t replace your HR systems.<br />We make them predictive.
             </h2>
             <p className="mt-6 text-lg text-slate-600 leading-relaxed">
               PsychFlo sits above existing HR tools and converts people data into behavioural intelligence for leaders, HR teams and executive decision-makers — without requiring you to change the tools your teams already use.
@@ -686,7 +686,7 @@ export default function HomePage() {
           <div className="grid gap-6 lg:grid-cols-3">
             {CASE_STUDIES.map((c, i) => (
               <div key={i} className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/50 p-8">
-                <div className="mb-6 text-4xl font-black text-slate-800 leading-none">"</div>
+                <div className="mb-6 text-4xl font-black text-slate-800 leading-none">&ldquo;</div>
                 <p className="flex-1 text-base italic text-slate-300 leading-relaxed">{c.quote}</p>
                 <div className="mt-8 border-t border-slate-800 pt-6 flex items-end justify-between gap-4">
                   <div>
