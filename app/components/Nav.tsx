@@ -2,25 +2,26 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 
+interface SolutionItem {
+  label: string;
+  href: string;
+  icon: string;
+  desc: string;
+}
+
+const gold = "#c9a84c";
+
+const solutions: SolutionItem[] = [
+  { label: "Workforce Risk Detection",      href: "/solutions/risk-detection",  icon: "⚠️", desc: "Policy, tribunal, compliance & HR risk" },
+  { label: "Retention & Burnout Prevention", href: "/solutions/retention-burnout", icon: "🔥", desc: "Burnout, wellbeing & psychological safety" },
+  { label: "Manager & Culture Intelligence", href: "/solutions/manager-culture",   icon: "🧠", desc: "Leadership, coaching & onboarding" },
+];
+
 export default function Nav() {
   const router = useRouter();
   const pathname = usePathname();
-  const gold = "#c9a84c";
-  const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState<boolean>(false);
   const isHome = pathname === "/";
-
-  const solutions = [
-    { label: "Workforce Risk Detection", href: "/solutions/risk-detection", icon: "⚠️", desc: "Policy, tribunal, compliance & HR risk" },
-    { label: "Retention & Burnout Prevention", href: "/solutions/retention-burnout", icon: "🔥", desc: "Burnout, wellbeing & psychological safety" },
-    { label: "Manager & Culture Intelligence", href: "/solutions/manager-culture", icon: "🧠", desc: "Leadership, coaching & onboarding" },
-  ];
-
-  const links = [
-    { label: "Home",             href: "/" },
-    { label: "How It Works",     href: "/how-it-works" },
-    { label: "Executive Report", href: "/report/executive" },
-    { label: "Pricing",          href: "/pricing" },
-  ];
 
   return (
     <nav style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "14px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap", background: "rgba(0,0,0,0.3)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(12px)" }}>
@@ -42,13 +43,11 @@ export default function Nav() {
       {/* Centre: nav links */}
       <div style={{ display: "flex", alignItems: "center", gap: "2px", flexWrap: "wrap" }}>
 
-        {/* Home */}
         <button onClick={() => router.push("/")}
           style={{ background: pathname === "/" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
           Home
         </button>
 
-        {/* How It Works */}
         <button onClick={() => router.push("/how-it-works")}
           style={{ background: pathname === "/how-it-works" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/how-it-works" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
           How It Works
@@ -61,11 +60,11 @@ export default function Nav() {
           </button>
           {solutionsOpen && (
             <div style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "14px", padding: "8px", minWidth: "300px", zIndex: 200, boxShadow: "0 24px 48px rgba(0,0,0,0.6)" }}>
-              {solutions.map(s => (
+              {solutions.map((s) => (
                 <div key={s.href} onClick={() => { router.push(s.href); setSolutionsOpen(false); }}
                   style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "11px 13px", borderRadius: "9px", cursor: "pointer" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
                   <span style={{ fontSize: "18px", marginTop: "1px", flexShrink: 0 }}>{s.icon}</span>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", marginBottom: "2px" }}>{s.label}</div>
@@ -77,26 +76,23 @@ export default function Nav() {
           )}
         </div>
 
-        {/* Executive Report */}
         <button onClick={() => router.push("/report/executive")}
           style={{ background: pathname === "/report/executive" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/report/executive" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
           Executive Report
         </button>
 
-        {/* Pricing */}
         <button onClick={() => router.push("/pricing")}
           style={{ background: pathname === "/pricing" ? "rgba(255,255,255,0.07)" : "none", border: "1px solid transparent", color: pathname === "/pricing" ? "#f8fafc" : "rgba(255,255,255,0.45)", padding: "7px 13px", borderRadius: "8px", fontSize: "13px", fontWeight: "500", cursor: "pointer" }}>
           Pricing
         </button>
 
-        {/* Book Audit — prominent pill in centre nav */}
         <button onClick={() => router.push("/book-audit")}
           style={{ background: pathname === "/book-audit" ? `linear-gradient(135deg,${gold},#f0d080)` : "rgba(201,168,76,0.12)", border: `1px solid ${pathname === "/book-audit" ? "transparent" : "rgba(201,168,76,0.35)"}`, color: pathname === "/book-audit" ? "#0f172a" : gold, padding: "7px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer", marginLeft: "6px" }}>
           Book Audit →
         </button>
       </div>
 
-      {/* Right: Login only */}
+      {/* Right: auth */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <button onClick={() => router.push("/auth/login")}
           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.55)", padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
