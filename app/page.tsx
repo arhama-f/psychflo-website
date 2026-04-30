@@ -1,9 +1,46 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "./components/Nav";
 
+const EXPLORE = [
+  {
+    label: "Case Studies",
+    route: "/case-studies",
+    tag: "Executive",
+    tagColor: "text-emerald-400 border-emerald-500/20 bg-emerald-500/10",
+    summary: "How CPOs, CHROs and CTOs used PsychFlo to predict attrition and burnout before their teams escalated.",
+    stat: "8 weeks ahead of manager escalation",
+  },
+  {
+    label: "Research",
+    route: "/research",
+    tag: "Science",
+    tagColor: "text-violet-400 border-violet-500/20 bg-violet-500/10",
+    summary: "Peer-reviewed organisational psychology underpinning the 12 prediction models — published openly.",
+    stat: "6 research areas · Burnout to leadership friction",
+  },
+  {
+    label: "Platform",
+    route: "/platform",
+    tag: "Product",
+    tagColor: "text-cyan-400 border-cyan-500/20 bg-cyan-500/10",
+    summary: "Six behavioural risk surfaces running simultaneously. Enterprise security, HRIS integrations, SSO.",
+    stat: "SOC 2 · GDPR · 99.9% uptime SLA",
+  },
+  {
+    label: "Pricing",
+    route: "/pricing",
+    tag: "Plans",
+    tagColor: "text-amber-400 border-amber-500/20 bg-amber-500/10",
+    summary: "Founding client pricing available now. Fixed annual plans with no per-seat surprises.",
+    stat: "Founding programme · Limited availability",
+  },
+];
+
 export default function HomePage() {
   const router = useRouter();
+  const [exploreOpen, setExploreOpen] = useState(false);
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -57,9 +94,9 @@ export default function HomePage() {
       </section>
 
       {/* ── VALUE ────────────────────────────────────────────────────────── */}
-      <section className="border-t border-slate-800/50 px-6 py-24">
+      <section className="border-t border-slate-800/50 px-6 py-28">
         <div className="mx-auto max-w-2xl">
-          <p className="mb-14 text-center text-xs font-semibold uppercase tracking-widest text-slate-700">
+          <p className="mb-16 text-center text-xs font-semibold uppercase tracking-widest text-slate-700">
             What PsychFlo gives you
           </p>
           <div className="flex flex-col">
@@ -83,10 +120,10 @@ export default function HomePage() {
                 color: "text-amber-400",
               },
             ].map((item, i) => (
-              <div key={i} className={`flex gap-10 py-10 ${i > 0 ? "border-t border-slate-800/50" : ""}`}>
-                <span className={`text-xs font-black flex-shrink-0 pt-1 tabular-nums ${item.color}`}>{item.n}</span>
+              <div key={i} className={`flex gap-10 py-14 ${i > 0 ? "border-t border-slate-800/50" : ""}`}>
+                <span className={`text-xs font-black flex-shrink-0 pt-1.5 tabular-nums ${item.color}`}>{item.n}</span>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
@@ -95,37 +132,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── OFFER ────────────────────────────────────────────────────────── */}
-      <section className="border-t border-slate-800/50 px-6 py-24">
+      {/* ── EXPLORE TOGGLE ───────────────────────────────────────────────── */}
+      <section className="border-t border-slate-800/50 px-6 py-16">
         <div className="mx-auto max-w-2xl">
-          <div className="relative overflow-hidden rounded-3xl border border-slate-800 px-12 py-16 text-center">
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="h-[400px] w-[400px] rounded-full opacity-[0.07] blur-3xl"
-                style={{ background: "radial-gradient(circle,#22d3ee,#818cf8)" }} />
+          <button
+            onClick={() => setExploreOpen(o => !o)}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/40 px-7 py-5 text-left cursor-pointer hover:bg-slate-900 transition-colors"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-1">Explore PsychFlo</p>
+              <p className="text-base font-semibold text-white">Case studies, research, platform and pricing</p>
             </div>
-            <div className="relative">
-              <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-slate-600">
-                Founding client programme · Limited availability
-              </p>
-              <h2 className="text-4xl font-black text-white md:text-5xl" style={{ letterSpacing: "-0.04em" }}>
-                Start with a free audit.
-              </h2>
-              <p className="mx-auto mt-5 max-w-sm text-sm text-slate-400 leading-relaxed">
-                Submit your organisation profile and receive a workforce prediction intelligence report for your leadership team within 48 hours.
-              </p>
-              <button
-                onClick={() => router.push("/diagnostic")}
-                className="mt-8 rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 px-9 py-3.5 text-sm font-bold text-slate-950 transition-all hover:scale-[1.02] cursor-pointer border-0"
-              >
-                Get your free workforce audit →
-              </button>
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-8">
-                {["Free · No commitment", "Report in 48 hours", "Decision-support only"].map((t, i) => (
-                  <span key={i} className="text-xs text-slate-700">{t}</span>
-                ))}
-              </div>
+            <span className="ml-6 flex-shrink-0 text-2xl font-light text-slate-600 leading-none">
+              {exploreOpen ? "−" : "+"}
+            </span>
+          </button>
+
+          {exploreOpen && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {EXPLORE.map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => router.push(item.route)}
+                  className="group flex flex-col items-start rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-left hover:border-slate-700 hover:bg-slate-900 cursor-pointer transition-all"
+                >
+                  <div className="mb-4 flex items-center justify-between w-full">
+                    <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${item.tagColor}`}>
+                      {item.tag}
+                    </span>
+                    <span className="text-slate-700 text-sm group-hover:text-slate-400 transition-colors">→</span>
+                  </div>
+                  <p className="text-sm font-bold text-white mb-2">{item.label}</p>
+                  <p className="text-xs text-slate-500 leading-relaxed mb-4">{item.summary}</p>
+                  <p className="text-xs text-slate-700">{item.stat}</p>
+                </button>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
 
