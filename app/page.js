@@ -121,8 +121,8 @@ export default function Home() {
         </div>
 
         <h1 style={{ fontSize: "58px", fontWeight: "900", color: "#f8fafc", margin: "0 0 28px", lineHeight: "1.04", letterSpacing: "-0.035em", maxWidth: "880px", marginLeft: "auto", marginRight: "auto" }}>
-          Predict burnout, attrition,<br />and disengagement
-          <span style={{ color: gold }}> before they<br />damage performance.</span>
+          Predict burnout, attrition and disengagement
+          <span style={{ color: gold }}> before they become business risks.</span>
         </h1>
 
         <p style={{ fontSize: "19px", color: "rgba(255,255,255,0.45)", margin: "0 auto 16px", lineHeight: "1.75", maxWidth: "640px" }}>
