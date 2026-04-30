@@ -126,7 +126,7 @@ export default function Home() {
         </h1>
 
         <p style={{ fontSize: "19px", color: "rgba(255,255,255,0.45)", margin: "0 auto 16px", lineHeight: "1.75", maxWidth: "640px" }}>
-          PsychFlo is an AI behavioural intelligence layer that reads workforce signals continuously — surfacing psychological safety risk, cognitive overload, and attrition probability 6–12 weeks before they become business problems.
+          PsychFlo is an AI-powered workforce behaviour prediction platform that turns HR, communication and wellbeing signals into real-time behavioural intelligence.
         </p>
 
         <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.22)", margin: "0 auto 48px", maxWidth: "440px", lineHeight: "1.6" }}>
