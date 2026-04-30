@@ -5,78 +5,34 @@ import Nav from "./components/Nav";
 const gold = "#c9a84c";
 const purple = "#c4b5fd";
 
-const DASHBOARD_CARDS = [
+const PREDICTION_CARDS = [
   {
-    label: "Burnout Risk",
-    value: "84%",
-    trend: "+12% this week",
-    trendUp: true,
-    color: "#fca5a5",
-    bg: "rgba(239,68,68,0.08)",
-    border: "rgba(239,68,68,0.2)",
-    icon: "🔥",
-    sub: "3 employees in critical zone",
-    badge: "HIGH RISK",
+    title: "Burnout Risk",
+    value: "72%",
+    change: "+18%",
+    insight: "Engineering team showing elevated fatigue signals",
+    action: "Recommend workload redistribution within 7 days",
   },
   {
-    label: "Attrition Probability",
+    title: "Attrition Probability",
     value: "31%",
-    trend: "↑ from 22% last month",
-    trendUp: true,
-    color: "#fcd34d",
-    bg: "rgba(251,191,36,0.07)",
-    border: "rgba(251,191,36,0.2)",
-    icon: "🚪",
-    sub: "2 flight-risk employees flagged",
-    badge: "ELEVATED",
+    change: "+9%",
+    insight: "Retention risk rising in high-performing employees",
+    action: "Trigger manager check-in and growth conversation",
   },
   {
-    label: "Team Sentiment Drift",
-    value: "−18pts",
-    trend: "3-week downward trajectory",
-    trendUp: true,
-    color: "#fca5a5",
-    bg: "rgba(239,68,68,0.06)",
-    border: "rgba(239,68,68,0.15)",
-    icon: "📉",
-    sub: "Engineering team most affected",
-    badge: "DECLINING",
+    title: "Team Sentiment Drift",
+    value: "Negative",
+    change: "14-day decline",
+    insight: "Communication tone becoming less collaborative",
+    action: "Review team rituals and psychological safety",
   },
   {
-    label: "Cognitive Load",
-    value: "78 / 100",
-    trend: "Above safe threshold",
-    trendUp: true,
-    color: "#fcd34d",
-    bg: "rgba(251,191,36,0.06)",
-    border: "rgba(251,191,36,0.15)",
-    icon: "🧠",
-    sub: "Sustained overload for 14+ days",
-    badge: "ELEVATED",
-  },
-  {
-    label: "Psychological Safety",
-    value: "52 / 100",
-    trend: "Stable but below benchmark",
-    trendUp: false,
-    color: purple,
-    bg: "rgba(139,92,246,0.07)",
-    border: "rgba(139,92,246,0.18)",
-    icon: "🛡️",
-    sub: "Q4 benchmark: 68. Gap: −16pts",
-    badge: "MONITOR",
-  },
-  {
-    label: "Recommended HR Action",
-    value: "Act now",
-    trend: "Priority #1 this sprint",
-    trendUp: false,
-    color: "#6ee7b7",
-    bg: "rgba(16,185,129,0.07)",
-    border: "rgba(16,185,129,0.2)",
-    icon: "✅",
-    sub: "Schedule 1:1s with 3 flagged managers",
-    badge: "ACTION REQUIRED",
+    title: "Cognitive Load",
+    value: "High",
+    change: "+22%",
+    insight: "Developers entering sustained overload pattern",
+    action: "Protect focus time and reduce context switching",
   },
 ];
 
@@ -204,62 +160,53 @@ export default function Home() {
       </section>
 
       {/* ── 2. PREDICTION DASHBOARD PREVIEW ──────────────────────── */}
-      <section style={{ ...section, paddingBottom: "96px" }}>
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.4)", fontSize: "11px", fontWeight: "700", padding: "4px 14px", borderRadius: "999px", marginBottom: "16px", letterSpacing: "0.07em" }}>
-            LIVE PREDICTION DASHBOARD · SAMPLE DATA
-          </div>
-          <h2 style={{ fontSize: "36px", fontWeight: "700", color: "#f8fafc", margin: "0 0 12px", letterSpacing: "-0.025em" }}>
-            Your workforce intelligence, live
-          </h2>
-          <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.35)", margin: "0 auto", maxWidth: "520px", lineHeight: "1.65" }}>
-            Six prediction surfaces updated continuously. Each card is a signal — not a metric to monitor, but a risk to act on.
-          </p>
-        </div>
-
-        {/* Dashboard frame */}
-        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "24px", padding: "28px", backdropFilter: "blur(10px)" }}>
-          {/* Dashboard header bar */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px", paddingBottom: "16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
-              <span style={{ fontSize: "13px", fontWeight: "700", color: "rgba(255,255,255,0.6)" }}>PsychFlo · Executive Dashboard</span>
+      <section className="px-6 pb-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl mb-16">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-cyan-300">
+              Workforce Behaviour Prediction
+            </p>
+            <h2 className="text-4xl font-bold tracking-tight md:text-5xl text-white">
+              Predict workforce behaviour<br />before it impacts performance.
+            </h2>
+            <p className="mt-6 text-lg text-slate-300">
+              PsychFlo uses AI and organisational psychology to detect early signs of burnout, attrition, disengagement, cognitive overload and psychological safety risk across your workforce.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <button
+                onClick={() => router.push("/book-audit")}
+                className="rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-slate-950 hover:bg-cyan-300 transition-colors cursor-pointer border-0"
+              >
+                Book a prediction demo
+              </button>
+              <button
+                onClick={() => router.push("/diagnostic")}
+                className="rounded-xl border border-slate-600 px-6 py-3 font-semibold text-white hover:bg-slate-800 transition-colors cursor-pointer bg-transparent"
+              >
+                Get free behavioural audit
+              </button>
             </div>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.25)" }}>Last updated: 2 minutes ago</span>
-              <div style={{ background: "rgba(201,168,76,0.12)", border: "1px solid rgba(201,168,76,0.25)", color: gold, fontSize: "10px", fontWeight: "700", padding: "3px 10px", borderRadius: "999px", letterSpacing: "0.06em" }}>
-                LIVE
-              </div>
-            </div>
           </div>
 
-          {/* 6 prediction cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "14px" }}>
-            {DASHBOARD_CARDS.map((card, i) => (
-              <div key={i} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: "16px", padding: "20px 22px", position: "relative", overflow: "hidden" }}>
-                {/* Badge */}
-                <div style={{ position: "absolute", top: "14px", right: "14px", fontSize: "9px", fontWeight: "800", color: card.color, background: `${card.bg}`, border: `1px solid ${card.border}`, padding: "2px 8px", borderRadius: "999px", letterSpacing: "0.06em" }}>
-                  {card.badge}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {PREDICTION_CARDS.map((card) => (
+              <div
+                key={card.title}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl"
+              >
+                <p className="text-sm text-slate-400">{card.title}</p>
+                <div className="mt-3 flex items-end justify-between">
+                  <h3 className="text-3xl font-bold text-white">{card.value}</h3>
+                  <span className="rounded-full bg-red-500/10 px-3 py-1 text-sm text-red-300">
+                    {card.change}
+                  </span>
                 </div>
-
-                <div style={{ fontSize: "22px", marginBottom: "10px" }}>{card.icon}</div>
-                <div style={{ fontSize: "11px", fontWeight: "600", color: "rgba(255,255,255,0.35)", marginBottom: "6px", letterSpacing: "0.04em" }}>{card.label.toUpperCase()}</div>
-                <div style={{ fontSize: "28px", fontWeight: "900", color: card.color, lineHeight: 1, marginBottom: "6px", letterSpacing: "-0.02em" }}>{card.value}</div>
-                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginBottom: "10px" }}>{card.trend}</div>
-                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.45)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "6px", padding: "6px 10px" }}>
-                  {card.sub}
+                <p className="mt-5 text-sm text-slate-300">{card.insight}</p>
+                <div className="mt-5 rounded-xl bg-cyan-400/10 p-4 text-sm text-cyan-200">
+                  {card.action}
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Bottom action bar */}
-          <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.2)" }}>12 AI prediction models · Updated every 24 hours · Signals from 4 data sources</span>
-            <button onClick={() => router.push("/diagnostic")}
-              style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "10px 22px", borderRadius: "8px", fontSize: "13px", fontWeight: "800", cursor: "pointer" }}>
-              Get your dashboard →
-            </button>
           </div>
         </div>
       </section>
