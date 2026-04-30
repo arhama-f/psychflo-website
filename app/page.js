@@ -136,7 +136,7 @@ export default function Home() {
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap", marginBottom: "20px" }}>
           <button onClick={() => router.push("/diagnostic")}
             style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "18px 42px", borderRadius: "12px", fontSize: "16px", fontWeight: "800", cursor: "pointer", letterSpacing: "-0.01em" }}>
-            Run Workforce Prediction →
+            Get your free workforce behaviour audit →
           </button>
           <button onClick={() => router.push("/report/executive")}
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "18px 36px", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}>
@@ -173,7 +173,7 @@ export default function Home() {
                 onClick={() => router.push("/diagnostic")}
                 className="rounded-xl border border-slate-600 px-6 py-3 font-semibold text-white hover:bg-slate-800 transition-colors cursor-pointer bg-transparent"
               >
-                Get free behavioural audit
+                Get your free workforce behaviour audit
               </button>
             </div>
           </div>
@@ -409,7 +409,7 @@ export default function Home() {
           <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap", marginBottom: "20px" }}>
             <button onClick={() => router.push("/diagnostic")}
               style={{ background: `linear-gradient(135deg,${gold},#f0d080)`, color: "#0f172a", border: "none", padding: "18px 44px", borderRadius: "12px", fontSize: "16px", fontWeight: "800", cursor: "pointer" }}>
-              Run Workforce Prediction — Free →
+              Get your free workforce behaviour audit →
             </button>
             <button onClick={() => router.push("/book-audit")}
               style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#f8fafc", padding: "18px 32px", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}>
