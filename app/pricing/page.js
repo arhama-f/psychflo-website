@@ -11,90 +11,85 @@ const AUDIT = {
   price: "£750",
   period: "one-time",
   badge: "START HERE",
-  desc: "A complete workforce risk assessment delivered in 48 hours. You receive an Executive Report, board-ready PDF, and a 60-minute expert debrief call.",
+  desc: "A complete workforce risk assessment delivered in 48 hours. You receive an Executive Report and board-ready PDF.",
   features: [
     { icon: "📋", text: "Full diagnostic across all 3 risk dimensions" },
     { icon: "📄", text: "Executive Workforce Report (scored PDF)" },
     { icon: "📊", text: "Board-ready slide summary" },
-    { icon: "📞", text: "60-min expert debrief call" },
     { icon: "🎯", text: "30-day priority action plan" },
     { icon: "⭐", text: "Counts as founding client credit if you upgrade" },
   ],
   cta: "Book Audit",
-  href: "/founding",
+  href: "/book-audit",
 };
 
 const PLANS = [
   {
-    id: "team",
-    name: "Team Plan",
-    price: "£500",
+    id: "signal",
+    name: "Signal",
+    price: "£297",
     period: "/month",
-    desc: "Continuous workforce intelligence across all 3 outcomes. Weekly executive reports, manager scorecards, and Slack alerts.",
+    desc: "Know which teams are heading toward a burnout or attrition event before it costs you a departure. For organisations of 20–50 people.",
     badge: null,
-    highlight: true,
-    highlightLabel: "Most chosen",
+    highlight: false,
+    highlightLabel: null,
     features: [
       "Everything in Workforce Risk Audit",
-      "Continuous burnout monitoring (9 engines)",
-      "Weekly Executive Workforce Report",
-      "Manager effectiveness scorecards",
-      "Predictive attrition dashboard",
-      "Slack integration + real-time alerts",
-      "30-day priority action plans",
+      "Monthly risk scoring across all teams",
+      "Burnout & attrition probability by department",
+      "3 priority intervention recommendations/month",
+      "Email alert when a team crosses a risk threshold",
       "HR admin panel",
     ],
-    cta: "Apply for Growth Plan",
-    href: "/founding",
+    cta: "Start free diagnostic",
+    href: "/diagnostic",
   },
   {
-    id: "growth",
-    name: "Growth Plan",
-    price: "£1,000",
+    id: "intelligence",
+    name: "Intelligence",
+    price: "£797",
     period: "/month",
-    desc: "For organisations of 150–200 people. Org-wide risk dashboard, department breakdowns, cost-of-burnout calculator, and priority support.",
+    desc: "Weekly risk scoring, manager friction index, and team dysfunction mapping. Know who is at risk and why. For 50–150 people.",
     badge: null,
-    highlight: false,
+    highlight: true,
+    highlightLabel: "Most popular",
     features: [
-      "Everything in Team Plan",
-      "Org-wide risk dashboard",
-      "Department-level breakdowns",
-      "Cost-of-burnout calculator",
-      "Custom HRIS integration (BambooHR, HiBob, Personio)",
-      "ISO 45003 compliance evidence pack",
-      "Bespoke benchmarking against sector peers",
-      "Priority implementation (live in 48 hrs)",
+      "Everything in Signal",
+      "Weekly risk scoring (not monthly)",
+      "Manager performance signals",
+      "Team dysfunction mapping",
+      "Quarterly workforce health summary",
+      "30-min monthly strategy call",
     ],
-    cta: "Book Executive Call",
-    href: "/demo",
+    cta: "Start free diagnostic",
+    href: "/diagnostic",
   },
   {
-    id: "enterprise",
-    name: "Enterprise",
-    price: "£2,000",
+    id: "command",
+    name: "Command",
+    price: "£1,997",
     period: "/month",
-    desc: "Bespoke deployment for large organisations with complex structures, regulatory requirements, or multi-entity reporting.",
+    desc: "Predictive attrition modelling, live executive dashboard, ISO 45003 compliance pack, and monthly analyst call. For 150–300 people.",
     badge: null,
     highlight: false,
+    highlightLabel: null,
     features: [
-      "Everything in Growth Plan",
-      "Dedicated customer success manager",
-      "Quarterly board presentation (prepared for you)",
-      "SSO / SAML for enterprise auth",
-      "Multi-entity / multi-country reporting",
-      "SLA: 99.99% uptime guarantee",
-      "On-site executive workshops",
-      "Negotiated annual contract",
+      "Everything in Intelligence",
+      "Predictive attrition modelling (names, timelines, £ exposure)",
+      "Live executive dashboard — rolling 90-day forecast",
+      "ISO 45003 compliance audit trail (auto-generated)",
+      "Monthly 60-min debrief with a PsychFlo analyst",
+      "Custom risk thresholds by industry benchmark",
     ],
-    cta: "Contact Us",
-    href: "/demo",
+    cta: "Book executive demo",
+    href: "/book-audit",
   },
 ];
 
 const ROI_STATS = [
   { value: "£750",    label: "Entry point — one audit" },
-  { value: "£130k+",  label: "Avg cost prevented per year" },
-  { value: "43×",     label: "Typical ROI on Growth plan" },
+  { value: "£30–90k", label: "Typical cost of one replaced knowledge worker (Oxford Economics)" },
+  { value: "£26bn",   label: "Annual cost of burnout to UK businesses (Deloitte, 2023)" },
   { value: "48 hrs",  label: "To your first Executive Report" },
 ];
 
@@ -214,7 +209,7 @@ export default function Pricing() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
             <div style={{ maxWidth: "280px" }}>
               <h3 style={{ fontSize: "17px", fontWeight: "700", color: "#f8fafc", margin: "0 0 6px" }}>The ROI is immediate</h3>
-              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.35)", margin: 0, lineHeight: "1.6" }}>A single prevented resignation pays for the Growth plan for over a year.</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.35)", margin: 0, lineHeight: "1.6" }}>A single prevented resignation pays for the Intelligence plan for over a year.</p>
             </div>
             <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
               {ROI_STATS.map((s, i) => (
@@ -255,7 +250,7 @@ export default function Pricing() {
                 ⭐ FOUNDING CLIENT PROGRAMME
               </div>
               <h2 style={{ fontSize: "26px", fontWeight: "800", color: "#f8fafc", margin: "0 0 6px", letterSpacing: "-0.02em" }}>
-                5 founding company spots available
+                Founding spots now closed
               </h2>
               <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)", margin: "0 0 10px", maxWidth: "520px", lineHeight: "1.65" }}>
                 We are accepting 5 founding companies for discounted workforce risk audits in exchange for feedback and anonymised case study data.
@@ -267,10 +262,10 @@ export default function Pricing() {
 
             {/* Spots meter */}
             <div style={{ minWidth: "160px", textAlign: "center" }}>
-              <div style={{ fontSize: "36px", fontWeight: "900", color: gold, lineHeight: 1 }}>2<span style={{ fontSize: "18px", color: "rgba(255,255,255,0.25)", fontWeight: "400" }}>/5</span></div>
-              <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginBottom: "10px" }}>spots taken · 3 remaining</div>
+              <div style={{ fontSize: "36px", fontWeight: "900", color: gold, lineHeight: 1 }}>5<span style={{ fontSize: "18px", color: "rgba(255,255,255,0.25)", fontWeight: "400" }}>/5</span></div>
+              <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginBottom: "10px" }}>spots taken · 0 remaining</div>
               <div style={{ height: "6px", background: "rgba(255,255,255,0.08)", borderRadius: "999px", overflow: "hidden" }}>
-                <div style={{ width: "40%", height: "100%", background: `linear-gradient(90deg,${gold},#f0d080)`, borderRadius: "999px" }} />
+                <div style={{ width: "100%", height: "100%", background: `linear-gradient(90deg,${gold},#f0d080)`, borderRadius: "999px" }} />
               </div>
             </div>
           </div>
@@ -296,10 +291,10 @@ export default function Pricing() {
               <p style={{ fontSize: "11px", fontWeight: "700", color: "rgba(255,255,255,0.3)", letterSpacing: "0.07em", margin: "0 0 16px" }}>FOUNDING CLIENT PRICING vs STANDARD</p>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "12px" }}>
                 {[
-                  { plan: "Workforce Risk Audit",  standard: "£750",        founding: "Included free",  saving: "Save £750" },
-                  { plan: "Team Plan",             standard: "£500/mo",     founding: "£250/mo",        saving: "Save 50%" },
-                  { plan: "Growth Plan",           standard: "£1,000/mo",   founding: "£500/mo",        saving: "Save 50%" },
-                  { plan: "Enterprise",            standard: "£2,000/mo",   founding: "£1,000/mo",      saving: "Save 50%" },
+                  { plan: "Workforce Risk Audit",  standard: "£750",         founding: "Included free",  saving: "Save £750" },
+                  { plan: "Signal",                standard: "£297/mo",      founding: "£149/mo",        saving: "Save 50%" },
+                  { plan: "Intelligence",          standard: "£797/mo",      founding: "£399/mo",        saving: "Save 50%" },
+                  { plan: "Command",               standard: "£1,997/mo",    founding: "£999/mo",        saving: "Save 50%" },
                 ].map((r, i) => (
                   <div key={i} style={{ background: "rgba(255,255,255,0.04)", borderRadius: "10px", padding: "16px", textAlign: "center" }}>
                     <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", margin: "0 0 10px", lineHeight: "1.4" }}>{r.plan}</p>
