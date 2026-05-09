@@ -72,7 +72,7 @@ export default function Home() {
           <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", padding: "32px" }}>
             <p style={{ fontSize: "14px", fontWeight: "700", color: "rgba(255,255,255,0.6)", margin: "0 0 28px", letterSpacing: "0.04em" }}>YOUR ORGANISATION</p>
 
-            <CalcSlider label="Employees" value={calcSize} min={20} max={500} step={5} format={v => v} onChange={setCalcSize} gold={gold} />
+            <CalcSlider label="Employees" value={calcSize} min={20} max={500} step={5} format={v => `${v}`} onChange={setCalcSize} gold={gold} />
             <CalcSlider label="Average annual salary" value={calcSalary} min={25000} max={120000} step={5000} format={v => `£${(v/1000).toFixed(0)}k`} onChange={setCalcSalary} gold={gold} />
             <CalcSlider label="Annual turnover rate" value={calcTurnover} min={5} max={40} step={1} format={v => `${v}%`} onChange={setCalcTurnover} gold={gold} />
 
